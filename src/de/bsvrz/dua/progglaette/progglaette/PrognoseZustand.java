@@ -26,6 +26,64 @@
  */
 package de.bsvrz.dua.progglaette.progglaette;
 
+/**
+ * Berechnet eine Prognose von Messwerten mit der Methode 
+ * der Linearen Trendextrapolation ( Least Square Method ) 
+ * Die Prognose ist nach AFo im Horizont 5, 15, 30, 60, 90 Minuten
+ * 
+ * @author BitCtrl Systems GmbH, Bachraty
+ *
+ */
 public class PrognoseZustand {
+	
+	/**
+	 *  Minute in Millisekunden
+	 */
+	static public final long MIN_IN_MS = 60 * 1000l;
+	
+	/**
+	 * Berechnet die Prognose
+	 * @param werteArray Messwerte
+	 * @param zeitArray Zeitpunkte der Messwerten
+	 * @param indexAktuell Index des letzten Messwertes ( aktuellen )
+	 * @return Prognose fuer den Messwert in 5, 15, 30, 60 und 90 Minuten
+	 */
+	static double [] berechnePrognose(double [] werteArray, long [] zeitArray, int indexAktuell) {
+		
+		double a, b;
+		double [] y = new double[5];
+		
+		double sum_t  = 0.0f;
+		double sum_t2 = 0.0f;
+		double sum_w  = 0.0f;
+		double sum_tw = 0.0f;
+		
+		double t_mitte, y_mitte;
+		int n = werteArray.length;
+		long t_0 = zeitArray[indexAktuell];
+		
+		for(int i=0; i<n; i++) {
+			// int j = ( indexAelteste + i ) % werteArray.length;
+			sum_t  += zeitArray[i];
+			sum_w  += werteArray[i];
+			sum_t2 += zeitArray[i] * zeitArray[i];
+			sum_tw += zeitArray[i] * werteArray[i];
+		}
+		
+		t_mitte = sum_t / n;
+		y_mitte = sum_w / n;
+		
+		a = ( sum_tw - n*t_mitte*y_mitte ) / ( sum_t2 - n * t_mitte * t_mitte );
+		b = y_mitte - a * t_mitte;
+		
+		
+		y[0] = a * (t_0 + 5 * MIN_IN_MS) + b;
+		y[1] = a * (t_0 + 15 * MIN_IN_MS) + b;
+		y[2] = a * (t_0 + 30 * MIN_IN_MS) + b;
+		y[3] = a * (t_0 + 60 * MIN_IN_MS) + b;
+		y[4] = a * (t_0 + 90 * MIN_IN_MS) + b;
+		
+		return y;
+	}
 
 }

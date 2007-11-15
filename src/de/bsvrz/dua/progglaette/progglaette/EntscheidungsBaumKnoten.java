@@ -26,19 +26,38 @@
  */
 
 package de.bsvrz.dua.progglaette.progglaette;
-import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.sys.funclib.bitctrl.dua.DUAInitialisierungsException;
 
+/**
+ * Ein Knoten des Eintscheidungsbaumes
+ * Enthaelt Referenzen fuer seine Nachfolger und eine
+ * Entscheidungsmethode, die die Richtung bestimmt
+ * Fals es ein EndKnoten ist, dann enthaelt den Ergebnisswert.
+ * 
+ * @author BitCtrl Systems GmbH, Bachraty
+ *
+ */
 public class EntscheidungsBaumKnoten {
 	
-	
+	/**
+	 *  Die WertKonstant fuer nicht ermittelbare Werte
+	 */
 	public static final int EBK_TEMPERATUR_NICHT_ERMITTELBAR = -1001;
 	
 	/**
-	 * Nachfolgende Knoten
+	 * Nachfolgende Knoten Links
 	 */
 	protected EntscheidungsBaumKnoten nachfolgerLinks = null;
+	
+	/**
+	 * Nachfolgende Knoten Rechts
+	 */
 	protected EntscheidungsBaumKnoten nachfolgerRechts = null;
+
+	/**
+	 * Nachfolgende Knoten in der Mitte
+	 */
+	protected EntscheidungsBaumKnoten nachfolgerMitte = null;
 	
 	/**
 	 * Die EntscheidungsMethode des Knotens
@@ -48,248 +67,409 @@ public class EntscheidungsBaumKnoten {
 	/**
 	 * Ergebnisswert, dem ein Endknoten leifert
 	 */
-	private int ergebnissWert = 0;
-
+	private int ergebnissWert = -1;
+	
 	/**
-	 * 
-	 * Die moegliche Horizonte fuer die Entscheidung
+	 * Die Richtungen in dennen man im Baum weitergehen kann
+	 * @author BitCtrl Systems GmbH, Bachraty
 	 *
 	 */
-	public enum Horizont {
-		HOR_AKTUELLER_ZUSTAND,
-		HOR_PROGNOSE_ZUSTAND_5MIN,
-		HOR_PROGNOSE_ZUSTAND_10MIN,
-		HOR_PROGNOSE_ZUSTAND_15MIN,
-		HOR_PROGNOSE_ZUSTAND_30MIN,
-		HOR_PROGNOSE_ZUSTAND_60MIN
+	private enum Richtung {
+		R_LINKS,  // Richtung nach Links
+		R_MITTE,  // Richtung in der Mitte
+		R_RECHTS, // Richtung nach Rechts
+		R_NICHT_ERMITTELBAR, // Richtung nicht ermittelbar ( z.B. Wert nicht verfuegbar )
 	};
 	
-	
 	/**
-	 * Die EntscheidungsMethode des Knotens, entscheidet ob man nach links/rechts/mitte
-	 * weitergeht, oder Etnscheidung trifft 
-	 * 
+	 *  Die EntscheidungsMethode des Knotens, entscheidet in welcher Richtung man
+	 *  weitergeht
+	 *  
 	 * @author BitCtrl Systems GmbH, Bachraty
 	 *
 	 */
 	public interface EntscheidungsMethode {
 		/**
-		 * Ergibt, ob wir nach links oder rechts in dem Unterbaum weitergehen 
-		 * @param fbzAktuell
-		 * @param fbtAktuell
-		 * @param tptAktuell
-		 * @param lftAktuell
-		 * @param fbtExtrapoliert
-		 * @param tptExtrapoliert
-		 * @param horizont
-		 * @return <code>true</code>, wenn nach links
+		 * Entscheidet in welcher Richtung man weitergehen soll
+		 * 
+		 * @param fbzAktuell Fahrbahnzustand aktuell
+		 * @param fbtAktuell FahrbahnTemperatur aktuell
+		 * @param tptAktuell Taupunkttemperatur aktuell
+		 * @param lftAktuell Lufttemperatur aktuell 
+		 * @param fbtExtrapoliert Fahrbahntemperatur extrapoliert im Prognosehorizont
+		 * @param tptExtrapoliert Taupunkttemperatur extrapoliert im Prognosehorizont
+		 * @param horizont Prognosehorizont
+		 * @return Richtung 
 		 */
-		public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell, long tptAktuell, long lftAktuell, long fbtExtrapoliert, long tptExtrapoliert, Horizont horizont);
+		public Richtung getRichtung(long fbzAktuell, double fbtAktuell, double tptAktuell, double lftAktuell, double fbtExtrapoliert, double tptExtrapoliert);
 	}
 	
-	
-	public abstract class EntscheidungTemperatur implements EntscheidungsMethode {
-		private long grenzWert = 0;
-		private EntscheidungsBaum.Operator operator = null;
-		protected long wert = 0;
+	/**
+	 * Abstrakte Klasse fuer die Entscheidung nach TemperaturWert
+	 * @author BitCtrl Systems GmbH, Bachraty
+	 *
+	 */
+	public static abstract class EntscheidungTemperatur implements EntscheidungsMethode {
+		/**
+		 * Grenzwert fuer die Entscheidung
+		 */
+		private double grenzWert = 0;
 		
-		public EntscheidungTemperatur(long grenzWert, EntscheidungsBaum.Operator operator) {
+		/**
+		 *  Operator, dem man anwenden soll, um den Grenzwert mit aktuellen Wert zu vergleichen  
+		 */
+		private EntscheidungsBaum.Operator operator = null;
+		
+		/**
+		 *  Der aktuelle Wert
+		 */
+		protected double wert = 0;
+		
+		/**
+		 * Standardkonstruktor
+		 * @param grenzWert Grenzwert
+		 * @param operator Operator - wenn als <code>true</code> ausgewertet, geht nach links, sonst rechts 
+		 */
+		public EntscheidungTemperatur(double grenzWert, EntscheidungsBaum.Operator operator) {
 			this.grenzWert = grenzWert;
 			this.operator = operator;
 		}
 		
-		protected final int entscheide(Data fbzAktuell, long fbtAktuell, long tptAktuell, long lftAktuell, long fbtExtrapoliert, long tptExtrapoliert, Horizont horizont) {
-			if(operator.anwende(wert, grenzWert)) {
-				if(EntscheidungsBaumKnoten.this.nachfolgerLinks == null) return 0;
-				return EntscheidungsBaumKnoten.this.nachfolgerLinks.getEntscheidungsWert(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
-			} else {
-				if(EntscheidungsBaumKnoten.this.nachfolgerRechts == null) return 0;
-				return EntscheidungsBaumKnoten.this.nachfolgerRechts.getEntscheidungsWert(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
-			}
+		/**
+		 * Mit Anwendung des Operators entscheidet, in welcher Richtung man weitergehen soll
+		 * 
+		 * @param fbzAktuell Fahrbahnzustand aktuell
+		 * @param fbtAktuell FahrbahnTemperatur aktuell
+		 * @param tptAktuell Taupunkttemperatur aktuell
+		 * @param lftAktuell Lufttemperatur aktuell 
+		 * @param fbtExtrapoliert Fahrbahntemperatur extrapoliert im Prognosehorizont
+		 * @param tptExtrapoliert Taupunkttemperatur extrapoliert im Prognosehorizont
+		 * @param horizont Prognosehorizont
+		 * @return Richtung in welcher man weiter
+		 */
+		protected final Richtung auswerte(long fbzAktuell, double fbtAktuell, double tptAktuell, double lftAktuell, double fbtExtrapoliert, double tptExtrapoliert) {
+			if(operator.anwende(wert, grenzWert)) return Richtung.R_LINKS;
+			else return Richtung.R_RECHTS;
 		}
 	}
 	
-	public class FbofTemperatur extends EntscheidungTemperatur {
+	/**
+	 * Trifft Entscheidung nach der Fahrbahnoberflaechentemperatur
+	 *  
+	 * @author BitCtrl Systems GmbH, Bachraty
+	 *
+	 */
+	public static class FbofTemperatur extends EntscheidungTemperatur {
 
-		public FbofTemperatur(long grenzWert, EntscheidungsBaum.Operator operator) {
+		/**
+		 * Standardkonstruktor
+		 * @param grenzWert Grenzwert
+		 * @param operator Operator  - wenn als <code>true</code> ausgewertet, geht nach links, sonst rechts
+		 */
+		public FbofTemperatur(double grenzWert, EntscheidungsBaum.Operator operator) {
 			super(grenzWert, operator);
 		}
 
-		public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell,
-				long tptAktuell, long lftAktuell, long fbtExtrapoliert,
-				long tptExtrapoliert, Horizont horizont) {
+		/**
+		 * {@inheritDoc}
+		 */
+		public Richtung getRichtung(long fbzAktuell, double fbtAktuell,
+				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
+				double tptExtrapoliert) {
 			if(fbtAktuell == EBK_TEMPERATUR_NICHT_ERMITTELBAR)
-				return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH;
+				return Richtung.R_NICHT_ERMITTELBAR;
 			wert = fbtAktuell;
-			return entscheide(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
+			return auswerte(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
 	}
 		
 
-	public class LuftTemperatur extends EntscheidungTemperatur {
+	/**
+	 * Trifft Entscheidung nach der Lufttemperatur
+	 *  
+	 * @author BitCtrl Systems GmbH, Bachraty
+	 *
+	 */
+	public static class LuftTemperatur extends EntscheidungTemperatur {
 
-		public LuftTemperatur(long grenzWert, EntscheidungsBaum.Operator operator) {
+		/**
+		 * Standardkonstruktor
+		 * @param grenzWert Grenzwert
+		 * @param operator Operator  - wenn als <code>true</code> ausgewertet, geht nach links, sonst rechts
+		 */
+		public LuftTemperatur(double grenzWert, EntscheidungsBaum.Operator operator) {
 			super(grenzWert, operator);
 		}
 
-		public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell,
-				long tptAktuell, long lftAktuell, long fbtExtrapoliert,
-				long tptExtrapoliert, Horizont horizont) {
+		/**
+		 * {@inheritDoc}
+		 */
+		public Richtung getRichtung(long fbzAktuell, double fbtAktuell,
+				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
+				double tptExtrapoliert) {
 			if(lftAktuell == EBK_TEMPERATUR_NICHT_ERMITTELBAR)
-				return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH;
+				return Richtung.R_NICHT_ERMITTELBAR;
 			wert = lftAktuell;
-			return entscheide(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
+			return auswerte(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
 	}
 	
-	public class DifferenzFbofTaupunktTemperatur extends EntscheidungTemperatur {
+	/**
+	 * Trifft Entscheidung nach der Differenz der Fahrbahnoberflaechen- und Taupunkttemperatur
+	 *  
+	 * @author BitCtrl Systems GmbH, Bachraty
+	 *
+	 */
+	public static class DifferenzFbofTaupunktTemperatur extends EntscheidungTemperatur {
 
-		public DifferenzFbofTaupunktTemperatur(long grenzWert, EntscheidungsBaum.Operator operator) {
+		/**
+		 * Standardkonstruktor
+		 * @param grenzWert Grenzwert
+		 * @param operator Operator  - wenn als <code>true</code> ausgewertet, geht nach links, sonst rechts
+		 */
+		public DifferenzFbofTaupunktTemperatur(double grenzWert, EntscheidungsBaum.Operator operator) {
 			super(grenzWert, operator);
 		}
 
-		public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell,
-				long tptAktuell, long lftAktuell, long fbtExtrapoliert,
-				long tptExtrapoliert, Horizont horizont) {
+		/**
+		 * {@inheritDoc}
+		 */
+		public Richtung getRichtung(long fbzAktuell, double fbtAktuell,
+				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
+				double tptExtrapoliert) {
 			if(fbtAktuell == EBK_TEMPERATUR_NICHT_ERMITTELBAR ||
-					tptAktuell == EBK_TEMPERATUR_NICHT_ERMITTELBAR) 
-				return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH;
+					tptAktuell == EBK_TEMPERATUR_NICHT_ERMITTELBAR)
+				return Richtung.R_NICHT_ERMITTELBAR;
 			wert = fbtAktuell - tptAktuell;
-			return entscheide(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
+			return auswerte(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
 	}
 
-	public class DifferenzFbofTaupunktPrognoseTemperatur extends EntscheidungTemperatur {
-
-		public DifferenzFbofTaupunktPrognoseTemperatur(long grenzWert, EntscheidungsBaum.Operator operator) {
-			super(grenzWert, operator);
-		}
-
-		public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell,
-				long tptAktuell, long lftAktuell, long fbtExtrapoliert,
-				long tptExtrapoliert, Horizont horizont) {
-			if(tptExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR ||
-					fbtAktuell == EBK_TEMPERATUR_NICHT_ERMITTELBAR) {
-				return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH; 
-			}
-			wert = fbtAktuell - tptExtrapoliert;
-			return entscheide(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
-		}
-	}
-	
-	public class FbofPrognoseTemperatur extends EntscheidungTemperatur {
-
-		public FbofPrognoseTemperatur(long grenzWert, EntscheidungsBaum.Operator operator) {
-			super(grenzWert, operator);
-		}
-
-		public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell,
-				long tptAktuell, long lftAktuell, long fbtExtrapoliert,
-				long tptExtrapoliert, Horizont horizont) {
-			if(fbtExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR) {
-				return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH;
-			}
-			wert = fbtExtrapoliert;
-			return entscheide(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
-		}
-	}
-	
-	public class FahbrBahnZustand implements EntscheidungsMethode {
-		private long [] werteLinks = null;
-		private long [] werteRechts = null;
+	/**
+	 * Trifft Entscheidung nach der Differenz der Prognose der Fahrbahnoberflaechen- und  Taupunkttemperatur
+	 *  
+	 * @author BitCtrl Systems GmbH, Bachraty
+	 *
+	 */
+	public static class DifferenzPrognoseFbofTaupunktTemperatur extends EntscheidungTemperatur {
 		
+		/**
+		 * Standardkonstruktor
+		 * @param grenzWert Grenzwert
+		 * @param operator Operator  - wenn als <code>true</code> ausgewertet, geht nach links, sonst rechts
+		 */
+		public DifferenzPrognoseFbofTaupunktTemperatur(double grenzWert, EntscheidungsBaum.Operator operator) {
+			super(grenzWert, operator);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Richtung getRichtung(long fbzAktuell, double fbtAktuell,
+				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
+				double tptExtrapoliert) {
+			if(fbtExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR ||
+					tptExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR)
+				return Richtung.R_NICHT_ERMITTELBAR;
+			wert = fbtExtrapoliert - tptExtrapoliert;
+			return auswerte(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		}
+	}
+	
+	/**
+	 * Trifft Entscheidung nach der  Prognose der Fahrbahnoberflaechentemperatur
+	 *  
+	 * @author BitCtrl Systems GmbH, Bachraty
+	 *
+	 */
+	public static class FbofPrognoseTemperatur extends EntscheidungTemperatur {
+
+		/**
+		 * Standardkonstruktor
+		 * @param grenzWert Grenzwert
+		 * @param operator Operator  - wenn als <code>true</code> ausgewertet, geht nach links, sonst rechts
+		 */
+		public FbofPrognoseTemperatur(double grenzWert, EntscheidungsBaum.Operator operator) {
+			super(grenzWert, operator);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Richtung getRichtung(long fbzAktuell, double fbtAktuell,
+				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
+				double tptExtrapoliert) {
+			if(fbtExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR)
+				return Richtung.R_NICHT_ERMITTELBAR;
+			wert = fbtExtrapoliert;
+			return auswerte(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		}
+	}
+	
+	/**
+	 * Trifft Entscheidung nach dem Fahrbahnoberflaechenzustand
+	 *  
+	 * @author BitCtrl Systems GmbH, Bachraty
+	 *
+	 */
+	public static class FahbrBahnZustand implements EntscheidungsMethode {
+		/**
+		 * Wertenmenge, bei denen man nach links geht 
+		 */
+		protected long [] werteLinks = null;
+		/**
+		 * Wertenmenge, bei denen man nach rechts geht 
+		 */
+		protected long [] werteRechts = null;
+		/**
+		 * Standardkonstruktor
+		 * @param werteLinks Wertenmenge, bei denen man nach links geht 
+		 * @param werteRechts Wertenmenge, bei denen man nach rechts geht
+		 */
 		public FahbrBahnZustand(long [] werteLinks, long [] werteRechts) {
 			this.werteLinks = werteLinks;
 			this.werteRechts = werteRechts;
 		}
-		
-		public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell, long tptAktuell, long lftAktuell, long fbtExtrapoliert, long tptExtrapoliert, Horizont horizont) {
-			long wert = fbzAktuell.getItem("FahrBahnOberFlächenZustand").getUnscaledValue("Wert").longValue();
+		/**
+		 * {@inheritDoc}
+		 */
+		public Richtung getRichtung(long fbzAktuell, double fbtAktuell,
+				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
+				double tptExtrapoliert) {
+			
 			for(int i=0; i<werteLinks.length; i++) 
-				if(werteLinks[i] == wert) {
-					if(EntscheidungsBaumKnoten.this.nachfolgerLinks == null) return 0;
-					return EntscheidungsBaumKnoten.this.nachfolgerLinks.getEntscheidungsWert(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
-				}
+				if(werteLinks[i] == fbzAktuell) 
+					return Richtung.R_LINKS;
+				
 			for(int i=0; i<werteRechts.length; i++) 
-				if(werteRechts[i] == wert) {
-					if(EntscheidungsBaumKnoten.this.nachfolgerRechts == null) return 0;
-					return EntscheidungsBaumKnoten.this.nachfolgerRechts.getEntscheidungsWert(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
-				}
+				if(werteRechts[i] == fbzAktuell) 
+					return Richtung.R_RECHTS;
+				
+			return Richtung.R_NICHT_ERMITTELBAR;
+		}
+	}
+	
+	/**
+	 * Trifft Entscheidung nach dem Fahrbahnoberflaechenzustand, erweitert es mit 
+	 *  
+	 * @author BitCtrl Systems GmbH, Bachraty
+	 *
+	 */
+	public static class FahbrBahnZustandMitGlaette extends FahbrBahnZustand {
+		/**
+		 * Wertenmenge, bei denen man in die Mitte weitergeht 
+		 */
+		protected long [] werteMitte = null;
+		/**
+		 * Standardkonstruktor
+		 * @param werteLinks Wertenmenge, bei denen man nach links geht 
+		 * @param werteMitte Wertenmenge, bei denen man in die Mitte geht
+		 * @param werteRechts Wertenmenge, bei denen man nach rechts geht
+		 */
+		public FahbrBahnZustandMitGlaette(long [] werteLinks, long [] werteMitte, long [] werteRechts) {
+			super(werteLinks, werteRechts);
+			this.werteMitte = werteMitte;
+		}
+		/**
+		 * {@inheritDoc}
+		 */
+		public Richtung getRichtung(long fbzAktuell, double fbtAktuell,
+				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
+				double tptExtrapoliert) {
+			
+			for(int i=0; i<werteLinks.length; i++) 
+				if(werteLinks[i] == fbzAktuell) 
+					return Richtung.R_LINKS;
+				
+			for(int i=0; i<werteMitte.length; i++) 
+				if(werteMitte[i] == fbzAktuell) 
+					return Richtung.R_MITTE;
+			
+			for(int i=0; i<werteRechts.length; i++) 
+				if(werteRechts[i] == fbzAktuell) 
+					return Richtung.R_RECHTS;
+			return Richtung.R_NICHT_ERMITTELBAR;
+		}
+	}
+		
+	
+	/**
+	 * Auswertet den Ergebniss der Glaetteprognose, mit Hilfe der Entscheidungsmethode 
+	 * recursiv geht weiter in den Nachfolgerknoten bis der Prognosewert nicht gefunden wird
+	 * 
+	 * @param fbzAktuell Fahrbahnzustand aktuell
+	 * @param fbtAktuell FahrbahnTemperatur aktuell
+	 * @param tptAktuell Taupunkttemperatur aktuell
+	 * @param lftAktuell Lufttemperatur aktuell 
+	 * @param fbtExtrapoliert Fahrbahntemperatur extrapoliert im Prognosehorizont
+	 * @param tptExtrapoliert Taupunkttemperatur extrapoliert im Prognosehorizont
+	 * @return die Glaetteprognose
+	 */
+	public int getPrognose(long fbzAktuell, double fbtAktuell, double tptAktuell, double lftAktuell, double fbtExtrapoliert, double tptExtrapoliert) {
+		// Endknoten
+		if(methode == null) return ergebnissWert;
+		
+		Richtung r = methode.getRichtung(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		
+		if(r == Richtung.R_LINKS) {
+			return nachfolgerLinks.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		}
+		else if(r == Richtung.R_RECHTS)  {
+			return nachfolgerRechts.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		}
+		else if(r == Richtung.R_MITTE)  {
+			return nachfolgerMitte.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		}
+		else if(r == Richtung.R_NICHT_ERMITTELBAR) {
 			return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH;
 		}
+		// nur wegen Compiler
+		return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH;
 	}
 	
-	public class FahbrBahnZustandMitGlaette extends FahbrBahnZustand {
-		
-		private long [] werteGlaette = null;
-		
-		public FahbrBahnZustandMitGlaette(long [] werteLinks, long [] werteRechts, long [] werteGlaette) {
-			super(werteLinks, werteRechts);
-			this.werteGlaette = werteGlaette;
-		}
-		
-		public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell, long tptAktuell, long lftAktuell, long fbtExtrapoliert, long tptExtrapoliert, Horizont horizont) {
-			long wert = fbzAktuell.getItem("FahrBahnOberFlächenZustand").getUnscaledValue("Wert").longValue();
-			for(int i=0; i<werteGlaette.length; i++) 
-				if(werteGlaette[i] == wert) 
-					return EntscheidungsBaum.EB_GLAETTE_VORHANDEN;
-			return super.getEntscheidungsWert(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
-		}	
-	}
-		
-	public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell, long tptAktuell, long lftAktuell, long fbtExtrapoliert, long tptExtrapoliert, Horizont horizont) {
-		if(methode == null) return ergebnissWert;
-		return methode.getEntscheidungsWert(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
-	}
-	
-	public EntscheidungsBaumKnoten(EntscheidungsBaumKnoten nachfolgerLinks, EntscheidungsBaumKnoten nachfolgerRechts) {		
+	/**
+	 * Konstruktor
+	 * @param methode Die EntscheidungsMethode
+	 * @param nachfolgerLinks Der Nachfolger an der linken Seite
+	 * @param nachfolgerRechts Der Nachfolger an der rechten Seite
+	 * @throws DUAInitialisierungsException 
+	 */
+	public EntscheidungsBaumKnoten(EntscheidungsMethode methode, EntscheidungsBaumKnoten nachfolgerLinks, EntscheidungsBaumKnoten nachfolgerRechts) 
+	throws DUAInitialisierungsException {
+		if(nachfolgerLinks == null || nachfolgerRechts == null || methode == null)
+			throw new DUAInitialisierungsException("Kein parameter darf null sein");
+		if( methode instanceof FahbrBahnZustandMitGlaette)
+			throw new DUAInitialisierungsException("Knoten mit Entscheidungsmethode Fahrbahnzustandmitglaette  soll 3 Nachfolger haben");		
 		this.nachfolgerLinks = nachfolgerLinks;
 		this.nachfolgerRechts = nachfolgerRechts;
+		this.methode = methode;
+		
 	}
 	
+	/**
+	 * Konstruktor
+	 * @param methode Die EntscheidungsMethode
+	 * @param nachfolgerLinks Der Nachfolger an der linken Seite
+	 * @param nachfolgerMitte Der Nachfolger in der Mitte
+	 * @param nachfolgerRechts Der Nachfolger an der rechten Seite
+	 * @throws DUAInitialisierungsException 
+	 */
+	public EntscheidungsBaumKnoten(EntscheidungsMethode methode, EntscheidungsBaumKnoten nachfolgerLinks, EntscheidungsBaumKnoten nachfolgerMitte, EntscheidungsBaumKnoten nachfolgerRechts) 
+	throws DUAInitialisierungsException {
+		if(nachfolgerLinks == null || nachfolgerMitte == null || nachfolgerRechts == null || methode == null)
+			throw new DUAInitialisierungsException("Kein parameter darf null sein");
+		this.nachfolgerLinks = nachfolgerLinks;
+		this.nachfolgerMitte = nachfolgerMitte;
+		this.nachfolgerRechts = nachfolgerRechts;
+		this.methode = methode;
+	}
+	
+	/**
+	 * Konstruktor
+	 * @param ergebnisswert Glaetteprognosewert
+	 */
 	public EntscheidungsBaumKnoten(int ergebnisswert) {
 		this.methode = null;
 		this.ergebnissWert = ergebnisswert;
-	}
-	
-	public void initLuftTemperaturKnoten(EntscheidungsBaum.Operator operator, long grenzwert) throws DUAInitialisierungsException {
-		if(nachfolgerLinks == null || nachfolgerRechts == null)
-			throw new DUAInitialisierungsException("Ein Endkonten soll keine Entscheidungsmethode beinhalten");
-		this.methode = new LuftTemperatur(grenzwert, operator);
-	}
-	
-	public void initFbofTemperaturKnoten(EntscheidungsBaum.Operator operator, long grenzwert) throws DUAInitialisierungsException {
-		if(nachfolgerLinks == null || nachfolgerRechts == null)
-			throw new DUAInitialisierungsException("Ein Endkonten soll keine Entscheidungsmethode beinhalten");
-		this.methode = new FbofTemperatur(grenzwert, operator);
-	}
-	
-	public void initFahrBahnZustandKnoten(long [] werteLinks, long [] werteRechts) throws DUAInitialisierungsException {
-		if(nachfolgerLinks == null || nachfolgerRechts == null)
-			throw new DUAInitialisierungsException("Ein Endkonten soll keine Entscheidungsmethode beinhalten");
-		this.methode = new FahbrBahnZustand(werteLinks, werteRechts );
-	}
-	public void initFahrBahnZustandGlaetteKnoten(long [] werteLinks, long [] werteRechts, long [] werteGlaette) throws DUAInitialisierungsException {
-		if(nachfolgerLinks == null || nachfolgerRechts == null)
-			throw new DUAInitialisierungsException("Ein Endkonten soll keine Entscheidungsmethode beinhalten");
-		this.methode = new FahbrBahnZustandMitGlaette(werteLinks, werteRechts, werteGlaette );
-	}
-	
-	public void initFbofPrognoseKnoten(EntscheidungsBaum.Operator operator, long grenzwert) throws DUAInitialisierungsException {
-		if(nachfolgerLinks == null || nachfolgerRechts == null)
-			throw new DUAInitialisierungsException("Ein Endkonten soll keine Entscheidungsmethode beinhalten");
-		this.methode = new FbofPrognoseTemperatur(grenzwert, operator);
-	}
-	
-	public void initDifferenzFbofTaupunktKnoten(EntscheidungsBaum.Operator operator, long grenzwert) throws DUAInitialisierungsException {
-		if(nachfolgerLinks == null || nachfolgerRechts == null)
-			throw new DUAInitialisierungsException("Ein Endkonten soll keine Entscheidungsmethode beinhalten");
-		this.methode = new DifferenzFbofTaupunktTemperatur(grenzwert, operator);
-	}
-
-	public void initDifferenzFbofTaupunktPrognoseKnoten(EntscheidungsBaum.Operator operator, long grenzwert) throws DUAInitialisierungsException {
-		if(nachfolgerLinks == null || nachfolgerRechts == null)
-			throw new DUAInitialisierungsException("Ein Endkonten soll keine Entscheidungsmethode beinhalten");
-		this.methode = new DifferenzFbofTaupunktPrognoseTemperatur(grenzwert, operator);
 	}
 }

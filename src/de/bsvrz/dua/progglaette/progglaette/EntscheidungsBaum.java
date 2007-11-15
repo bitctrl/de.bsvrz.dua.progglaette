@@ -27,10 +27,16 @@
 package de.bsvrz.dua.progglaette.progglaette;
 
 import de.bsvrz.dav.daf.main.Data;
-import de.bsvrz.dua.progglaette.progglaette.EntscheidungsBaumKnoten.Horizont;
 import de.bsvrz.sys.funclib.bitctrl.dua.DUAInitialisierungsException;
 import de.bsvrz.sys.funclib.debug.Debug;
 
+/**
+ * Der Entscheidungsbaum macht eine Glaetteprognose aus den aktuellen 
+ * Eigenschaften der Fahrbahn und Luft und seinen Prognosewerten
+ * 
+ * @author BitCtrl Systems GmbH, Bachraty
+ *
+ */
 public class EntscheidungsBaum {
 	/**
 	 * Konstanden nach dem DatK
@@ -50,6 +56,9 @@ public class EntscheidungsBaum {
 	public static final int EB_GLAETTE_VORHANDEN												 	= 10;
 	public static final int EB_EIS_SCHNEE_AUF_DER_FAHRBAHN										 	= 11;
 	
+	/**
+	 * Fahrbahnoberflaechenzustaende
+	 */
 	public static final long FBZ_TROCKEN 		= 0;
 	public static final long FBZ_FEUCHT 		= 1;
 	public static final long FBZ_NASS 			= 32;
@@ -58,46 +67,80 @@ public class EntscheidungsBaum {
 	public static final long FBZ_EIS			= 66;
 	public static final long FBZ_RAUREIF		= 67;
 
+	/**
+	 * Der Wurzel des Entscheidungbaumes
+	 */
 	private static EntscheidungsBaumKnoten wurzel = null;
 	
-	private static Debug LOGGER = Debug.getLogger();
-	
-
 	/**
-	 * Operatoren die waehredn der Entscheidung benutzt werden
-	 *  
-	 * @author BitCtrl Systems GmbH, Bachraty
-	 *
+	 * Der Logger
+	 */
+	private static final Debug LOGGER = Debug.getLogger();
+	
+	/**
+	 * Operatoren die waehrend der Entscheidung benutzt werden
 	 */
 	public interface Operator {
-		boolean anwende(long x, long y);
+		/**
+		 * Anwendung des Operators
+		 * @param x Operand x
+		 * @param y Operand y
+		 * @return Ergebnisswert des Operators
+		 */
+		boolean anwende(double x, double y);
 	}
-	
+	/**
+	 *  Operator <
+	 */
 	public static class OperatorKleiner implements Operator {
-		public boolean anwende(long x, long y) {
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean anwende(double x, double y) {
 			return (x < y);
 		}
 	}
+	/**
+	 *  Operator <=
+	 */
 	public static class OperatorKleinerGleich implements Operator {
-		public boolean anwende(long x, long y) {
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean anwende(double x, double y) {
 			return (x <= y);
 		}
 	}
+	/**
+	 *  Operator >
+	 */
 	public static class OperatorGroesser implements Operator {
-		public boolean anwende(long x, long y) {
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean anwende(double x, double y) {
 			return (x > y);
 		}
 	}
+	/**
+	 *  Operator >=
+	 */
 	public static class OperatorGroesserGleich implements Operator {
-		public boolean anwende(long x, long y) {
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean anwende(double x, double y) {
 			return (x >= y);
 		}
 	}
-	
-	
-	private static void erzeugeEntschedungsBaum() {
+	/**
+	 * Erzeugt dem EntscheidungsBaum nach der Abbildung in der AFo
+	 */
+	private static void erzeugeEntscheidungsBaum() {
 		EntscheidungsBaumKnoten k1, k2, k3;
-		EntscheidungsBaumKnoten sGbNm, sGbNsRm, eM, eSm, gbWm, sGbNSm, sGbNSsRm,  kG;
+		EntscheidungsBaumKnoten sGbNm, sGbNsRm, eM, eSm, gbWm, sGbNSm, sGbNSsRm,  kG, gV;
+		EntscheidungsBaumKnoten.EntscheidungsMethode methode;
+	
 		try {
 			sGbNm = new EntscheidungsBaumKnoten(EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHKAG);
 			sGbNsRm = new EntscheidungsBaumKnoten(EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE);
@@ -107,44 +150,44 @@ public class EntscheidungsBaum {
 			sGbNSm = new EntscheidungsBaumKnoten(EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT);
 			sGbNSsRm = new EntscheidungsBaumKnoten(EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT);
 			kG = new EntscheidungsBaumKnoten(EB_KEINE_GLAETTEGEHFAHR);
+			gV = new EntscheidungsBaumKnoten(EB_GLAETTE_VORHANDEN);
 			
-			k1 = new EntscheidungsBaumKnoten(sGbNm, sGbNsRm);
-			k1.initDifferenzFbofTaupunktPrognoseKnoten(new OperatorGroesser(), 0);
+			methode = new EntscheidungsBaumKnoten.DifferenzPrognoseFbofTaupunktTemperatur(0, new OperatorGroesser());
+			k1 = new EntscheidungsBaumKnoten(methode, sGbNm, sGbNsRm);
 			
-			k2 = new EntscheidungsBaumKnoten(k1, eM);
-			k2.initFahrBahnZustandKnoten(new long [] {FBZ_TROCKEN}, new long [] {FBZ_FEUCHT, FBZ_NASS});
+			methode = new EntscheidungsBaumKnoten.FahbrBahnZustand(new long [] {FBZ_TROCKEN}, new long [] {FBZ_FEUCHT, FBZ_NASS});
+			k2 = new EntscheidungsBaumKnoten(methode, k1, eM);
 			
-			k1 = new EntscheidungsBaumKnoten(eM, gbWm);
-			k1.initFahrBahnZustandKnoten(new long [] {FBZ_FEUCHT, FBZ_NASS}, new long [] {FBZ_TROCKEN});
+			methode = new EntscheidungsBaumKnoten.FahbrBahnZustand(new long [] {FBZ_FEUCHT, FBZ_NASS}, new long [] {FBZ_TROCKEN});
+			k1 = new EntscheidungsBaumKnoten(methode, eM, gbWm);
 			
-			k3 = new EntscheidungsBaumKnoten(k1, gbWm);
-			k3.initFbofTemperaturKnoten(new OperatorKleinerGleich(), 3);
+			methode  = new EntscheidungsBaumKnoten.FbofTemperatur(3, new OperatorKleinerGleich());
+			k3 = new EntscheidungsBaumKnoten(methode, k1, gbWm);
 			
-			k1 = new EntscheidungsBaumKnoten(k2, k3);
-			k1.initFbofPrognoseKnoten(new OperatorKleinerGleich(), 2);
+			methode = new EntscheidungsBaumKnoten.FbofPrognoseTemperatur(2, new OperatorKleinerGleich());
+			k1 = new EntscheidungsBaumKnoten(methode, k2, k3);
 			
-			k2 = new EntscheidungsBaumKnoten(sGbNSm, sGbNSsRm);
-			k2.initDifferenzFbofTaupunktPrognoseKnoten(new OperatorGroesser(), 0);
+			methode = new EntscheidungsBaumKnoten.DifferenzPrognoseFbofTaupunktTemperatur(0, new OperatorGroesser());
+			k2 = new EntscheidungsBaumKnoten(methode, sGbNSm, sGbNSsRm);
 			
-			k3 = new EntscheidungsBaumKnoten(k2, sGbNSsRm);
-			k3.initDifferenzFbofTaupunktKnoten(new OperatorGroesser(), 2);
+			methode = new EntscheidungsBaumKnoten.DifferenzFbofTaupunktTemperatur(2, new OperatorGroesser());
+			k3 = new EntscheidungsBaumKnoten(methode, k2, sGbNSsRm);
 			
-			k2 = new EntscheidungsBaumKnoten(k3, sGbNSsRm);
-			k2.initDifferenzFbofTaupunktKnoten(new OperatorGroesser(), 0);
+			methode = new EntscheidungsBaumKnoten.DifferenzFbofTaupunktTemperatur(0, new OperatorGroesser());
+			k2 = new EntscheidungsBaumKnoten(methode, k3, sGbNSsRm);
 			
-			k3 = new EntscheidungsBaumKnoten(k2, eSm);
-			k3.initFahrBahnZustandGlaetteKnoten(new long [] {FBZ_TROCKEN}, new long [] {FBZ_FEUCHT, FBZ_NASS }, 
-					new long [] {FBZ_EIS, FBZ_GEFR_WASSER, FBZ_RAUREIF, FBZ_SCHNEE});
+			methode = new EntscheidungsBaumKnoten.FahbrBahnZustandMitGlaette(new long [] {FBZ_TROCKEN},
+					new long [] {FBZ_FEUCHT, FBZ_NASS }, new long [] {FBZ_EIS, FBZ_GEFR_WASSER, FBZ_RAUREIF, FBZ_SCHNEE});
+			k3 = new EntscheidungsBaumKnoten(methode, k2, eSm, gV);
+					
+			methode = new EntscheidungsBaumKnoten.FbofTemperatur(2, new OperatorGroesser());
+			k2 = new EntscheidungsBaumKnoten(methode, k1, k3);
 			
-			k2 = new EntscheidungsBaumKnoten(k1, k3);
-			k2.initFbofTemperaturKnoten(new OperatorGroesser(), 2);
+			methode = new EntscheidungsBaumKnoten.LuftTemperatur(2, new OperatorKleinerGleich());
+			k1 = new EntscheidungsBaumKnoten(methode, sGbNm, kG);
 			
-			k1 = new EntscheidungsBaumKnoten(sGbNm, kG);
-			k1.initLuftTemperaturKnoten(new OperatorKleinerGleich(), 2);
-			
-			wurzel = new EntscheidungsBaumKnoten(k1, k2);
-			wurzel.initFbofTemperaturKnoten(new OperatorGroesser(), 5);
-			
+			methode = new EntscheidungsBaumKnoten.FbofTemperatur(5, new OperatorGroesser());
+			wurzel = new EntscheidungsBaumKnoten(methode, k1, k2);
 			
 		} catch (DUAInitialisierungsException e) {
 			LOGGER.error("Fehler bei der Initialisierung des EntscheidunsBaumes: " + e.getMessage() );
@@ -152,10 +195,22 @@ public class EntscheidungsBaum {
 		}
 	}
 	
-	static public int getEntscheidungsWert(Data fbzAktuell, long fbtAktuell, long tptAktuell, long lftAktuell, long fbtExtrapoliert, long tptExtrapoliert, Horizont horizont) {
+	/**
+	 * Berechnet die Glaetteprognose
+	 * 
+	 * @param fbzAktuell Fahrbahnzustand aktuell
+	 * @param fbtAktuell FahrbahnTemperatur aktuell
+	 * @param tptAktuell Taupunkttemperatur aktuell
+	 * @param lftAktuell Lufttemperatur aktuell 
+	 * @param fbtExtrapoliert Fahrbahntemperatur extrapoliert im Prognosehorizont
+	 * @param tptExtrapoliert Taupunkttemperatur extrapoliert im Prognosehorizont
+	 * @return die Glaetteprognose
+	 */
+	static public int getPrognose(long fbzAktuell, double fbtAktuell, double tptAktuell, double lftAktuell, double fbtExtrapoliert, double tptExtrapoliert) {
+		//long fbzAkt = fbzAktuell.getItem("FahrBahnOberFlächenZustand").getUnscaledValue("Wert").longValue();
 		if(wurzel == null) {
-			erzeugeEntschedungsBaum();
+			erzeugeEntscheidungsBaum();
 		}
-		return wurzel.getEntscheidungsWert(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert, horizont);
+		return wurzel.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 	}
 }

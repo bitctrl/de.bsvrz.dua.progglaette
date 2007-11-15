@@ -65,4 +65,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 
 	}
 
+	public int [] getPrognose() {
+		return new int [3];
+	}
 }
