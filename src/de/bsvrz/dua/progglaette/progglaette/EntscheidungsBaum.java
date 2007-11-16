@@ -44,11 +44,12 @@ public class EntscheidungsBaum {
 	 * kb.tmUmfeldDatenGlobal.xml
 	 * 
 	 */
+	public static final int EB_NICHT_ERMITTELBAR	              									=-1;
 	public static final int EB_KEINE_GLAETTEGEHFAHR              									= 1;
 	public static final int EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG      								= 2;
 	public static final int EB_EISGLAETTE_MOEGLICH				 						   			= 3;
 	public static final int EB_TENDENZBERECHNUNG_NICHT_MOEGLICH 									= 4;
-	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHKAG 								= 5;
+	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG 								= 5;
 	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE 			= 6;
 	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT			 			= 7;
 	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT 	= 8;
@@ -138,11 +139,11 @@ public class EntscheidungsBaum {
 	 */
 	private static void erzeugeEntscheidungsBaum() {
 		EntscheidungsBaumKnoten k1, k2, k3;
-		EntscheidungsBaumKnoten sGbNm, sGbNsRm, eM, eSm, gbWm, sGbNSm, sGbNSsRm,  kG, gV;
+		EntscheidungsBaumKnoten sGbNm, sGbNsRm, eM, eSm, gbWm, sGbNSm, sGbNSsRm,  kG, gV, esFb;
 		EntscheidungsBaumKnoten.EntscheidungsMethode methode;
 	
 		try {
-			sGbNm = new EntscheidungsBaumKnoten(EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHKAG);
+			sGbNm = new EntscheidungsBaumKnoten(EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG);
 			sGbNsRm = new EntscheidungsBaumKnoten(EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE);
 			eM = new EntscheidungsBaumKnoten(EB_EISGLAETTE_MOEGLICH);
 			eSm = new EntscheidungsBaumKnoten(EB_EISGLAETTE_MOEGLICH_SOFORT);
@@ -151,6 +152,7 @@ public class EntscheidungsBaum {
 			sGbNSsRm = new EntscheidungsBaumKnoten(EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT);
 			kG = new EntscheidungsBaumKnoten(EB_KEINE_GLAETTEGEHFAHR);
 			gV = new EntscheidungsBaumKnoten(EB_GLAETTE_VORHANDEN);
+			esFb = new EntscheidungsBaumKnoten(EB_EIS_SCHNEE_AUF_DER_FAHRBAHN);
 			
 			methode = new EntscheidungsBaumKnoten.DifferenzPrognoseFbofTaupunktTemperatur(0, new OperatorGroesser());
 			k1 = new EntscheidungsBaumKnoten(methode, sGbNm, sGbNsRm);
@@ -176,9 +178,9 @@ public class EntscheidungsBaum {
 			methode = new EntscheidungsBaumKnoten.DifferenzFbofTaupunktTemperatur(0, new OperatorGroesser());
 			k2 = new EntscheidungsBaumKnoten(methode, k3, sGbNSsRm);
 			
-			methode = new EntscheidungsBaumKnoten.FahbrBahnZustandMitGlaette(new long [] {FBZ_TROCKEN},
-					new long [] {FBZ_FEUCHT, FBZ_NASS }, new long [] {FBZ_EIS, FBZ_GEFR_WASSER, FBZ_RAUREIF, FBZ_SCHNEE});
-			k3 = new EntscheidungsBaumKnoten(methode, k2, eSm, gV);
+			methode = new EntscheidungsBaumKnoten.FahbrBahnZustandVollDefiniert(new long [] {FBZ_TROCKEN},
+					new long [] {FBZ_FEUCHT, FBZ_NASS }, new long [] { FBZ_GEFR_WASSER, FBZ_RAUREIF}, new long [] { FBZ_EIS, FBZ_SCHNEE });
+			k3 = new EntscheidungsBaumKnoten(methode, k2, eSm, gV, esFb);
 					
 			methode = new EntscheidungsBaumKnoten.FbofTemperatur(2, new OperatorGroesser());
 			k2 = new EntscheidungsBaumKnoten(methode, k1, k3);

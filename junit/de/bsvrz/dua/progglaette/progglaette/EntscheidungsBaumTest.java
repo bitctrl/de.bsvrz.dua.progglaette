@@ -45,28 +45,89 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 	public static final long E = FBZ_EIS;
 	public static final long R = FBZ_RAUREIF;
 	
+	// dieser Wert sagt, dass es eine Zufaellige Nummer sein kann
+	public static final long Z = 999999; 
+	
 	/**
 	 * Per-Hand berechenete Eingabe und Prognosewerte
 	 */
-	private static final double [][] tabelle = new double [] [] {
+	private static final double [][] t = new double [] [] {
+		// FBZ           -1 nicht ermittelbar
+		// Temperatur -1001 nicht ermittelbar
 		// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert, tptExtrapoliert, prognose
-		{  0,  -1001,      0,    0,    0,    0,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-		{  0,    5.1,  -1001,    0,    0,    0,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-		{  0,    6.2,    1.1,    0,    0,    0,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHKAG},
-		{  0,    5.2,    3.1,    0,    0,    0,   EB_KEINE_GLAETTEGEHFAHR},
-		{  0,    5.3,      2,    0,    0,    0,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHKAG},
-		{  S,      2,      0,    0,    0,    0,   EB_GLAETTE_VORHANDEN},
-		{  E,      2,      0,    0,    0,    0,   EB_GLAETTE_VORHANDEN},
-		{  W,      2,      0,    0,    0,    0,   EB_GLAETTE_VORHANDEN},
-		{  R,      2,      0,    0,    0,    0,   EB_GLAETTE_VORHANDEN},
-		{  N,      2,      0,    0,    0,    0,   EB_EISGLAETTE_MOEGLICH_SOFORT},
-		{  F,      2,      0,    0,    0,    0,   EB_EISGLAETTE_MOEGLICH_SOFORT},
-		{ -1,      2,      0,    0,    0,    0,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-		{  T,      2,      0,    2,    0,    0,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-		{  T,      1,      0,    3,    0,    0,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-		{  T,      1,      0,    1,    0,    0,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-		{  T,     -1,      0,   -3,    0,    0,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-	};
+		{  Z,  -1001,      Z,     Z,     Z,     Z,   EB_NICHT_ERMITTELBAR },
+		{  Z,    5.1,  -1001,     Z,     Z,     Z,   EB_NICHT_ERMITTELBAR },
+		{  Z,    6.2,    1.1,     Z,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG},
+		{  Z,    5.2,    3.1,     Z,     Z,     Z,   EB_KEINE_GLAETTEGEHFAHR},
+		{  Z,    5.3,      2,     Z,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG},
+		{  S,      2,      Z,     Z,     Z,     Z,   EB_EIS_SCHNEE_AUF_DER_FAHRBAHN},
+		{  E,      2,      Z,     Z,     Z,     Z,   EB_EIS_SCHNEE_AUF_DER_FAHRBAHN},
+		{  W,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
+		{  R,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
+		{  N,      2,      Z,     Z,     Z,     Z,   EB_EISGLAETTE_MOEGLICH_SOFORT},
+		{  F,      2,      Z,     Z,     Z,     Z,   EB_EISGLAETTE_MOEGLICH_SOFORT},
+		{ -1,      2,      Z,     Z,     Z,     Z,   EB_NICHT_ERMITTELBAR },
+		{  T,      2,      Z,     2,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+		{  T,      1,      Z,     3,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+		{  T,      1,      Z,     1,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+		{  T,     -1,      Z,    -3,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+		{  T,     -1,      Z,  -3.1,     1,     1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+		{  T,     -1,      Z,  -3.1,   0.2,   0.1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT },
+		
+		// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert, tptExtrapoliert, prognose
+		{  T,     -1,      Z,  -3.1,     Z, -1001,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+		{  T,     -1,      Z,  -3.1, -1001,     Z,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+		{  Z,     -1,      Z, -1001,     Z,     Z,   EB_NICHT_ERMITTELBAR },
+		{  F,    2.2,      Z,     Z,     2,     Z,   EB_EISGLAETTE_MOEGLICH },
+		{  N,    2.2,      Z,     Z,     2,     Z,   EB_EISGLAETTE_MOEGLICH },
+		{ -1,    2.2,      Z,     Z,     1,     Z,   EB_NICHT_ERMITTELBAR },
+		{  Z,    2.2,      Z,     Z, -1001,     Z,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+		{  T,    2.2,      Z,     Z,    -1,    -1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
+		{  T,    2.2,      Z,     Z,    -1,   0.1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
+		{  T,    2.2,      Z,     Z,     1,   0.1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
+		{  T,    2.2,      Z,     Z, -1001,     Z,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+		{  T,    2.2,      Z,     Z,     2, -1001,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+		{ -1,    2.2,      Z,     Z,   	 2,     Z,   EB_NICHT_ERMITTELBAR },
+		{  T,    2.2,      Z,     Z,     0, -1001,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+		{ -1,    2.2,      Z,     Z,   	 0,     Z,   EB_NICHT_ERMITTELBAR },
+		{  T,    2.2,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+		{  T,      3,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+		{  F,    2.2,      Z,     Z,   2.1,     Z,   EB_EISGLAETTE_MOEGLICH },
+		{  N,      3,      Z,     Z,   2.1,     Z,   EB_EISGLAETTE_MOEGLICH },
+		{ -1,      3,      Z,     Z,   2.1,     Z,   EB_NICHT_ERMITTELBAR},
+		{ -1,    3.1,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+		{ -1,      4,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG},
+	} ;
+	
+	/**
+	 * Die modifizierte tabelle
+	 */
+	private static double  tabelle [][] = new double[t.length][t[0].length];
+	
+	/**
+	 * Kopiert Arrays
+	 * @param src Quelle Array
+	 * @param dst Ziel Array
+	 */
+	public void copy(final double src[][], double dst[][]) {
+		for(int i=0; i < src.length; i++)
+			for(int j=0; j<src[i].length; j++)
+				dst[i][j] = src[i][j];
+	}
+	
+	/**
+	 * Die Werte die, zufaellig sein koennen ( mit Z gekennzeichnet ), werden randomisiert
+	 */
+	public void randomisiere() {
+		boolean rand = false;
+		for(int i=0; i < tabelle.length; i++)
+			for(int j=0; j<tabelle[i].length; j++)
+				if(tabelle[i][j] == Z) {
+					tabelle[i][j] = (-1010 + Math.random() * 2020);
+					rand = true;
+				}
+		System.out.println("Tabelle " + ((rand) ? "randomisiert" : "NICHT randomisiert"));
+	}
 	
 	/**
 	 * Die Test-methode
@@ -78,22 +139,26 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 		long fbzAktuell;
 		double fbtAktuell, lftAktuell, tptAktuell;
 		double fbtExtrapoliert, tptExtrapoliert;
-		
-		for(int i=0; i<tabelle.length; i++) {
-			
-			fbzAktuell = (long)(tabelle[i][0]);
-			fbtAktuell = tabelle[i][1];
-			lftAktuell = tabelle[i][2];
-			tptAktuell = tabelle[i][3];
-			
-			fbtExtrapoliert = tabelle[i][4];
-			tptExtrapoliert = tabelle[i][5];
-			
-			antwort = (int)(tabelle[i][6]);
-			
-			prognose = EntscheidungsBaum.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
-			Assert.assertEquals(antwort, prognose);
-			System.out.println(String.format("[ %4d ] Prognose: %2d == %2d ", i, prognose, antwort));
+
+		for(int j=0; j<10; j++) {
+			copy(t, tabelle);
+			if(j!=0) randomisiere();
+			for(int i=0; i<tabelle.length; i++) {
+				
+				fbzAktuell = (long)(tabelle[i][0]);
+				fbtAktuell = tabelle[i][1];
+				lftAktuell = tabelle[i][2];
+				tptAktuell = tabelle[i][3];
+				
+				fbtExtrapoliert = tabelle[i][4];
+				tptExtrapoliert = tabelle[i][5];
+				
+				antwort = (int)(tabelle[i][6]);
+				
+				prognose = EntscheidungsBaum.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+				Assert.assertEquals(antwort, prognose);
+				System.out.println(String.format("[ %4d ] Prognose: %2d == %2d ", i, prognose, antwort));
+			}
 		}
 	}
 }

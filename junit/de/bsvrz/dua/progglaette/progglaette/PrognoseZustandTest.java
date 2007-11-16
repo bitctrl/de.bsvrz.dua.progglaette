@@ -142,8 +142,10 @@ public class PrognoseZustandTest extends PrognoseZustand {
 	 */
 	public long [] generiereRandomLongArray(long min, long max, int anzahl) {
 		long [] a = new long[anzahl];
-		for(int i=0; i<anzahl; i++)
+		for(int i=0; i<anzahl; i++) {
 			a[i] = min + (long)(Math.random()*(max-min));
+			if(a[i] == 0) i--;
+		}
 		
 		return a;
 	}
@@ -175,7 +177,7 @@ public class PrognoseZustandTest extends PrognoseZustand {
 		long [] x = new long [] { 1, 2, 3, 4, 5 };
 		double [] y = new double [] { 1, 1.5, 2, 2.5, 3 };
 		
-		long [] trend = new long [5];
+		long [] trend = new long [n];
 		int trend_c[] = new int [] { 5, 15, 30, 60, 90 };
 		
 		double a [] = new double [n];
@@ -183,7 +185,7 @@ public class PrognoseZustandTest extends PrognoseZustand {
 		double d [] = new double [] {5.5, 10.5, 18, 33, 48 };
 		
 		
-		for(int i = 0; i<n; i++) {
+		for(int i = 0; i<x.length; i++) {
 			x[i] = x[i]*MIN_IN_MS;
 		}
 		
@@ -197,7 +199,7 @@ public class PrognoseZustandTest extends PrognoseZustand {
 			a[i] =  trendExtrapolation(y, x, trend[i]);
 			b[i] =  trendExtrapolationKorrekt(y, x, trend[i]);
 		}
-		
+			
 		for(int i=0; i<c.length; i++) {
 			Assert.assertEquals(b[i], c[i]);
 			Assert.assertEquals(b[i], d[i]);

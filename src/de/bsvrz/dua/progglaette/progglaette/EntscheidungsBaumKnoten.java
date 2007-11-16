@@ -55,9 +55,13 @@ public class EntscheidungsBaumKnoten {
 	protected EntscheidungsBaumKnoten nachfolgerRechts = null;
 
 	/**
-	 * Nachfolgende Knoten in der Mitte
+	 * Nachfolgende Knoten in der MitteLinks
 	 */
-	protected EntscheidungsBaumKnoten nachfolgerMitte = null;
+	protected EntscheidungsBaumKnoten nachfolgerMitteL = null;
+	/**
+	 * Nachfolgende Knoten in der MitteRechts
+	 */
+	protected EntscheidungsBaumKnoten nachfolgerMitteR = null;
 	
 	/**
 	 * Die EntscheidungsMethode des Knotens
@@ -75,10 +79,12 @@ public class EntscheidungsBaumKnoten {
 	 *
 	 */
 	private enum Richtung {
-		R_LINKS,  // Richtung nach Links
-		R_MITTE,  // Richtung in der Mitte
-		R_RECHTS, // Richtung nach Rechts
-		R_NICHT_ERMITTELBAR, // Richtung nicht ermittelbar ( z.B. Wert nicht verfuegbar )
+		R_LINKS,  							// Richtung nach Links
+		R_MITTE_LINKS,  					// Richtung in der MitteLinks
+		R_MITTE_RECHTS,  					// Richtung in der MitteRechts
+		R_RECHTS,							// Richtung nach Rechts
+		R_NICHT_ERMITTELBAR,				// Richtung keine ( z.B. Wert nicht verfuegbar )
+		R_TENDENZBERECHNUNG_NICHT_MOEGLICH, // Richtung keine ( z.B. Tendenzwert nicht verfuegbar )
 	};
 	
 	/**
@@ -105,7 +111,7 @@ public class EntscheidungsBaumKnoten {
 	}
 	
 	/**
-	 * Abstrakte Klasse fuer die Entscheidung nach TemperaturWert
+	 * Abstrakte Klasse fuer die Entscheidung nach Temperatur
 	 * @author BitCtrl Systems GmbH, Bachraty
 	 *
 	 */
@@ -270,7 +276,7 @@ public class EntscheidungsBaumKnoten {
 				double tptExtrapoliert) {
 			if(fbtExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR ||
 					tptExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR)
-				return Richtung.R_NICHT_ERMITTELBAR;
+				return Richtung.R_TENDENZBERECHNUNG_NICHT_MOEGLICH;
 			wert = fbtExtrapoliert - tptExtrapoliert;
 			return auswerte(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
@@ -300,7 +306,7 @@ public class EntscheidungsBaumKnoten {
 				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
 				double tptExtrapoliert) {
 			if(fbtExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR)
-				return Richtung.R_NICHT_ERMITTELBAR;
+				return Richtung.R_TENDENZBERECHNUNG_NICHT_MOEGLICH;
 			wert = fbtExtrapoliert;
 			return auswerte(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
@@ -355,20 +361,27 @@ public class EntscheidungsBaumKnoten {
 	 * @author BitCtrl Systems GmbH, Bachraty
 	 *
 	 */
-	public static class FahbrBahnZustandMitGlaette extends FahbrBahnZustand {
+	public static class FahbrBahnZustandVollDefiniert extends FahbrBahnZustand {
+		
 		/**
-		 * Wertenmenge, bei denen man in die Mitte weitergeht 
+		 * Wertenmenge, bei denen man in die Mitte Links weitergeht 
 		 */
-		protected long [] werteMitte = null;
+		protected long [] werteMitteL = null;
+		/**
+		 * Wertenmenge, bei denen man in die Mitte Rechts weitergeht 
+		 */
+		protected long [] werteMitteR = null;
+		
 		/**
 		 * Standardkonstruktor
 		 * @param werteLinks Wertenmenge, bei denen man nach links geht 
 		 * @param werteMitte Wertenmenge, bei denen man in die Mitte geht
 		 * @param werteRechts Wertenmenge, bei denen man nach rechts geht
 		 */
-		public FahbrBahnZustandMitGlaette(long [] werteLinks, long [] werteMitte, long [] werteRechts) {
+		public FahbrBahnZustandVollDefiniert(long [] werteLinks, long [] werteMitteL, long [] werteMitteR, long [] werteRechts) {
 			super(werteLinks, werteRechts);
-			this.werteMitte = werteMitte;
+			this.werteMitteL = werteMitteL;
+			this.werteMitteR = werteMitteR;
 		}
 		/**
 		 * {@inheritDoc}
@@ -381,13 +394,18 @@ public class EntscheidungsBaumKnoten {
 				if(werteLinks[i] == fbzAktuell) 
 					return Richtung.R_LINKS;
 				
-			for(int i=0; i<werteMitte.length; i++) 
-				if(werteMitte[i] == fbzAktuell) 
-					return Richtung.R_MITTE;
+			for(int i=0; i<werteMitteL.length; i++) 
+				if(werteMitteL[i] == fbzAktuell) 
+					return Richtung.R_MITTE_LINKS;
+			
+			for(int i=0; i<werteMitteR.length; i++) 
+				if(werteMitteR[i] == fbzAktuell) 
+					return Richtung.R_MITTE_RECHTS;
 			
 			for(int i=0; i<werteRechts.length; i++) 
 				if(werteRechts[i] == fbzAktuell) 
 					return Richtung.R_RECHTS;
+			
 			return Richtung.R_NICHT_ERMITTELBAR;
 		}
 	}
@@ -417,14 +435,20 @@ public class EntscheidungsBaumKnoten {
 		else if(r == Richtung.R_RECHTS)  {
 			return nachfolgerRechts.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
-		else if(r == Richtung.R_MITTE)  {
-			return nachfolgerMitte.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		else if(r == Richtung.R_MITTE_LINKS)  {
+			return nachfolgerMitteL.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
-		else if(r == Richtung.R_NICHT_ERMITTELBAR) {
+		else if(r == Richtung.R_MITTE_RECHTS)  {
+			return nachfolgerMitteR.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		}
+		else if(r == Richtung.R_TENDENZBERECHNUNG_NICHT_MOEGLICH) {
 			return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH;
 		}
+		else if(r == Richtung.R_NICHT_ERMITTELBAR) {
+			return EntscheidungsBaum.EB_NICHT_ERMITTELBAR;
+		}
 		// nur wegen Compiler
-		return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH;
+		return EntscheidungsBaum.EB_NICHT_ERMITTELBAR;
 	}
 	
 	/**
@@ -438,7 +462,7 @@ public class EntscheidungsBaumKnoten {
 	throws DUAInitialisierungsException {
 		if(nachfolgerLinks == null || nachfolgerRechts == null || methode == null)
 			throw new DUAInitialisierungsException("Kein parameter darf null sein");
-		if( methode instanceof FahbrBahnZustandMitGlaette)
+		if( methode instanceof FahbrBahnZustandVollDefiniert)
 			throw new DUAInitialisierungsException("Knoten mit Entscheidungsmethode Fahrbahnzustandmitglaette  soll 3 Nachfolger haben");		
 		this.nachfolgerLinks = nachfolgerLinks;
 		this.nachfolgerRechts = nachfolgerRechts;
@@ -450,16 +474,20 @@ public class EntscheidungsBaumKnoten {
 	 * Konstruktor
 	 * @param methode Die EntscheidungsMethode
 	 * @param nachfolgerLinks Der Nachfolger an der linken Seite
-	 * @param nachfolgerMitte Der Nachfolger in der Mitte
+	 * @param nachfolgerMitteLinks Der Nachfolger in der Mitte nach Links
+	 * @param nachfolgerMitteRechts Der Nachfolger in der Mitte nach Rechts
 	 * @param nachfolgerRechts Der Nachfolger an der rechten Seite
 	 * @throws DUAInitialisierungsException 
 	 */
-	public EntscheidungsBaumKnoten(EntscheidungsMethode methode, EntscheidungsBaumKnoten nachfolgerLinks, EntscheidungsBaumKnoten nachfolgerMitte, EntscheidungsBaumKnoten nachfolgerRechts) 
+	public EntscheidungsBaumKnoten(EntscheidungsMethode methode, EntscheidungsBaumKnoten nachfolgerLinks, EntscheidungsBaumKnoten nachfolgerMitteLinks, 
+				EntscheidungsBaumKnoten nachfolgerMitteRechts, EntscheidungsBaumKnoten nachfolgerRechts) 
 	throws DUAInitialisierungsException {
-		if(nachfolgerLinks == null || nachfolgerMitte == null || nachfolgerRechts == null || methode == null)
+		if(nachfolgerLinks == null || nachfolgerMitteLinks == null 
+				|| nachfolgerMitteRechts == null || nachfolgerRechts == null || methode == null)
 			throw new DUAInitialisierungsException("Kein parameter darf null sein");
 		this.nachfolgerLinks = nachfolgerLinks;
-		this.nachfolgerMitte = nachfolgerMitte;
+		this.nachfolgerMitteL = nachfolgerMitteLinks;
+		this.nachfolgerMitteR = nachfolgerMitteRechts;
 		this.nachfolgerRechts = nachfolgerRechts;
 		this.methode = methode;
 	}

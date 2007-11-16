@@ -60,24 +60,27 @@ public class PrognoseZustand {
 		
 		double t_mitte, y_mitte;
 		int n = werteArray.length;
+		int m = n;
 		long t_0 = zeitArray[indexAktuell];
 		
 		for(int i=0; i<n; i++) {
-			// int j = ( indexAelteste + i ) % werteArray.length;
-			sum_t  += zeitArray[i];
-			sum_w  += werteArray[i];
-			sum_t2 += zeitArray[i] * zeitArray[i];
-			sum_tw += zeitArray[i] * werteArray[i];
+			// Zeitstemepel ist 0, wenn ein Datum faehlt
+			if(zeitArray[i] != 0) {
+				sum_t  += zeitArray[i];
+				sum_w  += werteArray[i];
+				sum_t2 += zeitArray[i] * zeitArray[i];
+				sum_tw += zeitArray[i] * werteArray[i];
+			} else m--;
 		}
 		
-		t_mitte = sum_t / n;
-		y_mitte = sum_w / n;
+		t_mitte = sum_t / m;
+		y_mitte = sum_w / m;
 		
-		a = ( sum_tw - n*t_mitte*y_mitte ) / ( sum_t2 - n * t_mitte * t_mitte );
+		a = ( sum_tw - m*t_mitte*y_mitte ) / ( sum_t2 - m*t_mitte*t_mitte );
 		b = y_mitte - a * t_mitte;
 		
 		
-		y[0] = a * (t_0 + 5 * MIN_IN_MS) + b;
+		y[0] = a * (t_0 + 5 * MIN_IN_MS)  + b;
 		y[1] = a * (t_0 + 15 * MIN_IN_MS) + b;
 		y[2] = a * (t_0 + 30 * MIN_IN_MS) + b;
 		y[3] = a * (t_0 + 60 * MIN_IN_MS) + b;
