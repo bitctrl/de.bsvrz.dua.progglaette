@@ -51,6 +51,9 @@ import de.bsvrz.sys.funclib.bitctrl.dua.DUAInitialisierungsException;
 import de.bsvrz.sys.funclib.bitctrl.dua.dfs.typen.SWETyp;
 import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
 import de.bsvrz.sys.funclib.debug.Debug;
+import de.bsvrz.sys.funclib.operatingMessage.MessageGrade;
+import de.bsvrz.sys.funclib.operatingMessage.MessageSender;
+import de.bsvrz.sys.funclib.operatingMessage.MessageType;
 
 /**
  * 
@@ -113,6 +116,10 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 */
 	protected static ClientDavInterface dav;
 	
+	/**
+	 * Der Nachrichtensender
+	 */
+	private MessageSender msgSender;
 	/**
 	 * Enthaelt die Ringpuffer und andere Daten fuer die Berechnungen pro MessStelle
 	 *
@@ -283,7 +290,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 			umfDaten.fbtPuffer[umfDaten.index] = umfDaten.letzteFbt;
 			umfDaten.tptPuffer[umfDaten.index] = umfDaten.letzteTpt;
 			umfDaten.zsPuffer[umfDaten.index] = zeitStempel;
-			umfDaten.index = (umfDaten.index +1) % umfDaten.PUFFER_GROESSE;
+			umfDaten.index = (umfDaten.index +1) % UmfDatenHist.PUFFER_GROESSE;
 			
 			if(zeitStempel - umfDaten.zsPuffer[umfDaten.index] > 10 * MIN_IN_MS + 100) {
 				// Wir loeschen die eintraege die Aelter als 10 Minuten sind
@@ -314,13 +321,23 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 */
 	public void initialize(ClientDavInterface connection) throws Exception {
 		
-		this.dav = connection;
+		dav = connection;
 		Collection<SystemObject> messStellen = new LinkedList<SystemObject>();
 		Collection<ConfigurationArea> konfBerieche = new LinkedList<ConfigurationArea>();
 		Collection<SystemObjectType> typen = new LinkedList<SystemObjectType>();
 		
-		for(String s: this.konfBereiche) 
-			konfBerieche.add(dav.getDataModel().getConfigurationArea(s));
+		msgSender = MessageSender.getInstance();
+		msgSender.setApplicationLabel(this.getSWETyp().toString());
+		
+		for(String s: this.konfBereiche) {
+			ConfigurationArea ca = dav.getDataModel().getConfigurationArea(s);
+			if(ca == null) {
+				msgSender.sendMessage(MessageType.APPLICATION_DOMAIN, MessageGrade.WARNING, "Der übergebene Konfigurationsbereich " + s + " existiert nicht.");
+				LOGGER.warning("Der übergebene Konfigurationsbereich " + s + " existiert nicht.");
+				ca = dav.getDataModel().getConfigurationAuthority().getConfigurationArea();
+			}
+			konfBerieche.add(ca);
+		}
 		
 		typen.add(dav.getDataModel().getType(TYP_MESSSTELLE));
 		messStellen = dav.getDataModel().getObjects(konfBerieche, typen, ObjectTimeSpecification.valid());
@@ -398,10 +415,15 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		DataDescription DD_LFTDATEN = new DataDescription(dav.getDataModel().getAttributeGroup(ATG_LFT), 
 				dav.getDataModel().getAspect(ASP_MESSWERT_ERSETZUNG));
 		
-		dav.subscribeReceiver(this, tptSensorMenge, DD_TPTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
-		dav.subscribeReceiver(this, fbtSensorMenge, DD_FBTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
-		dav.subscribeReceiver(this, fbzSensorMenge, DD_FBZDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
-		dav.subscribeReceiver(this, lftSensorMenge, DD_LFTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
+		try {
+			dav.subscribeReceiver(this, tptSensorMenge, DD_TPTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
+			dav.subscribeReceiver(this, fbtSensorMenge, DD_FBTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
+			dav.subscribeReceiver(this, fbzSensorMenge, DD_FBZDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
+			dav.subscribeReceiver(this, lftSensorMenge, DD_LFTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());			
+		} catch (Exception e) {
+			LOGGER.warning("Anmeldung auf Daten unerfolgreich: " + e.getMessage());
+			msgSender.sendMessage(MessageType.APPLICATION_DOMAIN, MessageGrade.WARNING, "Anmeldung auf Daten unerfolgreich: " + e.getMessage());
+		}
 		
 		DD_GLAETTEPROGNOSE = new DataDescription(dav.getDataModel().getAttributeGroup(ATG_GLAETTE), 
 				dav.getDataModel().getAspect(ASP_PROGNOSE));

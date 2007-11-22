@@ -30,17 +30,12 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.sun.corba.se.spi.extension.ZeroPortPolicy;
-
 import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.DataDescription;
-import de.bsvrz.dav.daf.main.ReceiveOptions;
-import de.bsvrz.dav.daf.main.ReceiverRole;
 import de.bsvrz.dav.daf.main.ResultData;
 import de.bsvrz.dav.daf.main.SenderRole;
 import de.bsvrz.dav.daf.main.config.SystemObject;
-import de.bsvrz.dua.progglaette.progglaette.GlaetteWarnungUndPrognose.UmfDatenHist;
 import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
 
 /**
@@ -59,8 +54,8 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 			"-datenverteiler=localhost:8083", 
 			"-benutzer=Tester", 
 			"-authentifizierung=c:\\passwd",
-			"-debugLevelStdErrText=INFO",
-			"-debugLevelFileText=INFO",
+			"-debugLevelStdErrText=WARNING",
+			"-debugLevelFileText=WARNING",
 			"-KonfigurationsBeriechsPid=kb.glaetteProgTest"};
 	
 	/**
@@ -149,7 +144,7 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 		
 		synchronized (GlaetteWarnungUndPrognoseTest.dav) {
 			try {
-				while(this.warten) dav.wait();
+				while(warten) dav.wait();
 			} catch (Exception e) {	}
 		}
 	}
@@ -192,7 +187,7 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 		System.out.println(String.format("[ %4d ] ZS OK", index-1));
 		synchronized (dav) {
 			if(index>= GlaetteWarnungUndPrognoseTest.zeitStempel.length) {
-				this.warten = false;
+				warten = false;
 				dav.notify();
 			}
 		}

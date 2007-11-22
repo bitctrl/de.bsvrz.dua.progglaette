@@ -26,7 +26,6 @@
  */
 package de.bsvrz.dua.progglaette.progglaette;
 
-import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.sys.funclib.bitctrl.dua.DUAInitialisierungsException;
 import de.bsvrz.sys.funclib.debug.Debug;
 
