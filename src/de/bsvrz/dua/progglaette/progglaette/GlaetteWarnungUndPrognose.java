@@ -47,6 +47,7 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
 import de.bsvrz.dav.daf.main.config.SystemObjectType;
 import de.bsvrz.sys.funclib.application.StandardApplication;
 import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
+import de.bsvrz.sys.funclib.bitctrl.dua.DUAInitialisierungsException;
 import de.bsvrz.sys.funclib.bitctrl.dua.dfs.typen.SWETyp;
 import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
 import de.bsvrz.sys.funclib.debug.Debug;
@@ -66,21 +67,21 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	/**
 	 * String konstanten
 	 */
-	private final  String ATG_LFT = "atg.ufdsLuftTemperatur";
-	private final  String ATG_FBT = "atg.ufdsFahrBahnOberFlächenTemperatur";
-	private final  String ATG_TPT = "atg.ufdsTaupunktTemperatur";
-	private final  String ATG_FBZ = "atg.ufdsFahrBahnOberFlächenZustand";
-	private final  String ATG_GLAETTE = "atg.ufdmsGlätte";
-	private final  String ATG_UFDSENSOR = "atg.umfeldDatenSensor";
+	public final  String ATG_LFT = "atg.ufdsLuftTemperatur";
+	public final  String ATG_FBT = "atg.ufdsFahrBahnOberFlächenTemperatur";
+	public final  String ATG_TPT = "atg.ufdsTaupunktTemperatur";
+	public final  String ATG_FBZ = "atg.ufdsFahrBahnOberFlächenZustand";
+	public final  String ATG_GLAETTE = "atg.ufdmsGlätte";
+	public final  String ATG_UFDSENSOR = "atg.umfeldDatenSensor";
 
-	private final  String ASP_MESSWERT_ERSETZUNG = "asp.messWertErsetzung";
-	private final  String ASP_PROGNOSE = "asp.prognose";
-	private final  String TYP_MESSSTELLE = "typ.umfeldDatenMessStelle";
+	public final  String ASP_MESSWERT_ERSETZUNG = "asp.messWertErsetzung";
+	public final  String ASP_PROGNOSE = "asp.prognose";
+	public final  String TYP_MESSSTELLE = "typ.umfeldDatenMessStelle";
 	
-	private final  String TYP_LFT = "typ.ufdsLuftTemperatur";
-	private final  String TYP_FBT = "typ.ufdsFahrBahnOberFlächenTemperatur";
-	private final  String TYP_TPT = "typ.ufdsTaupunktTemperatur";
-	private final  String TYP_FBZ = "typ.ufdsFahrBahnOberFlächenZustand";
+	public final  String TYP_LFT = "typ.ufdsLuftTemperatur";
+	public final  String TYP_FBT = "typ.ufdsFahrBahnOberFlächenTemperatur";
+	public final  String TYP_TPT = "typ.ufdsTaupunktTemperatur";
+	public final  String TYP_FBZ = "typ.ufdsFahrBahnOberFlächenZustand";
 	
 	/**
 	 * Aufrufsparameter
@@ -90,12 +91,12 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	/**
 	 *  Minute in ms
 	 */
-	private final long MIN_IN_MS = 60 * 1000l;
+	public final long MIN_IN_MS = 60 * 1000l;
 	
 	/**
 	 * Die  Datenbeschreibung fuer Ausgabedaten
 	 */
-	private DataDescription DD_GLAETTEPROGNOSE;
+	protected DataDescription DD_GLAETTEPROGNOSE;
 	
 	/** 
 	 *  Menge der Sensoren die zu eine Messstelle gehoeren
@@ -110,7 +111,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	/**
 	 * Verbindung zum DAV
 	 */
-	private ClientDavInterface dav;
+	protected static ClientDavInterface dav;
 	
 	/**
 	 * Enthaelt die Ringpuffer und andere Daten fuer die Berechnungen pro MessStelle
@@ -118,7 +119,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 * @author BitCtrl Systems GmbH, Bachraty
 	 *
 	 */
-	private static class UmfDatenHist {
+	static protected class UmfDatenHist {
 		/**
 		 * Standardkonstruktor
 		 * @param messStelle
@@ -220,10 +221,13 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 				continue;
 			}			
 			
-			// wenn keine eingabedaten zur verfuaegung stahen, dann auch die ausgabe muss angepasst werden
-			if(daten == null && umfDaten.keineDaten == false) {
-				umfDaten.keineDaten = true;
-				publiziere(umfDaten, null, zs, true);
+			// wenn keine eingabedaten zur verfuaegung stahen, dann auch die ausgabe  angepasst werden muss
+			if(daten == null) {
+				if(umfDaten.keineDaten == false) {
+					umfDaten.keineDaten = true;
+					publiziere(umfDaten, null, zs, true);
+				}
+				continue;
 			}
 			
 			// Nur daten in Minutenintervall werden bearbeitet			
@@ -257,8 +261,6 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 			}
 			else if( ATG_FBZ.equals(atgPid)) {
 				long d = daten.getItem("FahrBahnOberFlächenZustand").getUnscaledValue("Wert").longValue();
-				if(d > 0 )
-					d = daten.getItem("FahrBahnOberFlächenZustand").getScaledValue("Wert").longValue();
 				umfDaten.letzteFbz = d;
 				umfDaten.zsLetztenFbz = zs;
 				bearbeiteDaten(umfDaten, zs);
@@ -280,6 +282,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 			
 			umfDaten.fbtPuffer[umfDaten.index] = umfDaten.letzteFbt;
 			umfDaten.tptPuffer[umfDaten.index] = umfDaten.letzteTpt;
+			umfDaten.zsPuffer[umfDaten.index] = zeitStempel;
 			umfDaten.index = (umfDaten.index +1) % umfDaten.PUFFER_GROESSE;
 			
 			if(zeitStempel - umfDaten.zsPuffer[umfDaten.index] > 10 * MIN_IN_MS + 100) {
@@ -299,9 +302,9 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		if(umfDaten.zsLetzterLft == zeitStempel) anzahl++;
 		if(umfDaten.zsLetztenFbz == zeitStempel) anzahl++;
 		
-		if(anzahl == 2 && umfDaten.letzterPubZs < zeitStempel - 10*MIN_IN_MS) {
-			umfDaten.letzterPubZs = zeitStempel - 10 * MIN_IN_MS;
-			publiziereNichtErmmittelbar(umfDaten, zeitStempel - 10 * MIN_IN_MS);
+		if(anzahl == 2 && umfDaten.letzterPubZs < zeitStempel - MIN_IN_MS) {
+			publiziereNichtErmmittelbar(umfDaten, zeitStempel -  MIN_IN_MS);
+			umfDaten.letzterPubZs = zeitStempel - MIN_IN_MS;
 		}
 		
 	}
@@ -414,11 +417,15 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		Debug.init(this.getSWETyp().toString(), argumente);
 
 		if( ! argumente.hasArgument(P_KONF_BEREICHE)) {
-			throw new Exception("Keine Konfigurationsobjekte eingegeben.");		
+			throw new DUAInitialisierungsException("Keine Konfigurationsbereiche eingegeben.");		
 		}
 		
 		String argParameter;
 		argParameter = argumente.fetchArgument(P_KONF_BEREICHE).asString();
+		
+		if(argParameter.length()<1)
+			throw new DUAInitialisierungsException("Keine Konfigurationsbereiche eingegeben.");
+		
 		this.konfBereiche = argParameter.split(",");
 
 		argumente.fetchUnusedArguments();
@@ -467,15 +474,15 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		
 		// Wenn weniger als 7 
 		if(cnt<7) {
-			fbtExtrapoliert = new double[5];
-			tptExtrapoliert = new double[5];
+			fbtExtrapoliert = new double[ATT_GLAETTE_PROGNOSE.length-1];
+			tptExtrapoliert = new double[ATT_GLAETTE_PROGNOSE.length-1];
 			for(int i=0; i<fbtExtrapoliert.length; i++) {
 				fbtExtrapoliert[i] = -1001;
 				tptExtrapoliert[i] = -1001;
 			}
 		} else {
-			fbtExtrapoliert = PrognoseZustand.berechnePrognose(ud.fbtPuffer, ud.zsPuffer, (ud.index - 1)%UmfDatenHist.PUFFER_GROESSE);
-			tptExtrapoliert = PrognoseZustand.berechnePrognose(ud.tptPuffer, ud.zsPuffer, (ud.index - 1)%UmfDatenHist.PUFFER_GROESSE);
+			fbtExtrapoliert = PrognoseZustand.berechnePrognose(ud.fbtPuffer, ud.zsPuffer, (ud.index + UmfDatenHist.PUFFER_GROESSE - 1)%UmfDatenHist.PUFFER_GROESSE);
+			tptExtrapoliert = PrognoseZustand.berechnePrognose(ud.tptPuffer, ud.zsPuffer, (ud.index + UmfDatenHist.PUFFER_GROESSE  - 1)%UmfDatenHist.PUFFER_GROESSE);
 		}
 		
 		prognose = EntscheidungsBaum.getPrognose(ud.letzteFbz, ud.letzteFbt, ud.letzteTpt, ud.letzteLft, ud.letzteFbt, ud.letzteTpt);

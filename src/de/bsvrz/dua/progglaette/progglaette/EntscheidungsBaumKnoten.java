@@ -55,13 +55,9 @@ public class EntscheidungsBaumKnoten {
 	protected EntscheidungsBaumKnoten nachfolgerRechts = null;
 
 	/**
-	 * Nachfolgende Knoten in der MitteLinks
+	 * Nachfolgende Knoten in der Mitte
 	 */
-	protected EntscheidungsBaumKnoten nachfolgerMitteL = null;
-	/**
-	 * Nachfolgende Knoten in der MitteRechts
-	 */
-	protected EntscheidungsBaumKnoten nachfolgerMitteR = null;
+	protected EntscheidungsBaumKnoten nachfolgerMitte = null;
 	
 	/**
 	 * Die EntscheidungsMethode des Knotens
@@ -80,8 +76,7 @@ public class EntscheidungsBaumKnoten {
 	 */
 	private enum Richtung {
 		R_LINKS,  							// Richtung nach Links
-		R_MITTE_LINKS,  					// Richtung in der MitteLinks
-		R_MITTE_RECHTS,  					// Richtung in der MitteRechts
+		R_MITTE,		  					// Richtung in der Mitte
 		R_RECHTS,							// Richtung nach Rechts
 		R_NICHT_ERMITTELBAR,				// Richtung keine ( z.B. Wert nicht verfuegbar )
 		R_TENDENZBERECHNUNG_NICHT_MOEGLICH, // Richtung keine ( z.B. Tendenzwert nicht verfuegbar )
@@ -104,7 +99,6 @@ public class EntscheidungsBaumKnoten {
 		 * @param lftAktuell Lufttemperatur aktuell 
 		 * @param fbtExtrapoliert Fahrbahntemperatur extrapoliert im Prognosehorizont
 		 * @param tptExtrapoliert Taupunkttemperatur extrapoliert im Prognosehorizont
-		 * @param horizont Prognosehorizont
 		 * @return Richtung 
 		 */
 		public Richtung getRichtung(long fbzAktuell, double fbtAktuell, double tptAktuell, double lftAktuell, double fbtExtrapoliert, double tptExtrapoliert);
@@ -357,20 +351,17 @@ public class EntscheidungsBaumKnoten {
 	
 	/**
 	 * Trifft Entscheidung nach dem Fahrbahnoberflaechenzustand, erweitert es mit 
-	 *  
+	 * dem Zustand "Glaette vorhanden"
+	 *   
 	 * @author BitCtrl Systems GmbH, Bachraty
 	 *
 	 */
 	public static class FahbrBahnZustandVollDefiniert extends FahbrBahnZustand {
 		
 		/**
-		 * Wertenmenge, bei denen man in die Mitte Links weitergeht 
+		 * Wertenmenge, bei denen man in die Mitte weitergeht 
 		 */
-		protected long [] werteMitteL = null;
-		/**
-		 * Wertenmenge, bei denen man in die Mitte Rechts weitergeht 
-		 */
-		protected long [] werteMitteR = null;
+		protected long [] werteMitte;
 		
 		/**
 		 * Standardkonstruktor
@@ -378,10 +369,9 @@ public class EntscheidungsBaumKnoten {
 		 * @param werteMitte Wertenmenge, bei denen man in die Mitte geht
 		 * @param werteRechts Wertenmenge, bei denen man nach rechts geht
 		 */
-		public FahbrBahnZustandVollDefiniert(long [] werteLinks, long [] werteMitteL, long [] werteMitteR, long [] werteRechts) {
+		public FahbrBahnZustandVollDefiniert(long [] werteLinks, long [] werteMitte, long [] werteRechts) {
 			super(werteLinks, werteRechts);
-			this.werteMitteL = werteMitteL;
-			this.werteMitteR = werteMitteR;
+			this.werteMitte = werteMitte;
 		}
 		/**
 		 * {@inheritDoc}
@@ -394,13 +384,9 @@ public class EntscheidungsBaumKnoten {
 				if(werteLinks[i] == fbzAktuell) 
 					return Richtung.R_LINKS;
 				
-			for(int i=0; i<werteMitteL.length; i++) 
-				if(werteMitteL[i] == fbzAktuell) 
-					return Richtung.R_MITTE_LINKS;
-			
-			for(int i=0; i<werteMitteR.length; i++) 
-				if(werteMitteR[i] == fbzAktuell) 
-					return Richtung.R_MITTE_RECHTS;
+			for(int i=0; i<werteMitte.length; i++) 
+				if(werteMitte[i] == fbzAktuell) 
+					return Richtung.R_MITTE;
 			
 			for(int i=0; i<werteRechts.length; i++) 
 				if(werteRechts[i] == fbzAktuell) 
@@ -435,11 +421,8 @@ public class EntscheidungsBaumKnoten {
 		else if(r == Richtung.R_RECHTS)  {
 			return nachfolgerRechts.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
-		else if(r == Richtung.R_MITTE_LINKS)  {
-			return nachfolgerMitteL.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
-		}
-		else if(r == Richtung.R_MITTE_RECHTS)  {
-			return nachfolgerMitteR.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		else if(r == Richtung.R_MITTE)  {
+			return nachfolgerMitte.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
 		else if(r == Richtung.R_TENDENZBERECHNUNG_NICHT_MOEGLICH) {
 			return EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH;
@@ -474,20 +457,16 @@ public class EntscheidungsBaumKnoten {
 	 * Konstruktor
 	 * @param methode Die EntscheidungsMethode
 	 * @param nachfolgerLinks Der Nachfolger an der linken Seite
-	 * @param nachfolgerMitteLinks Der Nachfolger in der Mitte nach Links
-	 * @param nachfolgerMitteRechts Der Nachfolger in der Mitte nach Rechts
+	 * @param nachfolgerMitte Der Nachfolger in der Mitte  
 	 * @param nachfolgerRechts Der Nachfolger an der rechten Seite
 	 * @throws DUAInitialisierungsException 
 	 */
-	public EntscheidungsBaumKnoten(EntscheidungsMethode methode, EntscheidungsBaumKnoten nachfolgerLinks, EntscheidungsBaumKnoten nachfolgerMitteLinks, 
-				EntscheidungsBaumKnoten nachfolgerMitteRechts, EntscheidungsBaumKnoten nachfolgerRechts) 
+	public EntscheidungsBaumKnoten(EntscheidungsMethode methode, EntscheidungsBaumKnoten nachfolgerLinks, EntscheidungsBaumKnoten nachfolgerMitte, EntscheidungsBaumKnoten nachfolgerRechts) 
 	throws DUAInitialisierungsException {
-		if(nachfolgerLinks == null || nachfolgerMitteLinks == null 
-				|| nachfolgerMitteRechts == null || nachfolgerRechts == null || methode == null)
+		if(nachfolgerLinks == null || nachfolgerMitte == null || nachfolgerRechts == null || methode == null)
 			throw new DUAInitialisierungsException("Kein parameter darf null sein");
 		this.nachfolgerLinks = nachfolgerLinks;
-		this.nachfolgerMitteL = nachfolgerMitteLinks;
-		this.nachfolgerMitteR = nachfolgerMitteRechts;
+		this.nachfolgerMitte = nachfolgerMitte;
 		this.nachfolgerRechts = nachfolgerRechts;
 		this.methode = methode;
 	}

@@ -60,8 +60,8 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 		{  Z,    6.2,    1.1,     Z,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG},
 		{  Z,    5.2,    3.1,     Z,     Z,     Z,   EB_KEINE_GLAETTEGEHFAHR},
 		{  Z,    5.3,      2,     Z,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG},
-		{  S,      2,      Z,     Z,     Z,     Z,   EB_EIS_SCHNEE_AUF_DER_FAHRBAHN},
-		{  E,      2,      Z,     Z,     Z,     Z,   EB_EIS_SCHNEE_AUF_DER_FAHRBAHN},
+		{  S,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
+		{  E,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
 		{  W,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
 		{  R,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
 		{  N,      2,      Z,     Z,     Z,     Z,   EB_EISGLAETTE_MOEGLICH_SOFORT},
@@ -70,8 +70,8 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 		{  T,      2,      Z,     2,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
 		{  T,      1,      Z,     3,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
 		{  T,      1,      Z,     1,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-		{  T,     -1,      Z,    -3,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-		{  T,     -1,      Z,  -3.1,     1,     1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+		{  T,     -1,      Z,    -3,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
+		{  T,     -1,      Z,  -3.1,     1,     1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
 		{  T,     -1,      Z,  -3.1,   0.2,   0.1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT },
 		
 		// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert, tptExtrapoliert, prognose
