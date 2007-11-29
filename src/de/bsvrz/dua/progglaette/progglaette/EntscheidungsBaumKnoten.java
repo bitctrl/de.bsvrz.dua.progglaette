@@ -144,7 +144,6 @@ public class EntscheidungsBaumKnoten {
 		 * @param lftAktuell Lufttemperatur aktuell 
 		 * @param fbtExtrapoliert Fahrbahntemperatur extrapoliert im Prognosehorizont
 		 * @param tptExtrapoliert Taupunkttemperatur extrapoliert im Prognosehorizont
-		 * @param horizont Prognosehorizont
 		 * @return Richtung in welcher man weiter
 		 */
 		protected final Richtung auswerte(long fbzAktuell, double fbtAktuell, double tptAktuell, double lftAktuell, double fbtExtrapoliert, double tptExtrapoliert) {

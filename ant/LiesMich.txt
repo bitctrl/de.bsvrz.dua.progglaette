@@ -1,0 +1,83 @@
+***********************************************************************************************
+*  Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 SWE Glättewarnung und –prognose  *
+***********************************************************************************************
+
+Version: @Version@
+
+
+Übersicht
+=========
+
+Die SWE Glättewarnung und –prognose ermittelt aus den aktuell gültigen und den 
+in letzten 10 Minuten eingelaufenen messwertersetzten Daten der Fahrbahnoberflächen-
+und Taupunkttemperatur sowie dem momentan gemessenen gültigen Fahrbahnzustand und der
+aktuell gültigen Lufttemperatur einer Umfelddatenmessstelle eine Aussage über eine
+mögliche Glätte. Des Weiteren wird für die Prognosehorizonte 5-, 15-, 30-, 60- und
+90-Minuten eine entsprechende Prognose berechnet und publiziert.
+
+
+Versionsgeschichte
+==================
+
+1.0.0
+
+  - Erste Auslieferung
+
+Diese SWE ist eine eigenständige Datenverteiler-Applikation, welche über die Klasse
+de.bsvrz.dua.progglaette.progglaette.GlaeteWarnungUndPrognose mit folgenden Parametern
+gestartet werden kann (zusaetzlich zu den normalen Parametern jeder Datenverteiler-Applikation):
+	-KonfigurationsBereichsPid=pid(,pid)
+	
+	
+- Tests:
+
+Alle Tests befinden sich unterhalb des Verzeichnisses junit und sind als JUnit-Tests ausführbar.
+Die Tests untergliedern sich wie folgt:
+	- DAV-Tests: die Tests, die die konkrete in Afo beschriebene Funktionalität der SWE testen (bei der
+	  Durchführung dieser Tests wird jeweils implizit eine Instanz der Glaettewarnung und -prognose
+	  gestartet)
+
+Voraussetzungen für die DAV-Tests:
+- Start der Test-Konfiguration (extra/test_konfig_progglaette.zip)
+- Anpassung der DAV-Start-Parameter (Variable CON_DATA) innerhalb von 
+	junit/de.bsvrz.dua.progglaette.progglaette.GlaetteWarnungUndPrognoseTest.java
+	
+
+Inhalt/Verlauf DAV-Tests:
+
+
+	
+Die Tests wurden so bereits erfolgreich ausgeführt.
+
+
+
+Disclaimer
+==========
+
+Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 SWE Glättewarnung und –prognose
+Copyright (C) 2007 BitCtrl Systems GmbH 
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 51
+Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+
+Kontakt
+=======
+
+BitCtrl Systems GmbH
+Weißenfelser Straße 67
+04229 Leipzig
+Phone: +49 341-490670
+mailto: info@bitctrl.de
+
