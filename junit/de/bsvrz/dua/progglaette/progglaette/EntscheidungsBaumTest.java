@@ -44,6 +44,9 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 	public static final long S = FBZ_SCHNEE;
 	public static final long E = FBZ_EIS;
 	public static final long R = FBZ_RAUREIF;
+	public static final long U = FBZ_UNDEFINIERT;
+	
+	public static final double NV = EntscheidungsBaum.MESSWERT_UNDEFIENIERT;
 	
 	// dieser Wert sagt, dass es eine Zufaellige Nummer sein kann
 	public static final long Z = 999999; 
@@ -77,7 +80,7 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 		// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert, tptExtrapoliert, prognose
 		{  T,     -1,      Z,  -3.1,     Z, -1001,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
 		{  T,     -1,      Z,  -3.1, -1001,     Z,   EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-		{  Z,     -1,      Z, -1001,     Z,     Z,   EB_NICHT_ERMITTELBAR },
+		{  T,     -1,      Z, -1001,     Z,     Z,   EB_NICHT_ERMITTELBAR },
 		{  F,    2.2,      Z,     Z,     2,     Z,   EB_EISGLAETTE_MOEGLICH },
 		{  N,    2.2,      Z,     Z,     2,     Z,   EB_EISGLAETTE_MOEGLICH },
 		{ -1,    2.2,      Z,     Z,     1,     Z,   EB_NICHT_ERMITTELBAR },
@@ -95,6 +98,50 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 		{  F,    2.2,      Z,     Z,   2.1,     Z,   EB_EISGLAETTE_MOEGLICH },
 		{  N,      3,      Z,     Z,   2.1,     Z,   EB_EISGLAETTE_MOEGLICH },
 		{ -1,      3,      Z,     Z,   2.1,     Z,   EB_NICHT_ERMITTELBAR},
+		{ -1,    3.1,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+		{ -1,      4,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG},
+		
+		
+		{  Z,     NV,      Z,     Z,     Z,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  Z,    5.1,     NV,     Z,     Z,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  Z,    6.2,    1.1,     Z,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG},
+		{  Z,    5.2,    3.1,     Z,     Z,     Z,   EB_KEINE_GLAETTEGEHFAHR},
+		{  Z,    5.3,      2,     Z,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG},
+		{  S,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
+		{  E,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
+		{  W,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
+		{  R,      2,      Z,     Z,     Z,     Z,   EB_GLAETTE_VORHANDEN},
+		{  N,      2,      Z,     Z,     Z,     Z,   EB_EISGLAETTE_MOEGLICH_SOFORT},
+		{  F,      2,      Z,     Z,     Z,     Z,   EB_EISGLAETTE_MOEGLICH_SOFORT},
+		{  U,      2,      Z,     Z,     Z,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  T,      2,      Z,     2,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+		{  T,      1,      Z,     3,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+		{  T,      1,      Z,     1,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+		{  T,     -1,      Z,    -3,     Z,     Z,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
+		{  T,     -1,      Z,  -3.1,     1,     1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
+		{  T,     -1,      Z,  -3.1,   0.2,   0.1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT },
+		
+		// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert, tptExtrapoliert, prognose
+		{  T,     -1,      Z,  -3.1,     Z,    NV,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  T,     -1,      Z,  -3.1,    NV,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+        {  T,     -1,      Z,    NV,     Z,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  F,    2.2,      Z,     Z,     2,     Z,   EB_EISGLAETTE_MOEGLICH },
+		{  N,    2.2,      Z,     Z,     2,     Z,   EB_EISGLAETTE_MOEGLICH },
+		{  U,    2.2,      Z,     Z,     1,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  Z,    2.2,      Z,     Z,    NV,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  T,    2.2,      Z,     Z,    -1,    -1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
+		{  T,    2.2,      Z,     Z,    -1,   0.1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
+		{  T,    2.2,      Z,     Z,     1,   0.1,   EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
+		{  T,    2.2,      Z,     Z,    NV,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  T,    2.2,      Z,     Z,     2,    NV,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  U,    2.2,      Z,     Z,   	 2,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  T,    2.2,      Z,     Z,     0,    NV,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  U,    2.2,      Z,     Z,   	 0,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+		{  T,    2.2,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+		{  T,      3,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+		{  F,    2.2,      Z,     Z,   2.1,     Z,   EB_EISGLAETTE_MOEGLICH },
+		{  N,      3,      Z,     Z,   2.1,     Z,   EB_EISGLAETTE_MOEGLICH },
+		{  U,      3,      Z,     Z,   2.1,     Z,   EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH},
 		{ -1,    3.1,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
 		{ -1,      4,      Z,     Z,   2.1,     Z,   EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG},
 	} ;

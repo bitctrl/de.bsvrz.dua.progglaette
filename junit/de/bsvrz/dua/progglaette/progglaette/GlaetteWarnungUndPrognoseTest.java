@@ -26,6 +26,8 @@
  */
 package de.bsvrz.dua.progglaette.progglaette;
 
+import java.util.Date;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -73,14 +75,20 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 	private static long zeitStempel[];
 	
 	/**
-	 * Zeitablauf der geschickten daten, 1 - gschickt, 0 - Ausfall
+	 *  Zeitablauf der geschickten Daten, 1 - Daten geschickt, 0 - Ausfall
+	 *  
+	 *  Es werden die Default Werte Abgeschickt (0), so die Lufttemperatur ist nich noetig zur
+	 *  Errechnung der Ergebnisse, weil dieser Entscheidungsknoten wird nicht auswertet
+	 *  
+	 *  Wenn kein Ergebniss im vorherigen Intervall erzeugt Wurde, und 2 DS in aktuellen gerade
+	 *  gekommen sind, dann publiziern wir einen nicht ermittelbaren DS fuer den vorherigen Intervall 
 	 */
-	private int lftT [] = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-	private int fbtT [] = new int[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
-	private int tptT [] = new int[] { 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-	private int fbzT [] = new int[] { 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-	// anzahl der publizierten DS im jedem schritt
-	private int pub  [] = new int[] { 2, 0, 0, 1, 0, 0, 1, 0, 1, 1, 2, 1, 1, 0, 1, 1, 2, 0, 1 };
+	private int lft [] = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	private int fbt [] = new int[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
+	private int tpt [] = new int[] { 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+	private int fbz [] = new int[] { 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+	// anzahl der publizierten DS im jeden schritt
+	private int pub  [] = new int[] { 2, 0, 0, 1, 0, 0, 1, 0, 2, 1, 1, 1, 1, 0, 1, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 1, 0, 2, 1, 1, 1, 1, 0, 1, 1, 2, 0, 1 };
 	
 	/**
 	 * Index im ZS array
@@ -139,7 +147,7 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 		}
 		
 		for(int i=0; i<pub.length; i++) {
-			sendeDaten(lftT[i], fbtT[i], tptT[i], fbzT[i], basisZS + (i)*MIN_IN_MS);
+			sendeDaten(lft[i], fbt[i], tpt[i], fbz[i], basisZS + (i)*MIN_IN_MS);
 		}
 		
 		synchronized (GlaetteWarnungUndPrognoseTest.dav) {
@@ -181,10 +189,12 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 	 */
 	@Override
 	public void publiziere(UmfDatenHist ud, Data daten, long zeitStempel, boolean keineDaten) {
+		super.publiziere(ud, daten, zeitStempel, keineDaten);
 		if(ud.messStelle != messStelle) return;
 		if(index>= GlaetteWarnungUndPrognoseTest.zeitStempel.length) return;
-		Assert.assertEquals(GlaetteWarnungUndPrognoseTest.zeitStempel[index++], zeitStempel);
-		System.out.println(String.format("[ %4d ] ZS OK", index-1));
+		Assert.assertEquals(String.format("Soll %s Ist %s", new Date(GlaetteWarnungUndPrognoseTest.zeitStempel[index]), new Date(zeitStempel)), GlaetteWarnungUndPrognoseTest.zeitStempel[index], zeitStempel);
+		System.out.println(String.format("[ %4d ] ZS OK %s", index, new Date(zeitStempel)));
+		index++;
 		synchronized (dav) {
 			if(index>= GlaetteWarnungUndPrognoseTest.zeitStempel.length) {
 				warten = false;

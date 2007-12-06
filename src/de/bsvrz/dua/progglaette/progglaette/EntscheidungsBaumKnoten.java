@@ -78,8 +78,9 @@ public class EntscheidungsBaumKnoten {
 		R_LINKS,  							// Richtung nach Links
 		R_MITTE,		  					// Richtung in der Mitte
 		R_RECHTS,							// Richtung nach Rechts
-		R_NICHT_ERMITTELBAR,				// Richtung keine ( z.B. Wert nicht verfuegbar )
-		R_TENDENZBERECHNUNG_NICHT_MOEGLICH, // Richtung keine ( z.B. Tendenzwert nicht verfuegbar )
+		R_NICHT_ERMITTELBAR,				// Richtung keine ( Wert nicht ermittelbar )
+		R_TENDENZBERECHNUNG_NICHT_MOEGLICH, // Richtung keine ( Tendenzwert nicht verfuegbar )
+		R_ENTSCHEIDUNG_NICHT_MOEGLICH       // Richtung keine ( Wert nicht verfuegbar ) 
 	};
 	
 	/**
@@ -147,7 +148,8 @@ public class EntscheidungsBaumKnoten {
 		 * @return Richtung in welcher man weiter
 		 */
 		protected final Richtung auswerte(long fbzAktuell, double fbtAktuell, double tptAktuell, double lftAktuell, double fbtExtrapoliert, double tptExtrapoliert) {
-			if(operator.anwende(wert, grenzWert)) return Richtung.R_LINKS;
+			if(wert == EntscheidungsBaum.MESSWERT_UNDEFIENIERT ) return Richtung.R_ENTSCHEIDUNG_NICHT_MOEGLICH;
+			else if(operator.anwende(wert, grenzWert)) return Richtung.R_LINKS;
 			else return Richtung.R_RECHTS;
 		}
 	}
@@ -239,6 +241,9 @@ public class EntscheidungsBaumKnoten {
 			if(fbtAktuell == EBK_TEMPERATUR_NICHT_ERMITTELBAR ||
 					tptAktuell == EBK_TEMPERATUR_NICHT_ERMITTELBAR)
 				return Richtung.R_NICHT_ERMITTELBAR;
+			else if(fbtAktuell == EntscheidungsBaum.MESSWERT_UNDEFIENIERT ||
+					tptAktuell == EntscheidungsBaum.MESSWERT_UNDEFIENIERT)
+				return Richtung.R_ENTSCHEIDUNG_NICHT_MOEGLICH;
 			wert = fbtAktuell - tptAktuell;
 			return auswerte(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
@@ -270,6 +275,9 @@ public class EntscheidungsBaumKnoten {
 			if(fbtExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR ||
 					tptExtrapoliert == EBK_TEMPERATUR_NICHT_ERMITTELBAR)
 				return Richtung.R_TENDENZBERECHNUNG_NICHT_MOEGLICH;
+			else if(fbtExtrapoliert == EntscheidungsBaum.MESSWERT_UNDEFIENIERT ||
+					tptExtrapoliert == EntscheidungsBaum.MESSWERT_UNDEFIENIERT)
+				return Richtung.R_ENTSCHEIDUNG_NICHT_MOEGLICH;
 			wert = fbtExtrapoliert - tptExtrapoliert;
 			return auswerte(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 		}
@@ -335,6 +343,8 @@ public class EntscheidungsBaumKnoten {
 		public Richtung getRichtung(long fbzAktuell, double fbtAktuell,
 				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
 				double tptExtrapoliert) {
+			if(fbzAktuell == EntscheidungsBaum.FBZ_UNDEFINIERT) 
+				return Richtung.R_ENTSCHEIDUNG_NICHT_MOEGLICH;
 			
 			for(int i=0; i<werteLinks.length; i++) 
 				if(werteLinks[i] == fbzAktuell) 
@@ -372,12 +382,16 @@ public class EntscheidungsBaumKnoten {
 			super(werteLinks, werteRechts);
 			this.werteMitte = werteMitte;
 		}
+		
 		/**
 		 * {@inheritDoc}
 		 */
 		public Richtung getRichtung(long fbzAktuell, double fbtAktuell,
 				double tptAktuell, double lftAktuell, double fbtExtrapoliert,
 				double tptExtrapoliert) {
+			
+			if(fbzAktuell == EntscheidungsBaum.FBZ_UNDEFINIERT) 
+				return Richtung.R_ENTSCHEIDUNG_NICHT_MOEGLICH;
 			
 			for(int i=0; i<werteLinks.length; i++) 
 				if(werteLinks[i] == fbzAktuell) 
@@ -429,6 +443,10 @@ public class EntscheidungsBaumKnoten {
 		else if(r == Richtung.R_NICHT_ERMITTELBAR) {
 			return EntscheidungsBaum.EB_NICHT_ERMITTELBAR;
 		}
+		else if(r == Richtung.R_ENTSCHEIDUNG_NICHT_MOEGLICH) {
+			return EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH;
+		}
+		
 		// nur wegen Compiler
 		return EntscheidungsBaum.EB_NICHT_ERMITTELBAR;
 	}

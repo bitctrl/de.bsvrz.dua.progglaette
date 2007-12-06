@@ -43,6 +43,7 @@ public class EntscheidungsBaum {
 	 * kb.tmUmfeldDatenGlobal.xml
 	 * 
 	 */
+	public static final int EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH					= Integer.MIN_VALUE; 
 	public static final int EB_NICHT_ERMITTELBAR	              									=-1;
 	public static final int EB_KEINE_GLAETTEGEHFAHR              									= 1;
 	public static final int EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG      								= 2;
@@ -60,6 +61,7 @@ public class EntscheidungsBaum {
 	/**
 	 * Fahrbahnoberflaechenzustaende
 	 */
+	public static final long FBZ_UNDEFINIERT    = Long.MIN_VALUE;
 	public static final long FBZ_TROCKEN 		= 0;
 	public static final long FBZ_FEUCHT 		= 1;
 	public static final long FBZ_NASS 			= 32;
@@ -67,6 +69,11 @@ public class EntscheidungsBaum {
 	public static final long FBZ_SCHNEE			= 65;
 	public static final long FBZ_EIS			= 66;
 	public static final long FBZ_RAUREIF		= 67;
+	
+	/**
+	 * Zustand unbekanner Messwert der Temperatur
+	 */
+	public static final double MESSWERT_UNDEFIENIERT = Double.MAX_VALUE;
 
 	/**
 	 * Der Wurzel des Entscheidungbaumes
@@ -209,7 +216,6 @@ public class EntscheidungsBaum {
 	 * @return die Glaetteprognose
 	 */
 	static public int getPrognose(long fbzAktuell, double fbtAktuell, double tptAktuell, double lftAktuell, double fbtExtrapoliert, double tptExtrapoliert) {
-		//long fbzAkt = fbzAktuell.getItem("FahrBahnOberFlächenZustand").getUnscaledValue("Wert").longValue();
 		if(wurzel == null) {
 			erzeugeEntscheidungsBaum();
 		}

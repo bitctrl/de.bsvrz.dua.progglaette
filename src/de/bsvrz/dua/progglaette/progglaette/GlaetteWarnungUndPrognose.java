@@ -228,12 +228,10 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 				continue;
 			}			
 			
-			// wenn keine eingabedaten zur verfuaegung stahen, dann auch die ausgabe  angepasst werden muss
+			// wenn keine eingabedaten zur verfuaegung stehen, dann auch die ausgabe  angepasst werden muss
 			if(daten == null) {
-				if(umfDaten.keineDaten == false) {
-					umfDaten.keineDaten = true;
+				if(umfDaten.keineDaten == false) 
 					publiziere(umfDaten, null, zs, true);
-				}
 				continue;
 			}
 			
@@ -281,11 +279,11 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 * @param zeitStempel Aktueller Zeitstempel
 	 */
 	public void bearbeiteDaten(UmfDatenHist umfDaten, long zeitStempel) {
-		// alle 4 gleich mit zeitStempel
-		if(umfDaten.zsLetzterFbt == umfDaten.zsLetztenFbz &&
-				umfDaten.zsLetzterLft == umfDaten.zsLetzterTpt &&
-					umfDaten.zsLetzterLft == umfDaten.zsLetztenFbz &&
-						umfDaten.zsLetzterLft == zeitStempel ) {
+		
+		// Wenn beiden Tpt und Fbt schon gekommen sind, koennen wir sie 
+		// ins Ringpuffer einschreiben
+		if(umfDaten.zsLetzterFbt == umfDaten.zsLetzterTpt &&
+					umfDaten.zsLetzterTpt == zeitStempel ) {
 			
 			umfDaten.fbtPuffer[umfDaten.index] = umfDaten.letzteFbt;
 			umfDaten.tptPuffer[umfDaten.index] = umfDaten.letzteTpt;
@@ -297,22 +295,20 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 				for(int i=0; i< umfDaten.zsPuffer.length; i++)
 					if((zeitStempel - umfDaten.zsPuffer[i]) > 10 * MIN_IN_MS + 100)
 						umfDaten.zsPuffer[i] = 0;
-				}		
-			publizierePrognose(umfDaten, zeitStempel);
-			umfDaten.letzterPubZs = zeitStempel;
+				}
 		} 
-		
-		// Wenn schon 2 datensaetze gekommen sind und im vorheridgen intervall wurde noch nicht publiziert
+		// Wenn schon 2 Datensaetze gekommen sind und im vorheridgen intervall wurde noch nicht publiziert
+		// dann schicken wir einen nicht ermittelbaren Datensatz
 		int anzahl = 0;
 		if(umfDaten.zsLetzterFbt == zeitStempel) anzahl++;
 		if(umfDaten.zsLetzterTpt == zeitStempel) anzahl++;
 		if(umfDaten.zsLetzterLft == zeitStempel) anzahl++;
 		if(umfDaten.zsLetztenFbz == zeitStempel) anzahl++;
 		
-		if(anzahl == 2 && umfDaten.letzterPubZs < zeitStempel - MIN_IN_MS) {
+		if(anzahl == 2 && umfDaten.letzterPubZs < zeitStempel - MIN_IN_MS) 
 			publiziereNichtErmmittelbar(umfDaten, zeitStempel -  MIN_IN_MS);
-			umfDaten.letzterPubZs = zeitStempel - MIN_IN_MS;
-		}
+
+		versuchePrognosePublizieren(umfDaten, zeitStempel);	
 		
 	}
 	
@@ -478,40 +474,76 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 * @param ud Messstelle daten
 	 * @param zeitStempel Aktueller Zeitstempel
 	 */
-	public void publizierePrognose(UmfDatenHist ud, long zeitStempel) {
+	public void versuchePrognosePublizieren(UmfDatenHist ud, long zeitStempel) {
 
 		final String ATT_GLAETTE_PROGNOSE [] = new String [] { "AktuellerZustand", "PrognoseZustandIn5Minuten", 
 				"PrognoseZustandIn15Minuten", "PrognoseZustandIn30Minuten", 
 				"PrognoseZustandIn60Minuten", "PrognoseZustandIn90Minuten"
 		};
-	
-		int cnt = 0;
-		for(int i=0; i< ud.zsPuffer.length; i++)
-			if(ud.zsPuffer[i] != 0) cnt++;
-		
 		double fbtExtrapoliert[], tptExtrapoliert[];
+		Data glaetteDs;
+		int letzterIndex;
 		int prognose;
+		int cnt = 0;
+
+		if(ud.letzterPubZs == zeitStempel) return;
 		
-		Data glaetteDs = dav.createData(dav.getDataModel().getAttributeGroup(ATG_GLAETTE));
+		glaetteDs = dav.createData(dav.getDataModel().getAttributeGroup(ATG_GLAETTE));
+		letzterIndex = (ud.index + UmfDatenHist.PUFFER_GROESSE - 1)%UmfDatenHist.PUFFER_GROESSE;
 		
-		// Wenn weniger als 7 
-		if(cnt<7) {
+		// Wenn im letzten intervall beide Fbt und tpt gekommen sind, und der Anzahl der Gueltigen
+		// DS im Puffer groesser als 7 ist, dann berechnen wir die Prognose
+		
+		if(ud.zsPuffer[letzterIndex] != zeitStempel) {
+			// letzte DS noch nicht gekommen
 			fbtExtrapoliert = new double[ATT_GLAETTE_PROGNOSE.length-1];
 			tptExtrapoliert = new double[ATT_GLAETTE_PROGNOSE.length-1];
 			for(int i=0; i<fbtExtrapoliert.length; i++) {
-				fbtExtrapoliert[i] = -1001;
-				tptExtrapoliert[i] = -1001;
+				fbtExtrapoliert[i] = EntscheidungsBaum.MESSWERT_UNDEFIENIERT;
+				tptExtrapoliert[i] = EntscheidungsBaum.MESSWERT_UNDEFIENIERT;
 			}
 		} else {
-			fbtExtrapoliert = PrognoseZustand.berechnePrognose(ud.fbtPuffer, ud.zsPuffer, (ud.index + UmfDatenHist.PUFFER_GROESSE - 1)%UmfDatenHist.PUFFER_GROESSE);
-			tptExtrapoliert = PrognoseZustand.berechnePrognose(ud.tptPuffer, ud.zsPuffer, (ud.index + UmfDatenHist.PUFFER_GROESSE  - 1)%UmfDatenHist.PUFFER_GROESSE);
+
+			for(int i=0; i< ud.zsPuffer.length; i++)
+				if(ud.zsPuffer[i] != 0) cnt++;
+
+			// Fehlende DS aus aelteren Intervallen
+			if(cnt<7) {
+				fbtExtrapoliert = new double[ATT_GLAETTE_PROGNOSE.length-1];
+				tptExtrapoliert = new double[ATT_GLAETTE_PROGNOSE.length-1];
+				for(int i=0; i<fbtExtrapoliert.length; i++) {
+					fbtExtrapoliert[i] = -1001;
+					tptExtrapoliert[i] = -1001;
+				}
+			} else {
+				// Korrekte Historie
+				fbtExtrapoliert = PrognoseZustand.berechnePrognose(ud.fbtPuffer, ud.zsPuffer, letzterIndex);
+				tptExtrapoliert = PrognoseZustand.berechnePrognose(ud.tptPuffer, ud.zsPuffer, letzterIndex);
+			}
 		}
 		
-		prognose = EntscheidungsBaum.getPrognose(ud.letzteFbz, ud.letzteFbt, ud.letzteTpt, ud.letzteLft, ud.letzteFbt, ud.letzteTpt);
+		double fbt, tpt, lft;
+		long fbz;
+		
+		if(ud.zsLetztenFbz == zeitStempel) fbz = ud.letzteFbz;
+		else fbz = EntscheidungsBaum.FBZ_UNDEFINIERT;
+		
+		if(ud.zsLetzterFbt == zeitStempel) fbt = ud.letzteFbt;
+		else fbt = EntscheidungsBaum.MESSWERT_UNDEFIENIERT;
+		
+		if(ud.zsLetzterTpt == zeitStempel) tpt = ud.letzteTpt;
+		else tpt = EntscheidungsBaum.MESSWERT_UNDEFIENIERT;
+		
+		if(ud.zsLetzterLft == zeitStempel) lft = ud.letzteLft;
+		else lft = EntscheidungsBaum.MESSWERT_UNDEFIENIERT;
+		
+		prognose = EntscheidungsBaum.getPrognose(fbz, fbt, tpt, lft, fbt, tpt);
+		if(prognose == EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH) return;
 		glaetteDs.getItem(ATT_GLAETTE_PROGNOSE[0]).asUnscaledValue().set(prognose);
 		
 		for(int i=0; i<5; i++) {
-			prognose = EntscheidungsBaum.getPrognose(ud.letzteFbz, ud.letzteFbt, ud.letzteTpt, ud.letzteLft, fbtExtrapoliert[i], tptExtrapoliert[i]);
+			prognose = EntscheidungsBaum.getPrognose(fbz, fbt, tpt, lft, fbtExtrapoliert[i], tptExtrapoliert[i]);
+			if(prognose == EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH) return;
 			glaetteDs.getItem(ATT_GLAETTE_PROGNOSE[i+1]).asUnscaledValue().set(prognose);
 		}
 		
@@ -533,6 +565,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 			resultate = new ResultData(ud.messStelle, DD_GLAETTEPROGNOSE, zeitStempel, daten);
 	
 		ud.keineDaten = keineDaten;
+		ud.letzterPubZs = zeitStempel;
 		try {
 			dav.sendData(resultate);
 		} catch (Exception e) {
