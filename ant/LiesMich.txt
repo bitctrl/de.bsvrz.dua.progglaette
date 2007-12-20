@@ -25,7 +25,7 @@ Versionsgeschichte
 
 Diese SWE ist eine eigenständige Datenverteiler-Applikation, welche über die Klasse
 de.bsvrz.dua.progglaette.progglaette.GlaeteWarnungUndPrognose mit folgenden Parametern
-gestartet werden kann (zusaetzlich zu den normalen Parametern jeder Datenverteiler-Applikation):
+gestartet werden kann (zusätzlich zu den normalen Parametern jeder Datenverteiler-Applikation):
 	-KonfigurationsBereichsPid=pid(,pid)
 	
 	
@@ -33,22 +33,40 @@ gestartet werden kann (zusaetzlich zu den normalen Parametern jeder Datenverteil
 
 Alle Tests befinden sich unterhalb des Verzeichnisses junit und sind als JUnit-Tests ausführbar.
 Die Tests untergliedern sich wie folgt:
-	- DAV-Tests: die Tests, die die konkrete in Afo beschriebene Funktionalität der SWE testen (bei der
-	  Durchführung dieser Tests wird jeweils implizit eine Instanz der Glaettewarnung und -prognose
+	- DAV-Tests: Tests mit Datenaustausch über eine Datenverteiler-Schnittstelle (bei der
+	  Durchführung dieser Tests wird jeweils implizit eine Instanz der Glättewarnung und -prognose
 	  gestartet)
+	  	- GlaetteWarnungUndPrognoseTest.java: Innerhalb dieses Tests werden über den Datenverteiler
+	  	  verschiedene Vektoren (LFT, FBT, TPT, FBZ) eingegeben, deren Elemente jeweils teilweise nicht
+	  	  gesendet werden (also z.B. (0, 0, x, 0) -> es wird kein TPT-Datum mit diesem Zeitstempel
+	  	  verschickt). Es soll überprüft werden, ob auch bei unvollständigen Eingaben eine Ausgabe
+	  	  durch die SWE vorgenommen wird.
+	  	   
+	- Einzel-Tests: Tests von Teilfunktionalitäten einzelner SW-Elemente (die Daten werden dabei
+	  nur über Java-Funktionsschnittstellen ausgetauscht):
+		- EntscheidungsBaumTest.java: Innerhalb dieser Klasse werden unterschiedliche Vektoren in die
+		  Implementierung des Entscheidungsbaums eingegeben und die entsprechende Ausgabe (Ist, Soll)
+		  verglichen.
+		- PrognoseZustandTest.java: Diese Klasse testet die Implementierung der Trendextrapolation 
 
 Voraussetzungen für die DAV-Tests:
 - Start der Test-Konfiguration (extra/test_konfig_progglaette.zip)
 - Anpassung der DAV-Start-Parameter (Variable CON_DATA) innerhalb von 
-	junit/de.bsvrz.dua.progglaette.progglaette.GlaetteWarnungUndPrognoseTest.java
-	
+	junit/de.bsvrz.dua.progglaette.progglaette.GlaetteWarnungUndPrognoseTest.java	
 
-Inhalt/Verlauf DAV-Tests:
+	/**
+	 * Verbindungsdaten
+	 */
+	public static final String[] CON_DATA = new String[] {
+			"-datenverteiler=localhost:8083", 
+			"-benutzer=Tester", 
+			"-authentifizierung=c:\\passwd1",
+			"-debugLevelStdErrText=WARNING",
+			"-debugLevelFileText=WARNING",
+			"-KonfigurationsBeriechsPid=kb.glaetteProgTest"};
 
 
-	
-Die Tests wurden so bereits erfolgreich ausgeführt.
-
+Alle Tests wurden so bereits erfolgreich ausgeführt.
 
 
 Disclaimer
@@ -80,4 +98,3 @@ Weißenfelser Straße 67
 04229 Leipzig
 Phone: +49 341-490670
 mailto: info@bitctrl.de
-

@@ -184,6 +184,7 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 				dav.getDataModel().getAspect(ASP_MESSWERT_ERSETZUNG));
 		
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
