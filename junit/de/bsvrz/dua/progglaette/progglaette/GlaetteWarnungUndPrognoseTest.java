@@ -55,10 +55,10 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 	public static final String[] CON_DATA = new String[] {
 			"-datenverteiler=localhost:8083", 
 			"-benutzer=Tester", 
-			"-authentifizierung=c:\\passwd1",
+			"-authentifizierung=..\\..\\..\\skripte-dosshell\\passwd",
 			"-debugLevelStdErrText=WARNING",
 			"-debugLevelFileText=WARNING",
-			"-KonfigurationsBeriechsPid=kb.glaetteProgTest"};
+			"-KonfigurationsBereichsPid=kb.glaetteProgTest"};
 	
 	/**
 	 * Testsensoren

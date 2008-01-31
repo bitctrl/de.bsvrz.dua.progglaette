@@ -89,7 +89,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	/**
 	 * Aufrufsparameter
 	 */
-	private final String P_KONF_BEREICHE = "-KonfigurationsBeriechsPid";
+	private final String P_KONF_BEREICHE = "-KonfigurationsBereichsPid";
 	
 	/**
 	 *  Minute in ms
