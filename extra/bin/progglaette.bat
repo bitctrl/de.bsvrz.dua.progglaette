@@ -14,6 +14,7 @@ SET benutzer=Tester
 SET passwortDatei=..\..\..\skripte-dosshell\passwd
 SET dav1Host=localhost
 SET dav1AppPort=8083
+SET kb=kb.glaetteProgTest 
 
 
 
@@ -27,7 +28,7 @@ de.bsvrz.dua.progglaette.progglaette.GlaetteWarnungUndPrognose ^
 -datenverteiler=%dav1Host%:%dav1AppPort% ^
 -benutzer=%benutzer% ^
 -authentifizierung=%passwortDatei% ^
--KonfigurationsBereichsPid=kb.glaetteProgTest
+-KonfigurationsBereichsPid=%kb%
 
 REM Nach dem Beenden warten, damit Meldungen gelesen werden können
 PAUSE

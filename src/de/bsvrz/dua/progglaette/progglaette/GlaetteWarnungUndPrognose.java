@@ -224,7 +224,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 			UmfDatenHist umfDaten = mapUmfDaten.get(objekt);
 			long zs = resDatei.getDataTime();
 			if(umfDaten == null) {
-				LOGGER.error("Umfelddaten fuer Messstelle nicht gefunden: " + objekt.getPid());
+				LOGGER.warning("Umfelddaten fuer Messstelle nicht gefunden: " + objekt.getPid());
 				continue;
 			}			
 			
@@ -328,7 +328,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		for(String s: this.konfBereiche) {
 			ConfigurationArea ca = dav.getDataModel().getConfigurationArea(s);
 			if(ca == null) {
-				msgSender.sendMessage(MessageType.APPLICATION_DOMAIN, MessageGrade.WARNING, "Der übergebene Konfigurationsbereich " + s + " existiert nicht.");
+				msgSender.sendMessage(MessageType.APPLICATION_DOMAIN, MessageGrade.WARNING, "	");
 				LOGGER.warning("Der übergebene Konfigurationsbereich " + s + " existiert nicht.");
 				ca = dav.getDataModel().getConfigurationAuthority().getConfigurationArea();
 			}
