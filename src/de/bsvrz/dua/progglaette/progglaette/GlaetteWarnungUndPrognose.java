@@ -35,9 +35,11 @@ import de.bsvrz.dav.daf.main.ClientReceiverInterface;
 import de.bsvrz.dav.daf.main.ClientSenderInterface;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.DataDescription;
+import de.bsvrz.dav.daf.main.DataNotSubscribedException;
 import de.bsvrz.dav.daf.main.ReceiveOptions;
 import de.bsvrz.dav.daf.main.ReceiverRole;
 import de.bsvrz.dav.daf.main.ResultData;
+import de.bsvrz.dav.daf.main.SendSubscriptionNotConfirmed;
 import de.bsvrz.dav.daf.main.SenderRole;
 import de.bsvrz.dav.daf.main.config.ConfigurationArea;
 import de.bsvrz.dav.daf.main.config.ConfigurationObject;
@@ -351,22 +353,24 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 			ObjectSet sensorMenge = confObjekt.getObjectSet(MNG_SENSOREN);
 			fbtSensor =  lftSensor =  fbzSensor =  tptSensor = null;
 			for( SystemObject sensor : sensorMenge.getElements()) {
-				ConfigurationObject confObjekt2 = (ConfigurationObject)sensor;
-				Data konfDaten = confObjekt2.getConfigurationData(
-							dav.getDataModel().getAttributeGroup(ATG_UFDSENSOR));
-				
-				if(TYP_LFT.equals(sensor.getType().getPid()) &&
-					konfDaten.getUnscaledValue("Typ").intValue() == 0) 
-						lftSensor = sensor;
-				else if(TYP_FBT.equals(sensor.getType().getPid()) &&
+				if(sensor.isValid()){
+					ConfigurationObject confObjekt2 = (ConfigurationObject)sensor;
+					Data konfDaten = confObjekt2.getConfigurationData(
+								dav.getDataModel().getAttributeGroup(ATG_UFDSENSOR));
+					
+					if(TYP_LFT.equals(sensor.getType().getPid()) &&
 						konfDaten.getUnscaledValue("Typ").intValue() == 0) 
-							fbtSensor = sensor;
-				else if(TYP_FBZ.equals(sensor.getType().getPid()) &&
-						konfDaten.getUnscaledValue("Typ").intValue() == 0) 
-							fbzSensor = sensor;
-				else if(TYP_TPT.equals(sensor.getType().getPid()) &&
-						konfDaten.getUnscaledValue("Typ").intValue() == 0) 
-							tptSensor = sensor;
+							lftSensor = sensor;
+					else if(TYP_FBT.equals(sensor.getType().getPid()) &&
+							konfDaten.getUnscaledValue("Typ").intValue() == 0) 
+								fbtSensor = sensor;
+					else if(TYP_FBZ.equals(sensor.getType().getPid()) &&
+							konfDaten.getUnscaledValue("Typ").intValue() == 0) 
+								fbzSensor = sensor;
+					else if(TYP_TPT.equals(sensor.getType().getPid()) &&
+							konfDaten.getUnscaledValue("Typ").intValue() == 0) 
+								tptSensor = sensor;
+				}
 			}
 			if( lftSensor == null) { 
 				LOGGER.warning("Messstelle " + so.getPid() + " enthaelt keinen Lufttemperatur Hauptsensor");
@@ -411,15 +415,10 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		DataDescription DD_LFTDATEN = new DataDescription(dav.getDataModel().getAttributeGroup(ATG_LFT), 
 				dav.getDataModel().getAspect(ASP_MESSWERT_ERSETZUNG));
 		
-		try {
-			dav.subscribeReceiver(this, tptSensorMenge, DD_TPTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
-			dav.subscribeReceiver(this, fbtSensorMenge, DD_FBTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
-			dav.subscribeReceiver(this, fbzSensorMenge, DD_FBZDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
-			dav.subscribeReceiver(this, lftSensorMenge, DD_LFTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());			
-		} catch (Exception e) {
-			LOGGER.warning("Anmeldung auf Daten unerfolgreich: " + e.getMessage());
-			msgSender.sendMessage(MessageType.APPLICATION_DOMAIN, MessageGrade.WARNING, "Anmeldung auf Daten unerfolgreich: " + e.getMessage());
-		}
+		dav.subscribeReceiver(this, tptSensorMenge, DD_TPTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
+		dav.subscribeReceiver(this, fbtSensorMenge, DD_FBTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
+		dav.subscribeReceiver(this, fbzSensorMenge, DD_FBZDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());
+		dav.subscribeReceiver(this, lftSensorMenge, DD_LFTDATEN, ReceiveOptions.normal(), ReceiverRole.receiver());			
 		
 		DD_GLAETTEPROGNOSE = new DataDescription(dav.getDataModel().getAttributeGroup(ATG_GLAETTE), 
 				dav.getDataModel().getAspect(ASP_PROGNOSE));
@@ -568,7 +567,10 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		ud.letzterPubZs = zeitStempel;
 		try {
 			dav.sendData(resultate);
-		} catch (Exception e) {
+		} catch (DataNotSubscribedException  e) {
+			LOGGER.warning("Datenabsendung unmoeglich");
+			e.printStackTrace();
+		} catch (SendSubscriptionNotConfirmed e){
 			LOGGER.warning("Datenabsendung unmoeglich");
 			e.printStackTrace();
 		}
