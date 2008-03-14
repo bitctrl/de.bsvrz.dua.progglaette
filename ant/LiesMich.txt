@@ -22,6 +22,10 @@ Versionsgeschichte
 1.0.0
 
   - Erste Auslieferung
+  
+1.0.1
+
+  - Bash-Startskript hinzu
 
 Diese SWE ist eine eigenständige Datenverteiler-Applikation, welche über die Klasse
 de.bsvrz.dua.progglaette.progglaette.GlaeteWarnungUndPrognose mit folgenden Parametern
@@ -60,7 +64,7 @@ Voraussetzungen für die DAV-Tests:
 	public static final String[] CON_DATA = new String[] {
 			"-datenverteiler=localhost:8083", 
 			"-benutzer=Tester", 
-			"-authentifizierung=c:\\passwd1",
+			"-authentifizierung=c:\\passwd",
 			"-debugLevelStdErrText=WARNING",
 			"-debugLevelFileText=WARNING",
 			"-KonfigurationsBeriechsPid=kb.glaetteProgTest"};
