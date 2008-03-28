@@ -6,7 +6,7 @@ source ../../../skripte-bash/einstellungen.sh
 # SWE-Spezifische Parameter	(überprüfen und anpassen)                          #
 ################################################################################
 
-kb="KonfigurationsBereichsPid="
+kb="KonfigurationsBereichsPid=kb.glaetteProgTest"
 
 ################################################################################
 # Folgende Parameter müssen überprüft und evtl. angepasst werden               #
