@@ -330,7 +330,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		for(String s: this.konfBereiche) {
 			ConfigurationArea ca = dav.getDataModel().getConfigurationArea(s);
 			if(ca == null) {
-				msgSender.sendMessage(MessageType.APPLICATION_DOMAIN, MessageGrade.WARNING, "	");
+				msgSender.sendMessage(MessageType.APPLICATION_DOMAIN, MessageGrade.WARNING, "Der übergebene Konfigurationsbereich " + s + " existiert nicht.");
 				LOGGER.warning("Der übergebene Konfigurationsbereich " + s + " existiert nicht.");
 				ca = dav.getDataModel().getConfigurationAuthority().getConfigurationArea();
 			}
