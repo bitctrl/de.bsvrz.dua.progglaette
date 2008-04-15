@@ -24,68 +24,83 @@
  * Phone: +49 341-490670<br>
  * mailto: info@bitctrl.de
  */
+
 package de.bsvrz.dua.progglaette.progglaette;
 
 /**
- * Berechnet eine Prognose von Messwerten mit der Methode 
- * der Linearen Trendextrapolation ( Least Square Method ) 
- * Die Prognose ist nach AFo im Horizont 5, 15, 30, 60, 90 Minuten
+ * Berechnet eine Prognose von Messwerten mit der Methode der Linearen
+ * Trendextrapolation ( Least Square Method ) Die Prognose ist nach AFo im
+ * Horizont 5, 15, 30, 60, 90 Minuten.
  * 
  * @author BitCtrl Systems GmbH, Bachraty
- *
+ * 
+ * @version $Id$
  */
 public class PrognoseZustand {
-	
+
 	/**
-	 *  Minute in Millisekunden
+	 * Minute in Millisekunden.
 	 */
-	static public final long MIN_IN_MS = 60 * 1000l;
+	public static final long MIN_IN_MS = 60 * 1000L;
+
+	/**
+	 * Standardkonstruktor.
+	 */
+	protected PrognoseZustand() {
+		
+	}
 	
 	/**
-	 * Berechnet die Prognose
-	 * @param werteArray Messwerte
-	 * @param zeitArray Zeitpunkte der Messwerten
-	 * @param indexAktuell Index des letzten Messwertes ( aktuellen )
+	 * Berechnet die Prognose.
+	 * 
+	 * @param werteArray
+	 *            Messwerte
+	 * @param zeitArray
+	 *            Zeitpunkte der Messwerten
+	 * @param indexAktuell
+	 *            Index des letzten Messwertes ( aktuellen )
 	 * @return Prognose fuer den Messwert in 5, 15, 30, 60 und 90 Minuten
 	 */
-	static double [] berechnePrognose(double [] werteArray, long [] zeitArray, int indexAktuell) {
-		
+	static double[] berechnePrognose(double[] werteArray, long[] zeitArray,
+			int indexAktuell) {
+
 		double a, b;
-		double [] y = new double[5];
-		
-		double sum_t  = 0.0f;
-		double sum_t2 = 0.0f;
-		double sum_w  = 0.0f;
-		double sum_tw = 0.0f;
-		
-		double t_mitte, y_mitte;
+		double[] y = new double[5];
+
+		double sumT = 0.0f;
+		double sumT2 = 0.0f;
+		double sumW = 0.0f;
+		double sumTW = 0.0f;
+
+		double tMitte, yMitte;
 		int n = werteArray.length;
 		int m = n;
-		long t_0 = zeitArray[indexAktuell];
-		
-		for(int i=0; i<n; i++) {
+		long t0 = zeitArray[indexAktuell];
+
+		for (int i = 0; i < n; i++) {
 			// Zeitstemepel ist 0, wenn ein Datum faehlt
-			if(zeitArray[i] != 0) {
-				sum_t  += zeitArray[i];
-				sum_w  += werteArray[i];
-				sum_t2 += zeitArray[i] * zeitArray[i];
-				sum_tw += zeitArray[i] * werteArray[i];
-			} else m--;
+			if (zeitArray[i] != 0) {
+				sumT += zeitArray[i];
+				sumW += werteArray[i];
+				sumT2 += zeitArray[i] * zeitArray[i];
+				sumTW += zeitArray[i] * werteArray[i];
+			} else {
+				m--;
+			}
 		}
-		
-		t_mitte = sum_t / m;
-		y_mitte = sum_w / m;
-		
-		a = ( sum_tw - m*t_mitte*y_mitte ) / ( sum_t2 - m*t_mitte*t_mitte );
-		b = y_mitte - a * t_mitte;
-		
-		
-		y[0] = a * (t_0 + 5 * MIN_IN_MS)  + b;
-		y[1] = a * (t_0 + 15 * MIN_IN_MS) + b;
-		y[2] = a * (t_0 + 30 * MIN_IN_MS) + b;
-		y[3] = a * (t_0 + 60 * MIN_IN_MS) + b;
-		y[4] = a * (t_0 + 90 * MIN_IN_MS) + b;
-		
+
+		tMitte = sumT / m;
+		yMitte = sumW / m;
+
+		a = (sumTW - m * tMitte * yMitte) / (sumT2 - m * tMitte * tMitte);
+		b = yMitte - a * tMitte;
+
+		y[0] = a * (t0 + 5 * MIN_IN_MS) + b;
+		y[1] = a * (t0 + 15 * MIN_IN_MS) + b;
+		y[2] = a * (t0 + 30 * MIN_IN_MS) + b;
+		y[3] = a * (t0 + 60 * MIN_IN_MS) + b;
+		y[4] = a * (t0 + 90 * MIN_IN_MS) + b;
+
 		return y;
 	}
 
