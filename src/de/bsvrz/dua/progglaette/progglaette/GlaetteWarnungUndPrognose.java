@@ -557,7 +557,17 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 * {@inheritDoc}
 	 */
 	public void parseArguments(ArgumentList argumente) throws Exception {
-
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.
+				UncaughtExceptionHandler() {
+			public void uncaughtException(@SuppressWarnings("unused")
+					Thread t, Throwable e) {
+				Debug.getLogger().error("Applikation wird wegen" +  //$NON-NLS-1$
+						" unerwartetem Fehler beendet", e);  //$NON-NLS-1$
+				e.printStackTrace();
+				Runtime.getRuntime().exit(-1);
+			}
+		});
+		
 		if (!argumente.hasArgument(P_KONF_BEREICHE)) {
 			throw new DUAInitialisierungsException(
 					"Keine Konfigurationsbereiche eingegeben.");
