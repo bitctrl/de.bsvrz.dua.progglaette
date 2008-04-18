@@ -57,7 +57,7 @@ do
 	echo "================================================="
 	echo 
 	java -cp $cp $jvmArgs org.junit.runner.JUnitCore "de.bsvrz.dua."$appname"."${tests[$i]}
-	pause 5
+	sleep 5
 done
 
 exit
