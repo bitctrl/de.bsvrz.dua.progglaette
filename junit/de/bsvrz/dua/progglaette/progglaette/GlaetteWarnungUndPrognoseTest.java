@@ -51,24 +51,6 @@ import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
 public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 
 	/**
-	 * Verbindungsdaten.
-	 */
-	public static final String[] CON_DATA = new String[] {
-			"-datenverteiler=localhost:8083", "-benutzer=Tester",
-			"-authentifizierung=passwd",
-			"-debugLevelStdErrText=OFF", "-debugLevelFileText=OFF",
-			"-KonfigurationsBereichsPid=kb.glaetteProgTest" };
-
-//	/**
-//	 * Verbindungsdaten.
-//	 */
-//	public static final String[] CON_DATA = new String[] {
-//			"-datenverteiler=10.44.44.10:8083", "-benutzer=Tester",
-//			"-authentifizierung=c:\\passwd",
-//			"-debugLevelStdErrText=OFF", "-debugLevelFileText=OFF",
-//			"-KonfigurationsBereichsPid=kb.glaetteProgTest" };
-
-	/**
 	 * Testsensoren.
 	 */
 	private static SystemObject fbzSensor, fbtSensor, ltSensor, tptSensor,
@@ -138,7 +120,7 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 	@Test
 	public void test1() {
 		GlaetteWarnungUndPrognoseTest gwp = new GlaetteWarnungUndPrognoseTest();
-		StandardApplicationRunner.run(gwp, CON_DATA);
+		StandardApplicationRunner.run(gwp, Verbindung.CON_DATA.clone());
 
 		try {
 			dav.subscribeSender(this, tptSensor, ddTptDaten, SenderRole
@@ -200,6 +182,8 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 		}
 	}
 
+		
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -282,9 +266,9 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 				.getUnscaledValue("Interpoliert").set(0);
 		data.getItem(att).getItem("Güte").getUnscaledValue("Index").set(1000);
 		data.getItem(att).getItem("Güte").getUnscaledValue("Verfahren").set(0);
-
 	}
 
+	
 	/**
 	 * Sendet daten fuer Alle Sensoren.
 	 * 

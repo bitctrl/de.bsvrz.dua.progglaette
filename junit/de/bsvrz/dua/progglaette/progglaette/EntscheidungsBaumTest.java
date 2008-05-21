@@ -279,6 +279,7 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 						fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert,
 						tptExtrapoliert);
 				Assert.assertEquals(antwort, prognose);
+				
 				System.out.println(String.format(
 						"[ %4d ] Prognose: %2d == %2d ", i, prognose, antwort));
 			}
