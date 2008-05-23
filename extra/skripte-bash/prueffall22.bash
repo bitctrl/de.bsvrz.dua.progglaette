@@ -25,12 +25,12 @@ testTexts[$index]="Testet die  Publikation der Datensätze bei fehlenden Eingabed
 tests[$index]="progglaette.GlaetteWarnungUndPrognoseTest"
 index=$(($index+1))
 
-testTexts[$index]="Testet den Flussdiagram"
+testTexts[$index]="Testet den Entscheidungsbaum (offline)"
 tests[$index]="progglaette.EntscheidungsBaumTest"
 index=$(($index+1))
 
-testTexts[$index]="Testet die Prognoseberechnung - Trendinterpolation"
-tests[$index]="progglaette.PrognoseZustandTest"
+testTexts[$index]="Testet den Entscheidungsbaum (online)"
+tests[$index]="progglaette.EntscheidungsBaumTestMitPublikation"
 index=$(($index+1))
 
 
