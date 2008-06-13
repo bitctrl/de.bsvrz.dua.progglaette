@@ -33,7 +33,7 @@ import de.bsvrz.sys.funclib.debug.Debug;
  * Der Entscheidungsbaum macht eine Glaetteprognose aus den aktuellen
  * Eigenschaften der Fahrbahn und Luft und seinen Prognosewerten.
  * 
- * @author BitCtrl Systems GmbH, Bachraty
+ * @author BitCtrl Systems GmbH, Bachraty..
  * 
  * @version $Id$
  */
