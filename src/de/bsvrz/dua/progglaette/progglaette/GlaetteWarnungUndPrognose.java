@@ -187,7 +187,8 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		/**
 		 * Standardkonstruktor.
 		 * 
-		 * @param messStelle die UFD-Messstelle
+		 * @param messStelle
+		 *            die UFD-Messstelle
 		 */
 		public UmfDatenHist(SystemObject messStelle) {
 			this.messStelle = messStelle;
@@ -421,7 +422,6 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		Collection<SystemObjectType> typen = new LinkedList<SystemObjectType>();
 
 		msgSender = MessageSender.getInstance();
-		msgSender.setApplicationLabel(this.getSWETyp().toString());
 
 		for (String s : this.konfBereiche) {
 			ConfigurationArea ca = dav.getDataModel().getConfigurationArea(s);
