@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Glättewarnung und -prognose
-Bundle-SymbolicName: de.bsvrz.dua.progglaette
-Bundle-Version: 1.0.0
-Bundle-Vendor: BitCtrl Systems GmbH
-Require-Bundle: de.bsvrz.sys.funclib.bitctrl

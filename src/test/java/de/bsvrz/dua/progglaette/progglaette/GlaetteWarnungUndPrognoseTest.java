@@ -30,6 +30,7 @@ import java.util.Date;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.bsvrz.dav.daf.main.ClientDavInterface;
@@ -48,6 +49,7 @@ import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
  * 
  * @version $Id$
  */
+@Ignore ("Testdatenverteiler prüfen")
 public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 
 	/**

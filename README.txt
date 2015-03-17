@@ -2,7 +2,7 @@
 *  Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 SWE Glättewarnung und –prognose  *
 ***********************************************************************************************
 
-Version: @Version@
+Version: 1.2.0
 
 
 Übersicht
@@ -18,6 +18,9 @@ mögliche Glätte. Des Weiteren wird für die Prognosehorizonte 5-, 15-, 30-, 60- u
 
 Versionsgeschichte
 ==================
+
+1.2.0
+- Umstellung auf Maven-Build
 
 1.0.0
 
