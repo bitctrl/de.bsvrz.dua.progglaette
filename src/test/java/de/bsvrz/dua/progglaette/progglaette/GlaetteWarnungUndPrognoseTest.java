@@ -28,7 +28,7 @@ package de.bsvrz.dua.progglaette.progglaette;
 
 import java.util.Date;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Ignore;
 import org.junit.Test;

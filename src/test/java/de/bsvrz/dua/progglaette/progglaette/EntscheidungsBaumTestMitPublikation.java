@@ -27,6 +27,7 @@
 
 package de.bsvrz.dua.progglaette.progglaette;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -130,6 +131,7 @@ public class EntscheidungsBaumTestMitPublikation extends
 				new ClientReceiverInterface() {
 
 					public void update(ResultData[] results) {
+						final SimpleDateFormat dateFormat = new SimpleDateFormat(DUAKonstanten.ZEIT_FORMAT_GENAU_STR);
 						for (ResultData resultat : results) {
 							if (resultat.getData() != null) {
 								if ((lauf++) == 0 || horizont == null) {
@@ -147,7 +149,7 @@ public class EntscheidungsBaumTestMitPublikation extends
 										.getData().getUnscaledValue(horizont)
 										.intValue());
 								System.out.println("Ist ("
-										+ DUAKonstanten.ZEIT_FORMAT_GENAU
+										+ dateFormat
 												.format(new Date(resultat
 														.getDataTime()))
 										+ "): " + ist + "\n");
@@ -569,7 +571,8 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 */
 		@Override
 		public String toString() {
-			String s = DUAKonstanten.ZEIT_FORMAT_GENAU.format(this.zeitStempel);
+			final SimpleDateFormat dateFormat = new SimpleDateFormat(DUAKonstanten.ZEIT_FORMAT_GENAU_STR);
+			String s = dateFormat.format(this.zeitStempel);
 			
 			if (this.horizont == null) {
 				s += " --> Sende DUMMY\n";
