@@ -1,6 +1,6 @@
 /*
  * Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 Glättewarnung und -prognose
- * 
+ *
  * Copyright (C) 2007-2015 BitCtrl Systems GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,9 +36,9 @@ import com.bitctrl.Constants;
  * Berechnet eine Prognose von Messwerten mit der Methode der Linearen
  * Trendextrapolation ( Least Square Method ) Die Prognose ist nach AFo im
  * Horizont 5, 15, 30, 60, 90 Minuten.
- * 
+ *
  * @author BitCtrl Systems GmbH, Bachraty
- * 
+ *
  * @version $Id$
  */
 public class PrognoseZustand {
@@ -52,12 +52,12 @@ public class PrognoseZustand {
 	 * Standardkonstruktor.
 	 */
 	protected PrognoseZustand() {
-		
+
 	}
-	
+
 	/**
 	 * Berechnet die Prognose.
-	 * 
+	 *
 	 * @param werteArray
 	 *            Messwerte
 	 * @param zeitArrayOriginal
@@ -66,21 +66,21 @@ public class PrognoseZustand {
 	 *            Index des letzten Messwertes ( aktuellen )
 	 * @return Prognose fuer den Messwert in 5, 15, 30, 60 und 90 Minuten
 	 */
-	static double[] berechnePrognose(double[] werteArray, long[] zeitArrayOriginal,
-			int indexAktuell) {
+	static double[] berechnePrognose(final double[] werteArray,
+			final long[] zeitArrayOriginal, final int indexAktuell) {
 
 		/**
 		 * kleinsten Zeitstempel heraussuchen
 		 */
-		SortedSet<Long> ordnung = new TreeSet<Long>();
-		for (Long zeitStempel : zeitArrayOriginal) {
+		final SortedSet<Long> ordnung = new TreeSet<Long>();
+		for (final Long zeitStempel : zeitArrayOriginal) {
 			if (zeitStempel > 0) {
 				ordnung.add(zeitStempel);
 			}
 		}
 		final long kleinsterZeitStempel = ordnung.first();
-		long t0 = 0;		
-		long[] zeitArray = new long[zeitArrayOriginal.length];
+		long t0 = 0;
+		final long[] zeitArray = new long[zeitArrayOriginal.length];
 		for (int i = 0; i < zeitArrayOriginal.length; i++) {
 			if (zeitArrayOriginal[i] > 0) {
 				zeitArray[i] = ((zeitArrayOriginal[i] - kleinsterZeitStempel) / Constants.MILLIS_PER_MINUTE) + 1;
@@ -91,9 +91,9 @@ public class PrognoseZustand {
 				zeitArray[i] = 0;
 			}
 		}
-		
+
 		double a, b;
-		double[] y = new double[5];
+		final double[] y = new double[5];
 
 		double sumT = 0.0f;
 		double sumT2 = 0.0f;
@@ -101,9 +101,9 @@ public class PrognoseZustand {
 		double sumTW = 0.0f;
 
 		double tMitte, yMitte;
-		int n = werteArray.length;
+		final int n = werteArray.length;
 		int m = n;
-		
+
 		for (int i = 0; i < n; i++) {
 			// Zeitstemepel ist 0, wenn ein Datum faehlt
 			if (zeitArray[i] != 0) {
@@ -118,15 +118,15 @@ public class PrognoseZustand {
 
 		tMitte = sumT / m;
 		yMitte = sumW / m;
-		
-		a = (sumTW - m * tMitte * yMitte) / (sumT2 - m * tMitte * tMitte);
-		b = yMitte - a * tMitte;
-		
-		y[0] = a * (t0 + 5L) + b;
-		y[1] = a * (t0 + 15L) + b;
-		y[2] = a * (t0 + 30L) + b;
-		y[3] = a * (t0 + 60L) + b;
-		y[4] = a * (t0 + 90L) + b;
+
+		a = (sumTW - (m * tMitte * yMitte)) / (sumT2 - (m * tMitte * tMitte));
+		b = yMitte - (a * tMitte);
+
+		y[0] = (a * (t0 + 5L)) + b;
+		y[1] = (a * (t0 + 15L)) + b;
+		y[2] = (a * (t0 + 30L)) + b;
+		y[3] = (a * (t0 + 60L)) + b;
+		y[4] = (a * (t0 + 90L)) + b;
 
 		return y;
 	}

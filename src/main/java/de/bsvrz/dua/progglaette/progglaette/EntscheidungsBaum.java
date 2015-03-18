@@ -1,6 +1,6 @@
 /*
  * Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 Glättewarnung und -prognose
- * 
+ *
  * Copyright (C) 2007-2015 BitCtrl Systems GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,12 +32,14 @@ import de.bsvrz.sys.funclib.debug.Debug;
 /**
  * Der Entscheidungsbaum macht eine Glaetteprognose aus den aktuellen
  * Eigenschaften der Fahrbahn und Luft und seinen Prognosewerten.
- * 
+ *
  * @author BitCtrl Systems GmbH, Bachraty..
- * 
+ *
  * @version $Id$
  */
 public class EntscheidungsBaum {
+
+	private static final Debug LOGGER = Debug.getLogger();
 
 	/**
 	 * Standardkonstruktor.
@@ -45,116 +47,116 @@ public class EntscheidungsBaum {
 	protected EntscheidungsBaum() {
 		//
 	}
-	
+
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH = Integer.MIN_VALUE;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_NICHT_ERMITTELBAR = -1;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_KEINE_GLAETTEGEHFAHR = 1;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG = 2;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_EISGLAETTE_MOEGLICH = 3;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_TENDENZBERECHNUNG_NICHT_MOEGLICH = 4;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG = 5;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE = 6;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT = 7;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT = 8;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_EISGLAETTE_MOEGLICH_SOFORT = 9;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_GLAETTE_VORHANDEN = 10;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_EIS_SCHNEE_AUF_DER_FAHRBAHN = 11;
 
 	/**
 	 * Konstanden nach dem DatK.
-	 * 
+	 *
 	 * kb.tmUmfeldDatenGlobal.xml
-	 * 
+	 *
 	 */
 	public static final int EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE = 12;
 
@@ -213,7 +215,7 @@ public class EntscheidungsBaum {
 	public interface Operator {
 		/**
 		 * Anwendung des Operators.
-		 * 
+		 *
 		 * @param x
 		 *            Operand x
 		 * @param y
@@ -223,14 +225,15 @@ public class EntscheidungsBaum {
 		boolean anwende(double x, double y);
 	}
 
-	/**
+/**
 	 * Operator "<".
 	 */
 	public static class OperatorKleiner implements Operator {
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean anwende(double x, double y) {
+		@Override
+		public boolean anwende(final double x, final double y) {
 			return (x < y);
 		}
 	}
@@ -242,7 +245,8 @@ public class EntscheidungsBaum {
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean anwende(double x, double y) {
+		@Override
+		public boolean anwende(final double x, final double y) {
 			return (x <= y);
 		}
 	}
@@ -254,7 +258,8 @@ public class EntscheidungsBaum {
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean anwende(double x, double y) {
+		@Override
+		public boolean anwende(final double x, final double y) {
 			return (x > y);
 		}
 	}
@@ -266,7 +271,8 @@ public class EntscheidungsBaum {
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean anwende(double x, double y) {
+		@Override
+		public boolean anwende(final double x, final double y) {
 			return (x >= y);
 		}
 	}
@@ -281,33 +287,39 @@ public class EntscheidungsBaum {
 
 		try {
 			sGbNm = new EntscheidungsBaumKnoten(
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG);
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG);
 			sGbNsRm = new EntscheidungsBaumKnoten(
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE);
-			eM = new EntscheidungsBaumKnoten(EB_EISGLAETTE_MOEGLICH);
-			eSm = new EntscheidungsBaumKnoten(EB_EISGLAETTE_MOEGLICH_SOFORT);
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE);
+			eM = new EntscheidungsBaumKnoten(
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH);
+			eSm = new EntscheidungsBaumKnoten(
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH_SOFORT);
 			gbWm = new EntscheidungsBaumKnoten(
-					EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG);
+					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG);
 			sGbNSm = new EntscheidungsBaumKnoten(
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT);
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT);
 			sGbNsRSm = new EntscheidungsBaumKnoten(
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT);
-			kG = new EntscheidungsBaumKnoten(EB_KEINE_GLAETTEGEHFAHR);
-			gV = new EntscheidungsBaumKnoten(EB_GLAETTE_VORHANDEN);
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT);
+			kG = new EntscheidungsBaumKnoten(
+					EntscheidungsBaum.EB_KEINE_GLAETTEGEHFAHR);
+			gV = new EntscheidungsBaumKnoten(
+					EntscheidungsBaum.EB_GLAETTE_VORHANDEN);
 			sGbNSsRm = new EntscheidungsBaumKnoten(
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE);
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE);
 
 			methode = new EntscheidungsBaumKnoten.DifferenzPrognoseFbofTaupunktTemperatur(
 					0, new OperatorGroesser());
 			k1 = new EntscheidungsBaumKnoten(methode, sGbNm, sGbNsRm);
 
 			methode = new EntscheidungsBaumKnoten.FahbrBahnZustand(
-					new long[] { FBZ_TROCKEN }, new long[] { FBZ_FEUCHT,
-							FBZ_NASS });
+					new long[] { EntscheidungsBaum.FBZ_TROCKEN }, new long[] {
+							EntscheidungsBaum.FBZ_FEUCHT,
+							EntscheidungsBaum.FBZ_NASS });
 			k2 = new EntscheidungsBaumKnoten(methode, k1, eM);
 
 			methode = new EntscheidungsBaumKnoten.FahbrBahnZustand(new long[] {
-					FBZ_FEUCHT, FBZ_NASS }, new long[] { FBZ_TROCKEN });
+					EntscheidungsBaum.FBZ_FEUCHT, EntscheidungsBaum.FBZ_NASS },
+					new long[] { EntscheidungsBaum.FBZ_TROCKEN });
 			k1 = new EntscheidungsBaumKnoten(methode, eM, gbWm);
 
 			methode = new EntscheidungsBaumKnoten.FbofTemperatur(3,
@@ -331,9 +343,13 @@ public class EntscheidungsBaum {
 			k2 = new EntscheidungsBaumKnoten(methode, k3, sGbNsRSm);
 
 			methode = new EntscheidungsBaumKnoten.FahbrBahnZustandVollDefiniert(
-					new long[] { FBZ_TROCKEN }, new long[] { FBZ_FEUCHT,
-							FBZ_NASS }, new long[] { FBZ_GEFR_WASSER,
-							FBZ_RAUREIF, FBZ_EIS, FBZ_SCHNEE });
+					new long[] { EntscheidungsBaum.FBZ_TROCKEN }, new long[] {
+							EntscheidungsBaum.FBZ_FEUCHT,
+							EntscheidungsBaum.FBZ_NASS }, new long[] {
+							EntscheidungsBaum.FBZ_GEFR_WASSER,
+							EntscheidungsBaum.FBZ_RAUREIF,
+							EntscheidungsBaum.FBZ_EIS,
+							EntscheidungsBaum.FBZ_SCHNEE });
 			k3 = new EntscheidungsBaumKnoten(methode, k2, eSm, gV);
 
 			methode = new EntscheidungsBaumKnoten.FbofTemperatur(2,
@@ -346,10 +362,11 @@ public class EntscheidungsBaum {
 
 			methode = new EntscheidungsBaumKnoten.FbofTemperatur(5,
 					new OperatorGroesser());
-			wurzel = new EntscheidungsBaumKnoten(methode, k1, k2);
+			EntscheidungsBaum.wurzel = new EntscheidungsBaumKnoten(methode, k1,
+					k2);
 
-		} catch (DUAInitialisierungsException e) {
-			Debug.getLogger().error(
+		} catch (final DUAInitialisierungsException e) {
+			LOGGER.error(
 					"Fehler bei der Initialisierung des EntscheidunsBaumes: "
 							+ e.getMessage());
 			e.printStackTrace();
@@ -358,7 +375,7 @@ public class EntscheidungsBaum {
 
 	/**
 	 * Berechnet die Glaetteprognose.
-	 * 
+	 *
 	 * @param fbzAktuell
 	 *            Fahrbahnzustand aktuell
 	 * @param fbtAktuell
@@ -373,13 +390,14 @@ public class EntscheidungsBaum {
 	 *            Taupunkttemperatur extrapoliert im Prognosehorizont
 	 * @return die Glaetteprognose
 	 */
-	public static int getPrognose(long fbzAktuell, double fbtAktuell,
-			double tptAktuell, double lftAktuell, double fbtExtrapoliert,
-			double tptExtrapoliert) {
-		if (wurzel == null) {
-			erzeugeEntscheidungsBaum();
+	public static int getPrognose(final long fbzAktuell,
+			final double fbtAktuell, final double tptAktuell,
+			final double lftAktuell, final double fbtExtrapoliert,
+			final double tptExtrapoliert) {
+		if (EntscheidungsBaum.wurzel == null) {
+			EntscheidungsBaum.erzeugeEntscheidungsBaum();
 		}
-		return wurzel.getPrognose(fbzAktuell, fbtAktuell, tptAktuell,
-				lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		return EntscheidungsBaum.wurzel.getPrognose(fbzAktuell, fbtAktuell,
+				tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
 	}
 }

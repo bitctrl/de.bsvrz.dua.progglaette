@@ -1,6 +1,6 @@
 /*
  * Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 Glättewarnung und -prognose
- * 
+ *
  * Copyright (C) 2007-2015 BitCtrl Systems GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -29,9 +29,9 @@ package de.bsvrz.dua.progglaette.progglaette;
 
 /**
  * Speichert die Verbindungsdaten.
- * 
+ *
  * @author BitCtrl Systems GmbH, Thierfelder
- * 
+ *
  * @version $Id$
  */
 public final class Verbindung {
@@ -42,23 +42,23 @@ public final class Verbindung {
 	private Verbindung() {
 		//
 	}
-	
+
 	/**
 	 * Verbindungsdaten.
 	 */
 	public static final String[] CON_DATA = new String[] {
-			"-datenverteiler=localhost:8083", "-benutzer=Tester",
-			"-authentifizierung=passwd",
-			"-debugLevelStdErrText=OFF", "-debugLevelFileText=OFF",
-			"-KonfigurationsBereichsPid=kb.glaetteProgTest" };
+		"-datenverteiler=localhost:8083", "-benutzer=Tester",
+		"-authentifizierung=passwd", "-debugLevelStdErrText=OFF",
+			"-debugLevelFileText=OFF",
+	"-KonfigurationsBereichsPid=kb.glaetteProgTest" };
 
-//	/**
-//	 * Verbindungsdaten.
-//	 */
-//	public static final String[] CON_DATA = new String[] {
-//			"-datenverteiler=localhost:8083", "-benutzer=Tester",
-//			"-authentifizierung=c:\\passwd",
-//			"-debugLevelStdErrText=WARNING", "-debugLevelFileText=OFF",
-//			"-KonfigurationsBereichsPid=kb.glaetteProgTest" };
+	// /**
+	// * Verbindungsdaten.
+	// */
+	// public static final String[] CON_DATA = new String[] {
+	// "-datenverteiler=localhost:8083", "-benutzer=Tester",
+	// "-authentifizierung=c:\\passwd",
+	// "-debugLevelStdErrText=WARNING", "-debugLevelFileText=OFF",
+	// "-KonfigurationsBereichsPid=kb.glaetteProgTest" };
 
 }

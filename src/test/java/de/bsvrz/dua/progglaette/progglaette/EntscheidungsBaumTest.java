@@ -1,6 +1,6 @@
 /*
  * Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 Glättewarnung und -prognose
- * 
+ *
  * Copyright (C) 2007-2015 BitCtrl Systems GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,7 +31,7 @@ import org.junit.Test;
 
 /**
  * Testet den Entscheidungsbaum.
- * 
+ *
  * @author BitCtrl Systems GmbH, Bachraty
  *
  * @version $Id$
@@ -41,42 +41,42 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 	/**
 	 * Zustanaende.
 	 */
-	public static final long T = FBZ_TROCKEN;
+	public static final long T = EntscheidungsBaum.FBZ_TROCKEN;
 
 	/**
 	 * Zustanaende.
 	 */
-	public static final long F = FBZ_FEUCHT;
+	public static final long F = EntscheidungsBaum.FBZ_FEUCHT;
 
 	/**
 	 * Zustanaende.
 	 */
-	public static final long N = FBZ_NASS;
+	public static final long N = EntscheidungsBaum.FBZ_NASS;
 
 	/**
 	 * Zustanaende.
 	 */
-	public static final long W = FBZ_GEFR_WASSER;
+	public static final long W = EntscheidungsBaum.FBZ_GEFR_WASSER;
 
 	/**
 	 * Zustanaende.
 	 */
-	public static final long S = FBZ_SCHNEE;
+	public static final long S = EntscheidungsBaum.FBZ_SCHNEE;
 
 	/**
 	 * Zustanaende.
 	 */
-	public static final long E = FBZ_EIS;
+	public static final long E = EntscheidungsBaum.FBZ_EIS;
 
 	/**
 	 * Zustanaende.
 	 */
-	public static final long R = FBZ_RAUREIF;
+	public static final long R = EntscheidungsBaum.FBZ_RAUREIF;
 
 	/**
 	 * Zustanaende.
 	 */
-	public static final long U = FBZ_UNDEFINIERT;
+	public static final long U = EntscheidungsBaum.FBZ_UNDEFINIERT;
 
 	/**
 	 * MESSWERT_UNDEFIENIERT.
@@ -92,137 +92,465 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 	 * Per-Hand berechenete Eingabe und Prognosewerte.
 	 */
 	private static final double[][] TT = new double[][] {
-			// FBZ           -1 nicht ermittelbar
-			// Temperatur -1001 nicht ermittelbar
-			// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert, tptExtrapoliert, prognose
-			{ Z, -1001, Z, Z, Z, Z, EB_NICHT_ERMITTELBAR },
-			{ Z, 5.1, -1001, Z, Z, Z, EB_NICHT_ERMITTELBAR },
-			{ Z, 6.2, 1.1, Z, Z, Z, EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
-			{ Z, 5.2, 3.1, Z, Z, Z, EB_KEINE_GLAETTEGEHFAHR },
-			{ Z, 5.3, 2, Z, Z, Z, EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
-			{ S, 2, Z, Z, Z, Z, EB_GLAETTE_VORHANDEN },
-			{ E, 2, Z, Z, Z, Z, EB_GLAETTE_VORHANDEN },
-			{ W, 2, Z, Z, Z, Z, EB_GLAETTE_VORHANDEN },
-			{ R, 2, Z, Z, Z, Z, EB_GLAETTE_VORHANDEN },
-			{ N, 2, Z, Z, Z, Z, EB_EISGLAETTE_MOEGLICH_SOFORT },
-			{ F, 2, Z, Z, Z, Z, EB_EISGLAETTE_MOEGLICH_SOFORT },
-			{ -1, 2, Z, Z, Z, Z, EB_NICHT_ERMITTELBAR },
-			{ T, 2, Z, 2, Z, Z,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-			{ T, 1, Z, 3, Z, Z,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-			{ T, 1, Z, 1, Z, Z,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-			{ T, -1, Z, -3, Z, Z,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
-			{ T, -1, Z, -3.1, 1, 1,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
-			{ T, -1, Z, -3.1, 0.2, 0.1,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT },
+		// FBZ -1 nicht ermittelbar
+		// Temperatur -1001 nicht ermittelbar
+		// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert,
+			// tptExtrapoliert, prognose
+		{ EntscheidungsBaumTest.Z, -1001, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_NICHT_ERMITTELBAR },
+		{ EntscheidungsBaumTest.Z, 5.1, -1001, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_NICHT_ERMITTELBAR },
+		{
+					EntscheidungsBaumTest.Z,
+					6.2,
+					1.1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
+		{ EntscheidungsBaumTest.Z, 5.2, 3.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_KEINE_GLAETTEGEHFAHR },
+		{
+					EntscheidungsBaumTest.Z,
+					5.3,
+					2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
+		{ EntscheidungsBaumTest.S, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTE_VORHANDEN },
+		{ EntscheidungsBaumTest.E, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTE_VORHANDEN },
+		{ EntscheidungsBaumTest.W, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTE_VORHANDEN },
+		{ EntscheidungsBaumTest.R, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTE_VORHANDEN },
+		{ EntscheidungsBaumTest.N, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH_SOFORT },
+		{ EntscheidungsBaumTest.F, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH_SOFORT },
+		{ -1, 2, EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_NICHT_ERMITTELBAR },
+		{
+					EntscheidungsBaumTest.T,
+					2,
+					EntscheidungsBaumTest.Z,
+					2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+			EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+			{
+					EntscheidungsBaumTest.T,
+					1,
+					EntscheidungsBaumTest.Z,
+					3,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+				EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+				{
+					EntscheidungsBaumTest.T,
+					1,
+					EntscheidungsBaumTest.Z,
+					1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+					{
+					EntscheidungsBaumTest.T,
+					-1,
+					EntscheidungsBaumTest.Z,
+					-3,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+						EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
+						{
+					EntscheidungsBaumTest.T,
+					-1,
+					EntscheidungsBaumTest.Z,
+					-3.1,
+					1,
+					1,
+							EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
+							{
+					EntscheidungsBaumTest.T,
+					-1,
+					EntscheidungsBaumTest.Z,
+					-3.1,
+					0.2,
+					0.1,
+								EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT },
 
-			// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert, tptExtrapoliert, prognose
-			{ T, -1, Z, -3.1, Z, -1001, EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-			{ T, -1, Z, -3.1, -1001, Z, EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-			{ T, -1, Z, -1001, Z, Z, EB_NICHT_ERMITTELBAR },
-			{ F, 2.2, Z, Z, 2, Z, EB_EISGLAETTE_MOEGLICH },
-			{ N, 2.2, Z, Z, 2, Z, EB_EISGLAETTE_MOEGLICH },
-			{ -1, 2.2, Z, Z, 1, Z, EB_NICHT_ERMITTELBAR },
-			{ Z, 2.2, Z, Z, -1001, Z, EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-			{ T, 2.2, Z, Z, -1, -1,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
-			{ T, 2.2, Z, Z, -1, 0.1,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
-			{ T, 2.2, Z, Z, 1, 0.1, EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
-			{ T, 2.2, Z, Z, -1001, Z, EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-			{ T, 2.2, Z, Z, 2, -1001, EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-			{ -1, 2.2, Z, Z, 2, Z, EB_NICHT_ERMITTELBAR },
-			{ T, 2.2, Z, Z, 0, -1001, EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
-			{ -1, 2.2, Z, Z, 0, Z, EB_NICHT_ERMITTELBAR },
-			{ T, 2.2, Z, Z, 2.1, Z, EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
-			{ T, 3, Z, Z, 2.1, Z, EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
-			{ F, 2.2, Z, Z, 2.1, Z, EB_EISGLAETTE_MOEGLICH },
-			{ N, 3, Z, Z, 2.1, Z, EB_EISGLAETTE_MOEGLICH },
-			{ -1, 3, Z, Z, 2.1, Z, EB_NICHT_ERMITTELBAR },
-			{ -1, 3.1, Z, Z, 2.1, Z, EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
-			{ -1, 4, Z, Z, 2.1, Z, EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+								// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert,
+			// tptExtrapoliert, prognose
+								{ EntscheidungsBaumTest.T, -1, EntscheidungsBaumTest.Z, -3.1,
+					EntscheidungsBaumTest.Z, -1001,
+					EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+								{ EntscheidungsBaumTest.T, -1, EntscheidungsBaumTest.Z, -3.1,
+					-1001, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+								{ EntscheidungsBaumTest.T, -1, EntscheidungsBaumTest.Z, -1001,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_NICHT_ERMITTELBAR },
+								{ EntscheidungsBaumTest.F, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH },
+								{ EntscheidungsBaumTest.N, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH },
+								{ -1, 2.2, EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z, 1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_NICHT_ERMITTELBAR },
+								{ EntscheidungsBaumTest.Z, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, -1001, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+								{
+					EntscheidungsBaumTest.T,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					-1,
+					-1,
+									EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
+									{
+					EntscheidungsBaumTest.T,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					-1,
+					0.1,
+										EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
+										{
+					EntscheidungsBaumTest.T,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					1,
+					0.1,
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
+										{ EntscheidungsBaumTest.T, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, -1001, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+										{ EntscheidungsBaumTest.T, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2, -1001,
+					EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+										{ -1, 2.2, EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z, 2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_NICHT_ERMITTELBAR },
+										{ EntscheidungsBaumTest.T, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 0, -1001,
+					EntscheidungsBaum.EB_TENDENZBERECHNUNG_NICHT_MOEGLICH },
+										{ -1, 2.2, EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z, 0,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_NICHT_ERMITTELBAR },
+										{ EntscheidungsBaumTest.T, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+										{ EntscheidungsBaumTest.T, 3, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+										{ EntscheidungsBaumTest.F, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH },
+										{ EntscheidungsBaumTest.N, 3, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH },
+										{ -1, 3, EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z, 2.1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_NICHT_ERMITTELBAR },
+										{ -1, 3.1, EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z, 2.1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+										{ -1, 4, EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z, 2.1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
 
-			{ Z, NV, Z, Z, Z, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ Z, 5.1, NV, Z, Z, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ Z, 6.2, 1.1, Z, Z, Z, EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
-			{ Z, 5.2, 3.1, Z, Z, Z, EB_KEINE_GLAETTEGEHFAHR },
-			{ Z, 5.3, 2, Z, Z, Z, EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
-			{ S, 2, Z, Z, Z, Z, EB_GLAETTE_VORHANDEN },
-			{ E, 2, Z, Z, Z, Z, EB_GLAETTE_VORHANDEN },
-			{ W, 2, Z, Z, Z, Z, EB_GLAETTE_VORHANDEN },
-			{ R, 2, Z, Z, Z, Z, EB_GLAETTE_VORHANDEN },
-			{ N, 2, Z, Z, Z, Z, EB_EISGLAETTE_MOEGLICH_SOFORT },
-			{ F, 2, Z, Z, Z, Z, EB_EISGLAETTE_MOEGLICH_SOFORT },
-			{ U, 2, Z, Z, Z, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ T, 2, Z, 2, Z, Z,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-			{ T, 1, Z, 3, Z, Z,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-			{ T, 1, Z, 1, Z, Z,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
-			{ T, -1, Z, -3, Z, Z,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
-			{ T, -1, Z, -3.1, 1, 1,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
-			{ T, -1, Z, -3.1, 0.2, 0.1,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT },
+										{
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.NV,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+											EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+											{
+					EntscheidungsBaumTest.Z,
+					5.1,
+					EntscheidungsBaumTest.NV,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+												EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+												{
+					EntscheidungsBaumTest.Z,
+					6.2,
+					1.1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
+												{ EntscheidungsBaumTest.Z, 5.2, 3.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_KEINE_GLAETTEGEHFAHR },
+												{
+					EntscheidungsBaumTest.Z,
+					5.3,
+					2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
+												{ EntscheidungsBaumTest.S, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTE_VORHANDEN },
+												{ EntscheidungsBaumTest.E, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTE_VORHANDEN },
+												{ EntscheidungsBaumTest.W, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTE_VORHANDEN },
+												{ EntscheidungsBaumTest.R, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTE_VORHANDEN },
+												{ EntscheidungsBaumTest.N, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH_SOFORT },
+												{ EntscheidungsBaumTest.F, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH_SOFORT },
+												{
+					EntscheidungsBaumTest.U,
+					2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+													EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+													{
+					EntscheidungsBaumTest.T,
+					2,
+					EntscheidungsBaumTest.Z,
+					2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+														EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+														{
+					EntscheidungsBaumTest.T,
+					1,
+					EntscheidungsBaumTest.Z,
+					3,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+															EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+															{
+					EntscheidungsBaumTest.T,
+					1,
+					EntscheidungsBaumTest.Z,
+					1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+																EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT },
+																{
+					EntscheidungsBaumTest.T,
+					-1,
+					EntscheidungsBaumTest.Z,
+					-3,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+																	EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
+																	{
+					EntscheidungsBaumTest.T,
+					-1,
+					EntscheidungsBaumTest.Z,
+					-3.1,
+					1,
+					1,
+																		EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE },
+																		{
+					EntscheidungsBaumTest.T,
+					-1,
+					EntscheidungsBaumTest.Z,
+					-3.1,
+					0.2,
+					0.1,
+																			EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT },
 
-			// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert, tptExtrapoliert, prognose
-			{ T, -1, Z, -3.1, Z, NV,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ T, -1, Z, -3.1, NV, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ T, -1, Z, NV, Z, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ F, 2.2, Z, Z, 2, Z, EB_EISGLAETTE_MOEGLICH },
-			{ N, 2.2, Z, Z, 2, Z, EB_EISGLAETTE_MOEGLICH },
-			{ U, 2.2, Z, Z, 1, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ Z, 2.2, Z, Z, NV, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ T, 2.2, Z, Z, -1, -1,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
-			{ T, 2.2, Z, Z, -1, 0.1,
-					EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
-			{ T, 2.2, Z, Z, 1, 0.1, EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
-			{ T, 2.2, Z, Z, NV, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ T, 2.2, Z, Z, 2, NV,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ U, 2.2, Z, Z, 2, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ T, 2.2, Z, Z, 0, NV,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ U, 2.2, Z, Z, 0, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ T, 2.2, Z, Z, 2.1, Z, EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
-			{ T, 3, Z, Z, 2.1, Z, EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
-			{ F, 2.2, Z, Z, 2.1, Z, EB_EISGLAETTE_MOEGLICH },
-			{ N, 3, Z, Z, 2.1, Z, EB_EISGLAETTE_MOEGLICH },
-			{ U, 3, Z, Z, 2.1, Z,
-					EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
-			{ -1, 3.1, Z, Z, 2.1, Z, EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
-			{ -1, 4, Z, Z, 2.1, Z, EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG }, };
+																			// fbzAktuell, fbtAktuell, lftAktuell, tptAktuell, fbtExtrapoliert,
+			// tptExtrapoliert, prognose
+																			{
+					EntscheidungsBaumTest.T,
+					-1,
+					EntscheidungsBaumTest.Z,
+					-3.1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.NV,
+																				EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																				{
+					EntscheidungsBaumTest.T,
+					-1,
+					EntscheidungsBaumTest.Z,
+					-3.1,
+					EntscheidungsBaumTest.NV,
+					EntscheidungsBaumTest.Z,
+																					EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																					{
+					EntscheidungsBaumTest.T,
+					-1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.NV,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+																						EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																						{ EntscheidungsBaumTest.F, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH },
+																						{ EntscheidungsBaumTest.N, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH },
+																						{
+					EntscheidungsBaumTest.U,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					1,
+					EntscheidungsBaumTest.Z,
+																							EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																							{
+					EntscheidungsBaumTest.Z,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.NV,
+					EntscheidungsBaumTest.Z,
+																								EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																								{
+					EntscheidungsBaumTest.T,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					-1,
+					-1,
+																									EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
+																									{
+					EntscheidungsBaumTest.T,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					-1,
+					0.1,
+																										EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE },
+																										{
+					EntscheidungsBaumTest.T,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					1,
+					0.1,
+					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG },
+																										{
+					EntscheidungsBaumTest.T,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.NV,
+					EntscheidungsBaumTest.Z,
+																											EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																											{
+					EntscheidungsBaumTest.T,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					2,
+					EntscheidungsBaumTest.NV,
+																												EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																												{
+					EntscheidungsBaumTest.U,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					2,
+					EntscheidungsBaumTest.Z,
+																													EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																													{
+					EntscheidungsBaumTest.T,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					0,
+					EntscheidungsBaumTest.NV,
+																														EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																														{
+					EntscheidungsBaumTest.U,
+					2.2,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					0,
+					EntscheidungsBaumTest.Z,
+																															EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																															{ EntscheidungsBaumTest.T, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+																															{ EntscheidungsBaumTest.T, 3, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+																															{ EntscheidungsBaumTest.F, 2.2, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH },
+																															{ EntscheidungsBaumTest.N, 3, EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z, 2.1, EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH },
+																															{
+					EntscheidungsBaumTest.U,
+					3,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaumTest.Z,
+					2.1,
+					EntscheidungsBaumTest.Z,
+																																EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH },
+																																{ -1, 3.1, EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z, 2.1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG },
+																																{ -1, 4, EntscheidungsBaumTest.Z, EntscheidungsBaumTest.Z, 2.1,
+					EntscheidungsBaumTest.Z,
+					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG }, };
 
 	/**
 	 * Die modifizierte tabelle.
 	 */
-	private static double[][] tabelle = new double[TT.length][TT[0].length];
+	private static double[][] tabelle = new double[EntscheidungsBaumTest.TT.length][EntscheidungsBaumTest.TT[0].length];
 
 	/**
 	 * Kopiert Arrays.
-	 * 
-	 * @param src Quelle Array
-	 * @param dst Ziel Array
+	 *
+	 * @param src
+	 *            Quelle Array
+	 * @param dst
+	 *            Ziel Array
 	 */
-	public void copy(final double[][] src, double[][] dst) {
+	public void copy(final double[][] src, final double[][] dst) {
 		for (int i = 0; i < src.length; i++) {
 			for (int j = 0; j < src[i].length; j++) {
 				dst[i][j] = src[i][j];
@@ -231,14 +559,16 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 	}
 
 	/**
-	 * Die Werte die, zufaellig sein koennen ( mit Z gekennzeichnet ), werden randomisiert.
+	 * Die Werte die, zufaellig sein koennen ( mit Z gekennzeichnet ), werden
+	 * randomisiert.
 	 */
 	public void randomisiere() {
 		boolean rand = false;
-		for (int i = 0; i < tabelle.length; i++) {
-			for (int j = 0; j < tabelle[i].length; j++) {
-				if (tabelle[i][j] == Z) {
-					tabelle[i][j] = (-1010 + Math.random() * 2020);
+		for (int i = 0; i < EntscheidungsBaumTest.tabelle.length; i++) {
+			for (int j = 0; j < EntscheidungsBaumTest.tabelle[i].length; j++) {
+				if (EntscheidungsBaumTest.tabelle[i][j] == EntscheidungsBaumTest.Z) {
+					EntscheidungsBaumTest.tabelle[i][j] = (-1010 + (Math
+							.random() * 2020));
 					rand = true;
 				}
 			}
@@ -259,27 +589,27 @@ public class EntscheidungsBaumTest extends EntscheidungsBaum {
 		double fbtExtrapoliert, tptExtrapoliert;
 
 		for (int j = 0; j < 10; j++) {
-			copy(TT, tabelle);
+			copy(EntscheidungsBaumTest.TT, EntscheidungsBaumTest.tabelle);
 			if (j != 0) {
 				randomisiere();
 			}
-			for (int i = 0; i < tabelle.length; i++) {
+			for (int i = 0; i < EntscheidungsBaumTest.tabelle.length; i++) {
 
-				fbzAktuell = (long) (tabelle[i][0]);
-				fbtAktuell = tabelle[i][1];
-				lftAktuell = tabelle[i][2];
-				tptAktuell = tabelle[i][3];
+				fbzAktuell = (long) (EntscheidungsBaumTest.tabelle[i][0]);
+				fbtAktuell = EntscheidungsBaumTest.tabelle[i][1];
+				lftAktuell = EntscheidungsBaumTest.tabelle[i][2];
+				tptAktuell = EntscheidungsBaumTest.tabelle[i][3];
 
-				fbtExtrapoliert = tabelle[i][4];
-				tptExtrapoliert = tabelle[i][5];
+				fbtExtrapoliert = EntscheidungsBaumTest.tabelle[i][4];
+				tptExtrapoliert = EntscheidungsBaumTest.tabelle[i][5];
 
-				antwort = (int) (tabelle[i][6]);
+				antwort = (int) (EntscheidungsBaumTest.tabelle[i][6]);
 
 				prognose = EntscheidungsBaum.getPrognose(fbzAktuell,
 						fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert,
 						tptExtrapoliert);
 				Assert.assertEquals(antwort, prognose);
-				
+
 				System.out.println(String.format(
 						"[ %4d ] Prognose: %2d == %2d ", i, prognose, antwort));
 			}

@@ -1,6 +1,6 @@
 /*
  * Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 Glättewarnung und -prognose
- * 
+ *
  * Copyright (C) 2007-2015 BitCtrl Systems GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -59,13 +59,14 @@ import de.bsvrz.sys.funclib.bitctrl.dua.ufd.typen.UmfeldDatenArt;
 
 /**
  * Provoziert <b>alle</b> moeglichen Wege im Entscheidungsbaum.
- * 
+ *
  * @author BitCtrl Systems GmbH, Thierfelder
- * 
- * @version $Id$
+ *
+ * @version $Id: EntscheidungsBaumTestMitPublikation.java 53827 2015-03-18
+ *          10:04:42Z peuker $
  */
 public class EntscheidungsBaumTestMitPublikation extends
-		GlaetteWarnungUndPrognose {
+GlaetteWarnungUndPrognose {
 
 	/**
 	 * Erwarteter Zustand.
@@ -93,7 +94,7 @@ public class EntscheidungsBaumTestMitPublikation extends
 
 	/**
 	 * Der Test.
-	 * 
+	 *
 	 * @throws DUAInitialisierungsException
 	 *             Ausnahme, die geworfen wird, wenn ein Modul innerhalb einer
 	 *             SWE nicht initialisiert werden konnte. Also, wenn z.B. keine
@@ -106,78 +107,89 @@ public class EntscheidungsBaumTestMitPublikation extends
 	 */
 	@Test
 	public void test1() throws DUAInitialisierungsException,
-			SendSubscriptionNotConfirmed {
-		EntscheidungsBaumTestMitPublikation gwp = new EntscheidungsBaumTestMitPublikation();
+	SendSubscriptionNotConfirmed {
+		final EntscheidungsBaumTestMitPublikation gwp = new EntscheidungsBaumTestMitPublikation();
 		StandardApplicationRunner.run(gwp, Verbindung.CON_DATA.clone());
-		UmfeldDatenArt.initialisiere(dav);
+		UmfeldDatenArt.initialisiere(GlaetteWarnungUndPrognose.dav);
 
 		try {
-			dav.subscribeSender(this, tptSensor, ddTptDaten, SenderRole
-					.source());
-			dav
-					.subscribeSender(this, ltSensor, ddLftDaten, SenderRole
-							.source());
-			dav.subscribeSender(this, fbtSensor, ddFbtDaten, SenderRole
-					.source());
-			dav.subscribeSender(this, fbzSensor, ddFbzDaten, SenderRole
-					.source());
-		} catch (Exception e) {
+			GlaetteWarnungUndPrognose.dav.subscribeSender(this,
+					EntscheidungsBaumTestMitPublikation.tptSensor,
+					EntscheidungsBaumTestMitPublikation.ddTptDaten,
+					SenderRole.source());
+			GlaetteWarnungUndPrognose.dav.subscribeSender(this,
+					EntscheidungsBaumTestMitPublikation.ltSensor,
+					EntscheidungsBaumTestMitPublikation.ddLftDaten,
+					SenderRole.source());
+			GlaetteWarnungUndPrognose.dav.subscribeSender(this,
+					EntscheidungsBaumTestMitPublikation.fbtSensor,
+					EntscheidungsBaumTestMitPublikation.ddFbtDaten,
+					SenderRole.source());
+			GlaetteWarnungUndPrognose.dav.subscribeSender(this,
+					EntscheidungsBaumTestMitPublikation.fbzSensor,
+					EntscheidungsBaumTestMitPublikation.ddFbzDaten,
+					SenderRole.source());
+		} catch (final Exception e) {
 			System.out
-					.println("Fehler bei Anmeldung fuer Sendung der Testdaten");
+			.println("Fehler bei Anmeldung fuer Sendung der Testdaten");
 			e.printStackTrace();
 		}
 
-		dav.subscribeReceiver(
+		GlaetteWarnungUndPrognose.dav.subscribeReceiver(
 				new ClientReceiverInterface() {
 
-					public void update(ResultData[] results) {
-						final SimpleDateFormat dateFormat = new SimpleDateFormat(DUAKonstanten.ZEIT_FORMAT_GENAU_STR);
-						for (ResultData resultat : results) {
+					@Override
+					public void update(final ResultData[] results) {
+						final SimpleDateFormat dateFormat = new SimpleDateFormat(
+								DUAKonstanten.ZEIT_FORMAT_GENAU_STR);
+						for (final ResultData resultat : results) {
 							if (resultat.getData() != null) {
-								if ((lauf++) == 0 || horizont == null) {
-									synchronized (GlaetteWarnungUndPrognoseTest.dav) {
+								if (((lauf++) == 0) || (horizont == null)) {
+									synchronized (GlaetteWarnungUndPrognose.dav) {
 										try {
-											dav.notify();
-										} catch (Exception e) {
+											GlaetteWarnungUndPrognose.dav
+													.notify();
+										} catch (final Exception e) {
 											//
 										}
 									}
 									return;
 								}
 
-								Zustand ist = Zustand.getInstanz(resultat
+								final Zustand ist = Zustand.getInstanz(resultat
 										.getData().getUnscaledValue(horizont)
 										.intValue());
 								System.out.println("Ist ("
-										+ dateFormat
-												.format(new Date(resultat
-														.getDataTime()))
-										+ "): " + ist + "\n");
+										+ dateFormat.format(new Date(resultat
+												.getDataTime())) + "): " + ist
+										+ "\n");
 								if (EntscheidungsBaumTestMitPublikation.this.erwarteterZustand != null) {
-									Assert
-											.assertEquals(
-													ist,
-													EntscheidungsBaumTestMitPublikation.this.erwarteterZustand);
+									Assert.assertEquals(
+											ist,
+											EntscheidungsBaumTestMitPublikation.this.erwarteterZustand);
 								}
 							}
 						}
 
-						synchronized (GlaetteWarnungUndPrognoseTest.dav) {
+						synchronized (GlaetteWarnungUndPrognose.dav) {
 							try {
-								dav.notify();
-							} catch (Exception e) {
+								GlaetteWarnungUndPrognose.dav.notify();
+							} catch (final Exception e) {
 								//
 							}
 						}
 					}
 
-				}, dav.getDataModel().getObject("ufdMessStelle.test.1"),
-				new DataDescription(dav.getDataModel().getAttributeGroup(
-						"atg.ufdmsGlätte"), dav.getDataModel().getAspect(
-						"asp.prognose")), ReceiveOptions.normal(), ReceiverRole
-						.receiver());
+				},
+				GlaetteWarnungUndPrognose.dav.getDataModel().getObject(
+						"ufdMessStelle.test.1"),
+				new DataDescription(GlaetteWarnungUndPrognose.dav
+						.getDataModel().getAttributeGroup("atg.ufdmsGlätte"),
+						GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
+								"asp.prognose")), ReceiveOptions.normal(),
+				ReceiverRole.receiver());
 
-		GregorianCalendar cal = new GregorianCalendar();
+		final GregorianCalendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
@@ -186,84 +198,148 @@ public class EntscheidungsBaumTestMitPublikation extends
 		/**
 		 * 0
 		 */
-		ArrayList<MessStellenEreignis> ereignisse = new ArrayList<MessStellenEreignis>();
+		final ArrayList<MessStellenEreignis> ereignisse = new ArrayList<MessStellenEreignis>();
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z1, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 6.0),
-						new SensorEreignis(tptSensor, 6.0),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(ltSensor, 3.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								6.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								6.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								3.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 1
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z2, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 5.0),
-						new SensorEreignis(fbzSensor, 1.0),
-						new SensorEreignis(tptSensor, 6.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								5.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								6.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 2
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z2, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 3.0),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, 6.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								3.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								6.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 3
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z3, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 2.1),
-						new SensorEreignis(fbzSensor, 1.0),
-						new SensorEreignis(tptSensor, 6.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								2.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								6.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 4
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z3, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 2.1),
-						new SensorEreignis(fbzSensor, 1.0),
-						new SensorEreignis(tptSensor, 6.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								2.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								6.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 5
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z3, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 2.1),
-						new SensorEreignis(fbzSensor, 32.0),
-						new SensorEreignis(tptSensor, 6.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								2.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								32.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								6.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 6
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z6, "PrognoseZustandIn60Minuten", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 2.1),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, 3.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								2.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								3.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
-		
+
 		/**
 		 * 7
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z5, "PrognoseZustandIn60Minuten", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 2.1),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, 2.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								2.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								2.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 
 		/**
@@ -274,40 +350,72 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z10, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 1.1),
-						new SensorEreignis(fbzSensor, 64.0),
-						new SensorEreignis(tptSensor, 2.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								64.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								2.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 9
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z10, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 0),
-						new SensorEreignis(fbzSensor, 65.0),
-						new SensorEreignis(tptSensor, 2.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								65.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								2.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 10
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z10, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 1.9),
-						new SensorEreignis(fbzSensor, 66.0),
-						new SensorEreignis(tptSensor, 2.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.9),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								66.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								2.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 11
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z10, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 1.1),
-						new SensorEreignis(fbzSensor, 67.0),
-						new SensorEreignis(tptSensor, 2.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								67.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								2.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * feucht oder nass
@@ -317,20 +425,36 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z9, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 1.1),
-						new SensorEreignis(fbzSensor, 1.0),
-						new SensorEreignis(tptSensor, 2.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								2.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 13
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z9, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 1.1),
-						new SensorEreignis(fbzSensor, 32.0),
-						new SensorEreignis(tptSensor, 2.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								32.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								2.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 
 		/**
@@ -341,20 +465,36 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z8, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 1.1),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, 1.1),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 15
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z12, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 1.1),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, 1.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 
 		/**
@@ -362,30 +502,54 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z7, null, new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 2.1),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, -2.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								2.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								-2.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 17
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z7, null, new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 2.1),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, -1.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								2.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								-1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 18
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z7, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 1.1),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, -1.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								-1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 
 		/**
@@ -393,24 +557,39 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z7, "AktuellerZustand", new SensorEreignis[] {
-						new SensorEreignis(fbtSensor, 1.1),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, -1.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								-1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 		/**
 		 * 20
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
 				Zustand.Z12, "PrognoseZustandIn90Minuten",
-				new SensorEreignis[] { new SensorEreignis(fbtSensor, 1.1),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, -1.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+				new SensorEreignis[] {
+						new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								1.1),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								-1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 
-		
-		
 		/**
 		 * Extra: Provoziere "nicht ermittelbar"
 		 */
@@ -418,28 +597,34 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 * 21
 		 */
 		ereignisse.add(new MessStellenEreignis(cal.getTimeInMillis(),
-				Zustand.Z0, "AktuellerZustand",
-				new SensorEreignis[] { new SensorEreignis(fbtSensor, Double.NaN),
-						new SensorEreignis(fbzSensor, 0.0),
-						new SensorEreignis(tptSensor, 1.0),
-						new SensorEreignis(ltSensor, 2.0) }));
+				Zustand.Z0, "AktuellerZustand", new SensorEreignis[] {
+						new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbtSensor,
+								Double.NaN),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.fbzSensor,
+								0.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.tptSensor,
+								1.0),
+			new SensorEreignis(
+								EntscheidungsBaumTestMitPublikation.ltSensor,
+								2.0) }));
 		cal.add(Calendar.MINUTE, 1);
 
-		
-		
-		for (MessStellenEreignis ereignis : ereignisse) {
+		for (final MessStellenEreignis ereignis : ereignisse) {
 			try {
 				Thread.sleep(100L);
-			} catch (InterruptedException e) {	//
+			} catch (final InterruptedException e) { //
 			}
-			synchronized (GlaetteWarnungUndPrognoseTest.dav) {
+			synchronized (GlaetteWarnungUndPrognose.dav) {
 				System.out.println(ereignis);
 				this.erwarteterZustand = ereignis.zustand;
 				this.horizont = ereignis.horizont;
 				this.publiziere(ereignis);
 				try {
-					dav.wait();
-				} catch (Exception e) {
+					GlaetteWarnungUndPrognose.dav.wait();
+				} catch (final Exception e) {
 					//
 				}
 			}
@@ -450,58 +635,74 @@ public class EntscheidungsBaumTestMitPublikation extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initialize(ClientDavInterface connection) throws Exception {
+	public void initialize(final ClientDavInterface connection)
+			throws Exception {
 		super.initialize(connection);
 
-		fbzSensor = connection.getDataModel().getObject(
-				"ufdSensor.test.FBOFZS.1");
-		fbtSensor = connection.getDataModel().getObject(
-				"ufdSensor.test.FBOFT.1");
-		ltSensor = connection.getDataModel().getObject("ufdSensor.test.LT.1");
-		tptSensor = connection.getDataModel().getObject("ufdSensor.test.TPT.1");
+		EntscheidungsBaumTestMitPublikation.fbzSensor = connection
+				.getDataModel().getObject("ufdSensor.test.FBOFZS.1");
+		EntscheidungsBaumTestMitPublikation.fbtSensor = connection
+				.getDataModel().getObject("ufdSensor.test.FBOFT.1");
+		EntscheidungsBaumTestMitPublikation.ltSensor = connection
+				.getDataModel().getObject("ufdSensor.test.LT.1");
+		EntscheidungsBaumTestMitPublikation.tptSensor = connection
+				.getDataModel().getObject("ufdSensor.test.TPT.1");
 
-		messStelle = connection.getDataModel()
-				.getObject("ufdMessStelle.test.1");
+		EntscheidungsBaumTestMitPublikation.messStelle = connection
+				.getDataModel().getObject("ufdMessStelle.test.1");
 
-		ddTptDaten = new DataDescription(dav.getDataModel().getAttributeGroup(
-				ATG_TPT), dav.getDataModel().getAspect(ASP_MESSWERT_ERSETZUNG));
+		EntscheidungsBaumTestMitPublikation.ddTptDaten = new DataDescription(
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
+						GlaetteWarnungUndPrognose.ATG_TPT),
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
+						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
-		ddFbtDaten = new DataDescription(dav.getDataModel().getAttributeGroup(
-				ATG_FBT), dav.getDataModel().getAspect(ASP_MESSWERT_ERSETZUNG));
+		EntscheidungsBaumTestMitPublikation.ddFbtDaten = new DataDescription(
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
+						GlaetteWarnungUndPrognose.ATG_FBT),
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
+						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
-		ddFbzDaten = new DataDescription(dav.getDataModel().getAttributeGroup(
-				ATG_FBZ), dav.getDataModel().getAspect(ASP_MESSWERT_ERSETZUNG));
+		EntscheidungsBaumTestMitPublikation.ddFbzDaten = new DataDescription(
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
+						GlaetteWarnungUndPrognose.ATG_FBZ),
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
+						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
-		ddLftDaten = new DataDescription(dav.getDataModel().getAttributeGroup(
-				ATG_LFT), dav.getDataModel().getAspect(ASP_MESSWERT_ERSETZUNG));
+		EntscheidungsBaumTestMitPublikation.ddLftDaten = new DataDescription(
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
+						GlaetteWarnungUndPrognose.ATG_LFT),
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
+						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
 	}
 
 	/**
 	 * Publiziert eine Messstellenereignis.
-	 * 
+	 *
 	 * @param ereignis
 	 *            ein Ereignis an einer Messstelle.
 	 * @throws SendSubscriptionNotConfirmed
 	 *             Ausnahme, die beim Senden von Daten als einfacher Sender
 	 *             generiert wird, wenn noch keine positive Sendesteuerung vom
 	 *             Datenverteiler für die zu versendenden Daten vorliegt.
-	 * 
+	 *
 	 */
-	public void publiziere(MessStellenEreignis ereignis)
+	public void publiziere(final MessStellenEreignis ereignis)
 			throws SendSubscriptionNotConfirmed {
-		for (SensorEreignis sensorEreignis : ereignis.getEreignisse()) {
-			dav.sendData(sensorEreignis
+		for (final SensorEreignis sensorEreignis : ereignis.getEreignisse()) {
+			GlaetteWarnungUndPrognose.dav.sendData(sensorEreignis
 					.getResultData(ereignis.getZeitStempel()));
 		}
 	}
 
 	/**
 	 * Eine Menge von gleichzeitigen Sensorereignissen an einer Messstelle.
-	 * 
+	 *
 	 * @author BitCtrl Systems GmbH, Thierfelder
-	 * 
-	 * @version $Id$
+	 *
+	 * @version $Id: EntscheidungsBaumTestMitPublikation.java 53827 2015-03-18
+	 *          10:04:42Z peuker $
 	 */
 	class MessStellenEreignis {
 
@@ -527,7 +728,7 @@ public class EntscheidungsBaumTestMitPublikation extends
 
 		/**
 		 * Standardkonstruktor.
-		 * 
+		 *
 		 * @param zeitStempel
 		 *            der Ereigniszeitstempel.
 		 * @param zustand
@@ -537,20 +738,20 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 * @param ereignisse
 		 *            eine Menge von Sensorereignissen.
 		 */
-		MessStellenEreignis(long zeitStempel, Zustand zustand, String horizont,
-				SensorEreignis... ereignisse) {
+		MessStellenEreignis(final long zeitStempel, final Zustand zustand,
+				final String horizont, final SensorEreignis... ereignisse) {
 			this.zeitStempel = zeitStempel;
 			this.zustand = zustand;
 			this.horizont = horizont;
 			this.ereignisListe = new ArrayList<SensorEreignis>();
-			for (SensorEreignis ereignis : ereignisse) {
+			for (final SensorEreignis ereignis : ereignisse) {
 				this.ereignisListe.add(ereignis);
 			}
 		}
 
 		/**
 		 * Erfragt die Ereignisliste dieses Messstellenereignisses.
-		 * 
+		 *
 		 * @return die Ereignisliste dieses Messstellenereignisses.
 		 */
 		List<SensorEreignis> getEreignisse() {
@@ -559,7 +760,7 @@ public class EntscheidungsBaumTestMitPublikation extends
 
 		/**
 		 * Erfragt den Ereigniszeitstempel.
-		 * 
+		 *
 		 * @return der Ereigniszeitstempel.
 		 */
 		long getZeitStempel() {
@@ -571,9 +772,10 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 */
 		@Override
 		public String toString() {
-			final SimpleDateFormat dateFormat = new SimpleDateFormat(DUAKonstanten.ZEIT_FORMAT_GENAU_STR);
+			final SimpleDateFormat dateFormat = new SimpleDateFormat(
+					DUAKonstanten.ZEIT_FORMAT_GENAU_STR);
 			String s = dateFormat.format(this.zeitStempel);
-			
+
 			if (this.horizont == null) {
 				s += " --> Sende DUMMY\n";
 			} else {
@@ -582,7 +784,7 @@ public class EntscheidungsBaumTestMitPublikation extends
 			}
 
 			if (ereignisListe.size() > 0) {
-				for (SensorEreignis ereignis : ereignisListe) {
+				for (final SensorEreignis ereignis : ereignisListe) {
 					s += ereignis + ", ";
 				}
 				s = s.substring(0, s.length() - 2);
@@ -595,10 +797,11 @@ public class EntscheidungsBaumTestMitPublikation extends
 
 	/**
 	 * Ein Ereignis an einem Sensor.
-	 * 
+	 *
 	 * @author BitCtrl Systems GmbH, Thierfelder
-	 * 
-	 * @version $Id$
+	 *
+	 * @version $Id: EntscheidungsBaumTestMitPublikation.java 53827 2015-03-18
+	 *          10:04:42Z peuker $
 	 */
 	class SensorEreignis {
 
@@ -614,13 +817,13 @@ public class EntscheidungsBaumTestMitPublikation extends
 
 		/**
 		 * Standardkonstruktor.
-		 * 
+		 *
 		 * @param ufds
 		 *            der Umfelddatensensor.
 		 * @param wert1
 		 *            der Wert (skaliert).
 		 */
-		SensorEreignis(SystemObject ufds, double wert1) {
+		SensorEreignis(final SystemObject ufds, final double wert1) {
 			this.ufds = ufds;
 			if (ufds.isOfType(UmfeldDatenArt.fbt.getTyp())) {
 				if (Double.isNaN(wert1)) {
@@ -654,47 +857,48 @@ public class EntscheidungsBaumTestMitPublikation extends
 
 		/**
 		 * Generiert ein Datum mit Zeitstempel.
-		 * 
+		 *
 		 * @param zeitStempel1
 		 *            ein Zeitstempel
 		 * @return ein Datum mit Zeitstempel.
 		 */
-		ResultData getResultData(long zeitStempel1) {
+		ResultData getResultData(final long zeitStempel1) {
 			DataDescription datenBeschreibung = null;
 
 			if (ufds.isOfType(UmfeldDatenArt.fbt.getTyp())) {
-				datenBeschreibung = ddFbtDaten;
+				datenBeschreibung = EntscheidungsBaumTestMitPublikation.ddFbtDaten;
 			}
 			if (ufds.isOfType(UmfeldDatenArt.lt.getTyp())) {
-				datenBeschreibung = ddLftDaten;
+				datenBeschreibung = EntscheidungsBaumTestMitPublikation.ddLftDaten;
 			}
 			if (ufds.isOfType(UmfeldDatenArt.tpt.getTyp())) {
-				datenBeschreibung = ddTptDaten;
+				datenBeschreibung = EntscheidungsBaumTestMitPublikation.ddTptDaten;
 			}
 			if (ufds.isOfType(UmfeldDatenArt.fbz.getTyp())) {
-				datenBeschreibung = ddFbzDaten;
+				datenBeschreibung = EntscheidungsBaumTestMitPublikation.ddFbzDaten;
 			}
 
-			Data data = dav.createData(datenBeschreibung.getAttributeGroup());
-			String att = UmfeldDatenArt.getUmfeldDatenArtVon(this.ufds)
+			final Data data = GlaetteWarnungUndPrognose.dav
+					.createData(datenBeschreibung.getAttributeGroup());
+			final String att = UmfeldDatenArt.getUmfeldDatenArtVon(this.ufds)
 					.getName();
-			data.getItem("T").asTimeValue().setMillis(
-					Constants.MILLIS_PER_MINUTE);
+			data.getItem("T").asTimeValue()
+					.setMillis(Constants.MILLIS_PER_MINUTE);
 			data.getItem(att).getUnscaledValue("Wert").set(wert);
 			data.getItem(att).getItem("Status").getItem("Erfassung")
-					.getUnscaledValue("NichtErfasst").set(0);
+			.getUnscaledValue("NichtErfasst").set(0);
 			data.getItem(att).getItem("Status").getItem("PlFormal")
-					.getUnscaledValue("WertMax").set(0);
+			.getUnscaledValue("WertMax").set(0);
 			data.getItem(att).getItem("Status").getItem("PlFormal")
-					.getUnscaledValue("WertMin").set(0);
+			.getUnscaledValue("WertMin").set(0);
 			data.getItem(att).getItem("Status").getItem("MessWertErsetzung")
-					.getUnscaledValue("Implausibel").set(0);
+			.getUnscaledValue("Implausibel").set(0);
 			data.getItem(att).getItem("Status").getItem("MessWertErsetzung")
-					.getUnscaledValue("Interpoliert").set(0);
-			data.getItem(att).getItem("Güte").getUnscaledValue("Index").set(
-					1000);
+			.getUnscaledValue("Interpoliert").set(0);
+			data.getItem(att).getItem("Güte").getUnscaledValue("Index")
+					.set(1000);
 			data.getItem(att).getItem("Güte").getUnscaledValue("Verfahren")
-					.set(0);
+			.set(0);
 
 			return new ResultData(this.ufds, datenBeschreibung, zeitStempel1,
 					data);
@@ -706,9 +910,9 @@ public class EntscheidungsBaumTestMitPublikation extends
 		@Override
 		public String toString() {
 			String derWert = wert == -1001.0 ? "nErm" : new Double(wert / 10)
-					.toString();
+			.toString();
 			if (this.ufds.isOfType(UmfeldDatenArt.fbz.getTyp())) {
-				int code = (int) this.wert;
+				final int code = (int) this.wert;
 				switch (code) {
 				case -1:
 					derWert = "nErm";
@@ -744,10 +948,11 @@ public class EntscheidungsBaumTestMitPublikation extends
 
 	/**
 	 * Zustandsspeicher für Glaetteprognosen.
-	 * 
+	 *
 	 * @author BitCtrl Systems GmbH, Thierfelder
-	 * 
-	 * @version $Id$
+	 *
+	 * @version $Id: EntscheidungsBaumTestMitPublikation.java 53827 2015-03-18
+	 *          10:04:42Z peuker $
 	 */
 	static class Zustand extends AbstractDavZustand {
 
@@ -775,11 +980,11 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 * dito.
 		 */
 		private static final Zustand Z3 = new Zustand("Eisglätte möglich", 3);
-//		/**
-//		 * dito.
-//		 */
-//		private static final Zustand Z4 = new Zustand(
-//				"Tendenzberechnung nicht möglich", 4);
+		// /**
+		// * dito.
+		// */
+		// private static final Zustand Z4 = new Zustand(
+		// "Tendenzberechnung nicht möglich", 4);
 		/**
 		 * dito.
 		 */
@@ -811,11 +1016,11 @@ public class EntscheidungsBaumTestMitPublikation extends
 		 * dito.
 		 */
 		private static final Zustand Z10 = new Zustand("Glätte vorhanden", 10);
-//		/**
-//		 * dito.
-//		 */
-//		private static final Zustand Z11 = new Zustand(
-//				"Eis oder Schnee auf der Fahrbahn", 11);
+		// /**
+		// * dito.
+		// */
+		// private static final Zustand Z11 = new Zustand(
+		// "Eis oder Schnee auf der Fahrbahn", 11);
 		/**
 		 * dito.
 		 */
@@ -825,26 +1030,26 @@ public class EntscheidungsBaumTestMitPublikation extends
 
 		/**
 		 * Standardkonstruktor.
-		 * 
+		 *
 		 * @param text1
 		 *            Text des Zustandes
 		 * @param i1
 		 *            Nummer des Zustandes
 		 */
-		public Zustand(String text1, int i1) {
+		public Zustand(final String text1, final int i1) {
 			super(i1, text1);
-			werteBereich.put(i1, this);
+			Zustand.werteBereich.put(i1, this);
 		}
 
 		/**
 		 * Erfragt eine statische Instanz dieser Klasse.
-		 * 
+		 *
 		 * @param code
 		 *            deren Kode.
 		 * @return eine statische Instanz dieser Klasse.
 		 */
-		public static Zustand getInstanz(int code) {
-			return werteBereich.get(code);
+		public static Zustand getInstanz(final int code) {
+			return Zustand.werteBereich.get(code);
 		}
 
 	}
