@@ -1,8 +1,8 @@
-/**
+/*
  * Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 Glättewarnung und -prognose
  * 
- * Copyright (C) 2007 BitCtrl Systems GmbH 
- * 
+ * Copyright (C) 2007-2015 BitCtrl Systems GmbH
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
@@ -24,6 +24,7 @@
  * Phone: +49 341-490670<br>
  * mailto: info@bitctrl.de
  */
+
 
 /**
  * Klassen für die SWE 4.14 Glättewarnung und -prognose 
