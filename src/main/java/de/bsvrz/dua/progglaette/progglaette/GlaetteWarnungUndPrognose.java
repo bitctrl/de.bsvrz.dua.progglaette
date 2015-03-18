@@ -69,7 +69,7 @@ import de.bsvrz.sys.funclib.operatingMessage.MessageType;
  *          peuker $
  */
 public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
-ClientReceiverInterface, StandardApplication {
+		ClientReceiverInterface, StandardApplication {
 
 	private static final Debug LOGGER = Debug.getLogger();
 
@@ -298,9 +298,8 @@ ClientReceiverInterface, StandardApplication {
 			final long zs = resDatei.getDataTime();
 
 			if (umfDaten == null) {
-				LOGGER.warning(
-						"Umfelddaten fuer Messstelle nicht gefunden: "
-								+ objekt.getPid());
+				LOGGER.warning("Umfelddaten fuer Messstelle nicht gefunden: "
+						+ objekt.getPid());
 				continue;
 			}
 
@@ -437,9 +436,8 @@ ClientReceiverInterface, StandardApplication {
 				msgSender.sendMessage(MessageType.APPLICATION_DOMAIN,
 						MessageGrade.WARNING,
 						"Der übergebene Konfigurationsbereich " + s
-						+ " existiert nicht.");
-				LOGGER.warning(
-						"Der übergebene Konfigurationsbereich " + s
+								+ " existiert nicht.");
+				LOGGER.warning("Der übergebene Konfigurationsbereich " + s
 						+ " existiert nicht.");
 				ca = GlaetteWarnungUndPrognose.dav.getDataModel()
 						.getConfigurationAuthority().getConfigurationArea();
@@ -496,32 +494,22 @@ ClientReceiverInterface, StandardApplication {
 				}
 			}
 			if (lftSensor == null) {
-				LOGGER
-				.warning(
-						"Messstelle "
-								+ so.getPid()
-								+ " enthaelt keinen Lufttemperatur Hauptsensor");
+				LOGGER.warning("Messstelle " + so.getPid()
+						+ " enthaelt keinen Lufttemperatur Hauptsensor");
 				continue;
 			} else if (fbtSensor == null) {
-				LOGGER
-				.warning(
-						"Messstelle "
-								+ so.getPid()
-								+ " enthaelt keinen Fahrbahnoberflaechentemperatur Hauptsensor");
+				LOGGER.warning("Messstelle "
+						+ so.getPid()
+						+ " enthaelt keinen Fahrbahnoberflaechentemperatur Hauptsensor");
 				continue;
 			} else if (fbzSensor == null) {
-				LOGGER
-				.warning(
-						"Messstelle "
-								+ so.getPid()
-								+ " enthaelt keinen Fahrbahnoberflaechenzustand Hauptsensor");
+				LOGGER.warning("Messstelle "
+						+ so.getPid()
+						+ " enthaelt keinen Fahrbahnoberflaechenzustand Hauptsensor");
 				continue;
 			} else if (tptSensor == null) {
-				LOGGER
-				.warning(
-						"Messstelle "
-								+ so.getPid()
-								+ " enthaelt keinen Taupunkttemperatur Hauptsensor");
+				LOGGER.warning("Messstelle " + so.getPid()
+						+ " enthaelt keinen Taupunkttemperatur Hauptsensor");
 				continue;
 			}
 
@@ -591,9 +579,7 @@ ClientReceiverInterface, StandardApplication {
 	public void parseArguments(final ArgumentList argumente) throws Exception {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			@Override
-			public void uncaughtException(
-					@SuppressWarnings("unused") final Thread t,
-					final Throwable e) {
+			public void uncaughtException(final Thread t, final Throwable e) {
 				LOGGER.error("Applikation wird wegen" + //$NON-NLS-1$
 						" unerwartetem Fehler beendet", e); //$NON-NLS-1$
 				e.printStackTrace();
@@ -634,7 +620,7 @@ ClientReceiverInterface, StandardApplication {
 		final String[] attGlaettePrognose = new String[] { "AktuellerZustand",
 				"PrognoseZustandIn5Minuten", "PrognoseZustandIn15Minuten",
 				"PrognoseZustandIn30Minuten", "PrognoseZustandIn60Minuten",
-		"PrognoseZustandIn90Minuten" };
+				"PrognoseZustandIn90Minuten" };
 
 		final Data glaetteDs = GlaetteWarnungUndPrognose.dav
 				.createData(GlaetteWarnungUndPrognose.dav.getDataModel()
@@ -665,7 +651,7 @@ ClientReceiverInterface, StandardApplication {
 		final String[] attGlaettePrognose = new String[] { "AktuellerZustand",
 				"PrognoseZustandIn5Minuten", "PrognoseZustandIn15Minuten",
 				"PrognoseZustandIn30Minuten", "PrognoseZustandIn60Minuten",
-		"PrognoseZustandIn90Minuten" };
+				"PrognoseZustandIn90Minuten" };
 		double[] fbtExtrapoliert, tptExtrapoliert;
 		Data glaetteDs;
 		int letzterIndex;
@@ -757,14 +743,14 @@ ClientReceiverInterface, StandardApplication {
 		}
 
 		glaetteDs.getItem(attGlaettePrognose[0]).asUnscaledValue()
-		.set(prognose);
+				.set(prognose);
 
 		for (int i = 0; i < 5; i++) {
 			if (GlaetteWarnungUndPrognose.DEBUG) {
 				System.out.println((i + 2) + ". Prognose: " + fbz + ", " + fbt
 						+ ", " + tpt + ", " + lft + ", " + fbtExtrapoliert[i]
-								+ ", " + tptExtrapoliert[i] + ", fbt - tpt = "
-								+ (fbtExtrapoliert[i] - tptExtrapoliert[i]));
+						+ ", " + tptExtrapoliert[i] + ", fbt - tpt = "
+						+ (fbtExtrapoliert[i] - tptExtrapoliert[i]));
 			}
 			prognose = EntscheidungsBaum.getPrognose(fbz, fbt, tpt, lft,
 					fbtExtrapoliert[i], tptExtrapoliert[i]);
