@@ -45,6 +45,7 @@ import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.ClientReceiverInterface;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.DataDescription;
+import de.bsvrz.dav.daf.main.DataNotSubscribedException;
 import de.bsvrz.dav.daf.main.ReceiveOptions;
 import de.bsvrz.dav.daf.main.ReceiverRole;
 import de.bsvrz.dav.daf.main.ResultData;
@@ -55,7 +56,9 @@ import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
 import de.bsvrz.sys.funclib.bitctrl.daf.AbstractDavZustand;
 import de.bsvrz.sys.funclib.bitctrl.dua.DUAInitialisierungsException;
 import de.bsvrz.sys.funclib.bitctrl.dua.DUAKonstanten;
+import de.bsvrz.sys.funclib.bitctrl.dua.ufd.UmfeldDatenSensorUnbekannteDatenartException;
 import de.bsvrz.sys.funclib.bitctrl.dua.ufd.typen.UmfeldDatenArt;
+import de.bsvrz.sys.funclib.debug.Debug;
 
 /**
  * Provoziert <b>alle</b> moeglichen Wege im Entscheidungsbaum.
@@ -691,8 +694,12 @@ GlaetteWarnungUndPrognose {
 	public void publiziere(final MessStellenEreignis ereignis)
 			throws SendSubscriptionNotConfirmed {
 		for (final SensorEreignis sensorEreignis : ereignis.getEreignisse()) {
-			GlaetteWarnungUndPrognose.dav.sendData(sensorEreignis
-					.getResultData(ereignis.getZeitStempel()));
+			try {
+				GlaetteWarnungUndPrognose.dav.sendData(sensorEreignis
+						.getResultData(ereignis.getZeitStempel()));
+			} catch (final UmfeldDatenSensorUnbekannteDatenartException e) {
+				Debug.getLogger().warning(e.getMessage());
+			}
 		}
 	}
 
@@ -861,8 +868,9 @@ GlaetteWarnungUndPrognose {
 		 * @param zeitStempel1
 		 *            ein Zeitstempel
 		 * @return ein Datum mit Zeitstempel.
+		 * @throws UmfeldDatenSensorUnbekannteDatenartException 
 		 */
-		ResultData getResultData(final long zeitStempel1) {
+		ResultData getResultData(final long zeitStempel1) throws UmfeldDatenSensorUnbekannteDatenartException {
 			DataDescription datenBeschreibung = null;
 
 			if (ufds.isOfType(UmfeldDatenArt.fbt.getTyp())) {
