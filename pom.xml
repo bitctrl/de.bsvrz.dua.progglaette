@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.bsvrz.dua</groupId>
 	<artifactId>de.bsvrz.dua.progglaette</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.1-SNAPSHOT</version>
 
 
 	<name>Glaettewarnung und -prognose</name>
