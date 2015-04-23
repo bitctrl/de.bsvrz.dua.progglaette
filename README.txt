@@ -1,5 +1,5 @@
 ***********************************************************************************************
-*  Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 SWE Glättewarnung und –prognose  *
+*  Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 SWE Glättewarnung und -prognose  *
 ***********************************************************************************************
 
 Version: 1.2.0
@@ -8,7 +8,7 @@ Version: 1.2.0
 Übersicht
 =========
 
-Die SWE Glättewarnung und –prognose ermittelt aus den aktuell gültigen und den 
+Die SWE Glättewarnung und -prognose ermittelt aus den aktuell gültigen und den 
 in letzten 10 Minuten eingelaufenen messwertersetzten Daten der Fahrbahnoberflächen-
 und Taupunkttemperatur sowie dem momentan gemessenen gültigen Fahrbahnzustand und der
 aktuell gültigen Lufttemperatur einer Umfelddatenmessstelle eine Aussage über eine
@@ -21,6 +21,8 @@ Versionsgeschichte
 
 1.2.0
 - Umstellung auf Maven-Build
+- Behandlung nicht unterstützter Sensorarten über die 'UmfeldDatenSensorUnbekannteDatenartException'
+- benötigt SWE_de.bsvrz.sys.funclib.bitctrl_FREI_V1.2.3.zip oder höher 
 
 1.0.0
 
