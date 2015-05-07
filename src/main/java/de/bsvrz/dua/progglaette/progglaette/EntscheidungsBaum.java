@@ -226,7 +226,7 @@ public class EntscheidungsBaum {
 	}
 
 /**
-	 * Operator "<".
+	 * Operator "&lt;".
 	 */
 	public static class OperatorKleiner implements Operator {
 		/**
@@ -239,7 +239,7 @@ public class EntscheidungsBaum {
 	}
 
 	/**
-	 * Operator "<=".
+	 * Operator "&lt;=".
 	 */
 	public static class OperatorKleinerGleich implements Operator {
 		/**
@@ -252,7 +252,7 @@ public class EntscheidungsBaum {
 	}
 
 	/**
-	 * Operator ">".
+	 * Operator "&gt;".
 	 */
 	public static class OperatorGroesser implements Operator {
 		/**
@@ -265,7 +265,7 @@ public class EntscheidungsBaum {
 	}
 
 	/**
-	 * Operator ">=".
+	 * Operator "&gt;=".
 	 */
 	public static class OperatorGroesserGleich implements Operator {
 		/**
