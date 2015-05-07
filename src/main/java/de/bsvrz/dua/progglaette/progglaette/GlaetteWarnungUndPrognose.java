@@ -64,9 +64,6 @@ import de.bsvrz.sys.funclib.operatingMessage.MessageType;
  * Ausgaben.
  *
  * @author BitCtrl Systems GmbH, Bachraty
- *
- * @version $Id: GlaetteWarnungUndPrognose.java 53825 2015-03-18 09:36:42Z
- *          peuker $
  */
 public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		ClientReceiverInterface, StandardApplication {

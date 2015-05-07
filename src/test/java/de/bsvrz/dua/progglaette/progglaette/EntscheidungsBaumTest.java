@@ -33,8 +33,6 @@ import org.junit.Test;
  * Testet den Entscheidungsbaum.
  *
  * @author BitCtrl Systems GmbH, Bachraty
- *
- * @version $Id$
  */
 public class EntscheidungsBaumTest extends EntscheidungsBaum {
 

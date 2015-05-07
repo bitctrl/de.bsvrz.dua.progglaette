@@ -64,9 +64,6 @@ import de.bsvrz.sys.funclib.debug.Debug;
  * Provoziert <b>alle</b> moeglichen Wege im Entscheidungsbaum.
  *
  * @author BitCtrl Systems GmbH, Thierfelder
- *
- * @version $Id: EntscheidungsBaumTestMitPublikation.java 53827 2015-03-18
- *          10:04:42Z peuker $
  */
 public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndPrognose {
 
@@ -471,11 +468,6 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 
 	/**
 	 * Eine Menge von gleichzeitigen Sensorereignissen an einer Messstelle.
-	 *
-	 * @author BitCtrl Systems GmbH, Thierfelder
-	 *
-	 * @version $Id: EntscheidungsBaumTestMitPublikation.java 53827 2015-03-18
-	 *          10:04:42Z peuker $
 	 */
 	class MessStellenEreignis {
 
@@ -568,11 +560,6 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 
 	/**
 	 * Ein Ereignis an einem Sensor.
-	 *
-	 * @author BitCtrl Systems GmbH, Thierfelder
-	 *
-	 * @version $Id: EntscheidungsBaumTestMitPublikation.java 53827 2015-03-18
-	 *          10:04:42Z peuker $
 	 */
 	class SensorEreignis {
 
@@ -709,11 +696,6 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 
 	/**
 	 * Zustandsspeicher für Glaetteprognosen.
-	 *
-	 * @author BitCtrl Systems GmbH, Thierfelder
-	 *
-	 * @version $Id: EntscheidungsBaumTestMitPublikation.java 53827 2015-03-18
-	 *          10:04:42Z peuker $
 	 */
 	static class Zustand extends AbstractDavZustand {
 

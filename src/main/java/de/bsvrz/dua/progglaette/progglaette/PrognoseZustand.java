@@ -38,8 +38,6 @@ import com.bitctrl.Constants;
  * Horizont 5, 15, 30, 60, 90 Minuten.
  *
  * @author BitCtrl Systems GmbH, Bachraty
- *
- * @version $Id$
  */
 public class PrognoseZustand {
 

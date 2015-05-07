@@ -45,9 +45,6 @@ import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
  * die daten im korrekten Zeitpunkt publiziert werden.
  *
  * @author BitCtrl Systems GmbH, Bachraty
- *
- * @version $Id: GlaetteWarnungUndPrognoseTest.java 53827 2015-03-18 10:04:42Z
- *          peuker $
  */
 @Ignore("Testdatenverteiler prüfen")
 public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {

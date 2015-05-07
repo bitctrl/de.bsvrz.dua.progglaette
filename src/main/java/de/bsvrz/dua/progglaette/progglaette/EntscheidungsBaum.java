@@ -34,8 +34,6 @@ import de.bsvrz.sys.funclib.debug.Debug;
  * Eigenschaften der Fahrbahn und Luft und seinen Prognosewerten.
  *
  * @author BitCtrl Systems GmbH, Bachraty..
- *
- * @version $Id$
  */
 public class EntscheidungsBaum {
 
