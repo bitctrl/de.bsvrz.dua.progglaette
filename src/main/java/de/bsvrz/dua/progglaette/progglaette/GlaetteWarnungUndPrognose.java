@@ -65,8 +65,7 @@ import de.bsvrz.sys.funclib.operatingMessage.MessageType;
  *
  * @author BitCtrl Systems GmbH, Bachraty
  */
-public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
-		ClientReceiverInterface, StandardApplication {
+public class GlaetteWarnungUndPrognose implements ClientSenderInterface, ClientReceiverInterface, StandardApplication {
 
 	private static final Debug LOGGER = Debug.getLogger();
 
@@ -281,9 +280,6 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 */
 	private final HashMap<SystemObject, UmfDatenHist> mapUmfDaten = new HashMap<SystemObject, UmfDatenHist>();
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void update(final ResultData[] results) {
 		for (final ResultData resDatei : results) {
@@ -295,8 +291,8 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 			final long zs = resDatei.getDataTime();
 
 			if (umfDaten == null) {
-				LOGGER.warning("Umfelddaten fuer Messstelle nicht gefunden: "
-						+ objekt.getPid());
+				GlaetteWarnungUndPrognose.LOGGER
+				.warning("Umfelddaten fuer Messstelle nicht gefunden: " + objekt.getPid());
 				continue;
 			}
 
@@ -314,42 +310,34 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 				continue;
 			}
 
-			final String atgPid = resDatei.getDataDescription()
-					.getAttributeGroup().getPid();
+			final String atgPid = resDatei.getDataDescription().getAttributeGroup().getPid();
 
 			if (GlaetteWarnungUndPrognose.ATG_FBT.equals(atgPid)) {
-				double d = daten.getItem("FahrBahnOberFlächenTemperatur")
-						.getUnscaledValue("Wert").longValue();
+				double d = daten.getItem("FahrBahnOberFlächenTemperatur").getUnscaledValue("Wert").longValue();
 				if (d > 0) {
-					d = daten.getItem("FahrBahnOberFlächenTemperatur")
-							.getScaledValue("Wert").doubleValue();
+					d = daten.getItem("FahrBahnOberFlächenTemperatur").getScaledValue("Wert").doubleValue();
 				}
 				umfDaten.letzteFbt = d;
 				umfDaten.zsLetzterFbt = zs;
 				bearbeiteDaten(umfDaten, zs);
 			} else if (GlaetteWarnungUndPrognose.ATG_LFT.equals(atgPid)) {
-				double d = daten.getItem("LuftTemperatur")
-						.getUnscaledValue("Wert").longValue();
+				double d = daten.getItem("LuftTemperatur").getUnscaledValue("Wert").longValue();
 				if (d > 0) {
-					d = daten.getItem("LuftTemperatur").getScaledValue("Wert")
-							.doubleValue();
+					d = daten.getItem("LuftTemperatur").getScaledValue("Wert").doubleValue();
 				}
 				umfDaten.letzteLft = d;
 				umfDaten.zsLetzterLft = zs;
 				bearbeiteDaten(umfDaten, zs);
 			} else if (GlaetteWarnungUndPrognose.ATG_TPT.equals(atgPid)) {
-				double d = daten.getItem("TaupunktTemperatur")
-						.getUnscaledValue("Wert").longValue();
+				double d = daten.getItem("TaupunktTemperatur").getUnscaledValue("Wert").longValue();
 				if (d > 0) {
-					d = daten.getItem("TaupunktTemperatur")
-							.getScaledValue("Wert").doubleValue();
+					d = daten.getItem("TaupunktTemperatur").getScaledValue("Wert").doubleValue();
 				}
 				umfDaten.letzteTpt = d;
 				umfDaten.zsLetzterTpt = zs;
 				bearbeiteDaten(umfDaten, zs);
 			} else if (GlaetteWarnungUndPrognose.ATG_FBZ.equals(atgPid)) {
-				final long d = daten.getItem("FahrBahnOberFlächenZustand")
-						.getUnscaledValue("Wert").longValue();
+				final long d = daten.getItem("FahrBahnOberFlächenZustand").getUnscaledValue("Wert").longValue();
 				umfDaten.letzteFbz = d;
 				umfDaten.zsLetztenFbz = zs;
 				bearbeiteDaten(umfDaten, zs);
@@ -365,13 +353,11 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 * @param zeitStempel
 	 *            Aktueller Zeitstempel
 	 */
-	public void bearbeiteDaten(final UmfDatenHist umfDaten,
-			final long zeitStempel) {
+	public void bearbeiteDaten(final UmfDatenHist umfDaten, final long zeitStempel) {
 
 		// Wenn beiden Tpt und Fbt schon gekommen sind, koennen wir sie
 		// ins Ringpuffer einschreiben
-		if ((umfDaten.zsLetzterFbt == umfDaten.zsLetzterTpt)
-				&& (umfDaten.zsLetzterTpt == zeitStempel)) {
+		if ((umfDaten.zsLetzterFbt == umfDaten.zsLetzterTpt) && (umfDaten.zsLetzterTpt == zeitStempel)) {
 
 			umfDaten.fbtPuffer[umfDaten.index] = umfDaten.letzteFbt;
 			umfDaten.tptPuffer[umfDaten.index] = umfDaten.letzteTpt;
@@ -412,12 +398,8 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void initialize(final ClientDavInterface connection)
-			throws Exception {
+	public void initialize(final ClientDavInterface connection) throws Exception {
 
 		GlaetteWarnungUndPrognose.dav = connection;
 		Collection<SystemObject> messStellen = new LinkedList<SystemObject>();
@@ -427,25 +409,20 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		msgSender = MessageSender.getInstance();
 
 		for (final String s : this.konfBereiche) {
-			ConfigurationArea ca = GlaetteWarnungUndPrognose.dav.getDataModel()
-					.getConfigurationArea(s);
+			ConfigurationArea ca = GlaetteWarnungUndPrognose.dav.getDataModel().getConfigurationArea(s);
 			if (ca == null) {
-				msgSender.sendMessage(MessageType.APPLICATION_DOMAIN,
-						MessageGrade.WARNING,
-						"Der übergebene Konfigurationsbereich " + s
-								+ " existiert nicht.");
-				LOGGER.warning("Der übergebene Konfigurationsbereich " + s
-						+ " existiert nicht.");
-				ca = GlaetteWarnungUndPrognose.dav.getDataModel()
-						.getConfigurationAuthority().getConfigurationArea();
+				msgSender.sendMessage(MessageType.APPLICATION_DOMAIN, MessageGrade.WARNING,
+						"Der übergebene Konfigurationsbereich " + s + " existiert nicht.");
+				GlaetteWarnungUndPrognose.LOGGER
+				.warning("Der übergebene Konfigurationsbereich " + s + " existiert nicht.");
+				ca = GlaetteWarnungUndPrognose.dav.getDataModel().getConfigurationAuthority().getConfigurationArea();
 			}
 			konfBerieche.add(ca);
 		}
 
-		typen.add(GlaetteWarnungUndPrognose.dav.getDataModel().getType(
-				GlaetteWarnungUndPrognose.TYP_MESSSTELLE));
-		messStellen = GlaetteWarnungUndPrognose.dav.getDataModel().getObjects(
-				konfBerieche, typen, ObjectTimeSpecification.valid());
+		typen.add(GlaetteWarnungUndPrognose.dav.getDataModel().getType(GlaetteWarnungUndPrognose.TYP_MESSSTELLE));
+		messStellen = GlaetteWarnungUndPrognose.dav.getDataModel().getObjects(konfBerieche, typen,
+				ObjectTimeSpecification.valid());
 
 		SystemObject fbtSensor, lftSensor, fbzSensor, tptSensor;
 		Collection<SystemObject> fbtSensorMenge, lftSensorMenge, fbzSensorMenge, tptSensorMenge;
@@ -459,54 +436,44 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 				continue;
 			}
 			final ConfigurationObject confObjekt = (ConfigurationObject) so;
-			final ObjectSet sensorMenge = confObjekt
-					.getObjectSet(GlaetteWarnungUndPrognose.MNG_SENSOREN);
+			final ObjectSet sensorMenge = confObjekt.getObjectSet(GlaetteWarnungUndPrognose.MNG_SENSOREN);
 			fbtSensor = lftSensor = fbzSensor = tptSensor = null;
 			for (final SystemObject sensor : sensorMenge.getElements()) {
 				if (sensor.isValid()) {
 					final ConfigurationObject confObjekt2 = (ConfigurationObject) sensor;
-					final Data konfDaten = confObjekt2
-							.getConfigurationData(GlaetteWarnungUndPrognose.dav
-									.getDataModel()
-									.getAttributeGroup(
-											GlaetteWarnungUndPrognose.ATG_UFDSENSOR));
+					final Data konfDaten = confObjekt2.getConfigurationData(GlaetteWarnungUndPrognose.dav.getDataModel()
+							.getAttributeGroup(GlaetteWarnungUndPrognose.ATG_UFDSENSOR));
 
-					if (GlaetteWarnungUndPrognose.TYP_LFT.equals(sensor
-							.getType().getPid())
+					if (GlaetteWarnungUndPrognose.TYP_LFT.equals(sensor.getType().getPid())
 							&& (konfDaten.getUnscaledValue("Typ").intValue() == 0)) {
 						lftSensor = sensor;
-					} else if (GlaetteWarnungUndPrognose.TYP_FBT.equals(sensor
-							.getType().getPid())
+					} else if (GlaetteWarnungUndPrognose.TYP_FBT.equals(sensor.getType().getPid())
 							&& (konfDaten.getUnscaledValue("Typ").intValue() == 0)) {
 						fbtSensor = sensor;
-					} else if (GlaetteWarnungUndPrognose.TYP_FBZ.equals(sensor
-							.getType().getPid())
+					} else if (GlaetteWarnungUndPrognose.TYP_FBZ.equals(sensor.getType().getPid())
 							&& (konfDaten.getUnscaledValue("Typ").intValue() == 0)) {
 						fbzSensor = sensor;
-					} else if (GlaetteWarnungUndPrognose.TYP_TPT.equals(sensor
-							.getType().getPid())
+					} else if (GlaetteWarnungUndPrognose.TYP_TPT.equals(sensor.getType().getPid())
 							&& (konfDaten.getUnscaledValue("Typ").intValue() == 0)) {
 						tptSensor = sensor;
 					}
 				}
 			}
 			if (lftSensor == null) {
-				LOGGER.warning("Messstelle " + so.getPid()
-						+ " enthaelt keinen Lufttemperatur Hauptsensor");
+				GlaetteWarnungUndPrognose.LOGGER
+				.warning("Messstelle " + so.getPid() + " enthaelt keinen Lufttemperatur Hauptsensor");
 				continue;
 			} else if (fbtSensor == null) {
-				LOGGER.warning("Messstelle "
-						+ so.getPid()
-						+ " enthaelt keinen Fahrbahnoberflaechentemperatur Hauptsensor");
+				GlaetteWarnungUndPrognose.LOGGER.warning(
+						"Messstelle " + so.getPid() + " enthaelt keinen Fahrbahnoberflaechentemperatur Hauptsensor");
 				continue;
 			} else if (fbzSensor == null) {
-				LOGGER.warning("Messstelle "
-						+ so.getPid()
-						+ " enthaelt keinen Fahrbahnoberflaechenzustand Hauptsensor");
+				GlaetteWarnungUndPrognose.LOGGER.warning(
+						"Messstelle " + so.getPid() + " enthaelt keinen Fahrbahnoberflaechenzustand Hauptsensor");
 				continue;
 			} else if (tptSensor == null) {
-				LOGGER.warning("Messstelle " + so.getPid()
-						+ " enthaelt keinen Taupunkttemperatur Hauptsensor");
+				GlaetteWarnungUndPrognose.LOGGER
+				.warning("Messstelle " + so.getPid() + " enthaelt keinen Taupunkttemperatur Hauptsensor");
 				continue;
 			}
 
@@ -526,58 +493,48 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		}
 
 		final DataDescription ddTptDaten = new DataDescription(
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
-						GlaetteWarnungUndPrognose.ATG_TPT),
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
-						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_TPT),
+				GlaetteWarnungUndPrognose.dav.getDataModel()
+				.getAspect(GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
 		final DataDescription ddFbtDaten = new DataDescription(
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
-						GlaetteWarnungUndPrognose.ATG_FBT),
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
-						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_FBT),
+				GlaetteWarnungUndPrognose.dav.getDataModel()
+				.getAspect(GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
 		final DataDescription ddFbzDaten = new DataDescription(
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
-						GlaetteWarnungUndPrognose.ATG_FBZ),
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
-						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_FBZ),
+				GlaetteWarnungUndPrognose.dav.getDataModel()
+				.getAspect(GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
 		final DataDescription ddLftDaten = new DataDescription(
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
-						GlaetteWarnungUndPrognose.ATG_LFT),
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
-						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_LFT),
+				GlaetteWarnungUndPrognose.dav.getDataModel()
+				.getAspect(GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
-		GlaetteWarnungUndPrognose.dav.subscribeReceiver(this, tptSensorMenge,
-				ddTptDaten, ReceiveOptions.normal(), ReceiverRole.receiver());
-		GlaetteWarnungUndPrognose.dav.subscribeReceiver(this, fbtSensorMenge,
-				ddFbtDaten, ReceiveOptions.normal(), ReceiverRole.receiver());
-		GlaetteWarnungUndPrognose.dav.subscribeReceiver(this, fbzSensorMenge,
-				ddFbzDaten, ReceiveOptions.normal(), ReceiverRole.receiver());
-		GlaetteWarnungUndPrognose.dav.subscribeReceiver(this, lftSensorMenge,
-				ddLftDaten, ReceiveOptions.normal(), ReceiverRole.receiver());
+		GlaetteWarnungUndPrognose.dav.subscribeReceiver(this, tptSensorMenge, ddTptDaten, ReceiveOptions.normal(),
+				ReceiverRole.receiver());
+		GlaetteWarnungUndPrognose.dav.subscribeReceiver(this, fbtSensorMenge, ddFbtDaten, ReceiveOptions.normal(),
+				ReceiverRole.receiver());
+		GlaetteWarnungUndPrognose.dav.subscribeReceiver(this, fbzSensorMenge, ddFbzDaten, ReceiveOptions.normal(),
+				ReceiverRole.receiver());
+		GlaetteWarnungUndPrognose.dav.subscribeReceiver(this, lftSensorMenge, ddLftDaten, ReceiveOptions.normal(),
+				ReceiverRole.receiver());
 
-		ddGlaettePrognose = new DataDescription(GlaetteWarnungUndPrognose.dav
-				.getDataModel().getAttributeGroup(
-						GlaetteWarnungUndPrognose.ATG_GLAETTE),
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
-						GlaetteWarnungUndPrognose.ASP_PROGNOSE));
+		ddGlaettePrognose = new DataDescription(
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_GLAETTE),
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(GlaetteWarnungUndPrognose.ASP_PROGNOSE));
 
-		GlaetteWarnungUndPrognose.dav.subscribeSender(this, messStellen,
-				ddGlaettePrognose, SenderRole.source());
+		GlaetteWarnungUndPrognose.dav.subscribeSender(this, messStellen, ddGlaettePrognose, SenderRole.source());
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void parseArguments(final ArgumentList argumente) throws Exception {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(final Thread t, final Throwable e) {
-				LOGGER.error("Applikation wird wegen" + //$NON-NLS-1$
+				GlaetteWarnungUndPrognose.LOGGER.error("Applikation wird wegen" + //$NON-NLS-1$
 						" unerwartetem Fehler beendet", e); //$NON-NLS-1$
 				e.printStackTrace();
 				Runtime.getRuntime().exit(-1);
@@ -585,17 +542,14 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		});
 
 		if (!argumente.hasArgument(GlaetteWarnungUndPrognose.P_KONF_BEREICHE)) {
-			throw new DUAInitialisierungsException(
-					"Keine Konfigurationsbereiche eingegeben.");
+			throw new DUAInitialisierungsException("Keine Konfigurationsbereiche eingegeben.");
 		}
 
 		String argParameter;
-		argParameter = argumente.fetchArgument(
-				GlaetteWarnungUndPrognose.P_KONF_BEREICHE).asString();
+		argParameter = argumente.fetchArgument(GlaetteWarnungUndPrognose.P_KONF_BEREICHE).asString();
 
 		if (argParameter.length() < 1) {
-			throw new DUAInitialisierungsException(
-					"Keine Konfigurationsbereiche eingegeben.");
+			throw new DUAInitialisierungsException("Keine Konfigurationsbereiche eingegeben.");
 		}
 
 		this.konfBereiche = argParameter.split(",");
@@ -612,23 +566,18 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 * @param zeitStempel
 	 *            Aktueller Zeistempel
 	 */
-	public void publiziereNichtErmmittelbar(final UmfDatenHist ud,
-			final long zeitStempel) {
-		final String[] attGlaettePrognose = new String[] { "AktuellerZustand",
-				"PrognoseZustandIn5Minuten", "PrognoseZustandIn15Minuten",
-				"PrognoseZustandIn30Minuten", "PrognoseZustandIn60Minuten",
+	public void publiziereNichtErmmittelbar(final UmfDatenHist ud, final long zeitStempel) {
+		final String[] attGlaettePrognose = new String[] { "AktuellerZustand", "PrognoseZustandIn5Minuten",
+				"PrognoseZustandIn15Minuten", "PrognoseZustandIn30Minuten", "PrognoseZustandIn60Minuten",
 				"PrognoseZustandIn90Minuten" };
 
-		final Data glaetteDs = GlaetteWarnungUndPrognose.dav
-				.createData(GlaetteWarnungUndPrognose.dav.getDataModel()
-						.getAttributeGroup(
-								GlaetteWarnungUndPrognose.ATG_GLAETTE));
+		final Data glaetteDs = GlaetteWarnungUndPrognose.dav.createData(
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_GLAETTE));
 
 		glaetteDs.getItem(attGlaettePrognose[0]).asUnscaledValue().set(-1);
 
 		for (int i = 0; i < 5; i++) {
-			glaetteDs.getItem(attGlaettePrognose[i + 1]).asUnscaledValue()
-					.set(-1);
+			glaetteDs.getItem(attGlaettePrognose[i + 1]).asUnscaledValue().set(-1);
 		}
 
 		publiziere(ud, glaetteDs, zeitStempel, false);
@@ -642,12 +591,10 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 * @param zeitStempel
 	 *            Aktueller Zeitstempel
 	 */
-	public void versuchePrognosePublizieren(final UmfDatenHist ud,
-			final long zeitStempel) {
+	public void versuchePrognosePublizieren(final UmfDatenHist ud, final long zeitStempel) {
 
-		final String[] attGlaettePrognose = new String[] { "AktuellerZustand",
-				"PrognoseZustandIn5Minuten", "PrognoseZustandIn15Minuten",
-				"PrognoseZustandIn30Minuten", "PrognoseZustandIn60Minuten",
+		final String[] attGlaettePrognose = new String[] { "AktuellerZustand", "PrognoseZustandIn5Minuten",
+				"PrognoseZustandIn15Minuten", "PrognoseZustandIn30Minuten", "PrognoseZustandIn60Minuten",
 				"PrognoseZustandIn90Minuten" };
 		double[] fbtExtrapoliert, tptExtrapoliert;
 		Data glaetteDs;
@@ -659,12 +606,9 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 			return;
 		}
 
-		glaetteDs = GlaetteWarnungUndPrognose.dav
-				.createData(GlaetteWarnungUndPrognose.dav.getDataModel()
-						.getAttributeGroup(
-								GlaetteWarnungUndPrognose.ATG_GLAETTE));
-		letzterIndex = ((ud.index + UmfDatenHist.PUFFER_GROESSE) - 1)
-				% UmfDatenHist.PUFFER_GROESSE;
+		glaetteDs = GlaetteWarnungUndPrognose.dav.createData(
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_GLAETTE));
+		letzterIndex = ((ud.index + UmfDatenHist.PUFFER_GROESSE) - 1) % UmfDatenHist.PUFFER_GROESSE;
 
 		// Wenn im letzten intervall beide Fbt und tpt gekommen sind, und der
 		// Anzahl der Gueltigen
@@ -696,10 +640,8 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 				}
 			} else {
 				// Korrekte Historie
-				fbtExtrapoliert = PrognoseZustand.berechnePrognose(
-						ud.fbtPuffer, ud.zsPuffer, letzterIndex);
-				tptExtrapoliert = PrognoseZustand.berechnePrognose(
-						ud.tptPuffer, ud.zsPuffer, letzterIndex);
+				fbtExtrapoliert = PrognoseZustand.berechnePrognose(ud.fbtPuffer, ud.zsPuffer, letzterIndex);
+				tptExtrapoliert = PrognoseZustand.berechnePrognose(ud.tptPuffer, ud.zsPuffer, letzterIndex);
 			}
 		}
 
@@ -735,27 +677,22 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 			return;
 		}
 		if (GlaetteWarnungUndPrognose.DEBUG) {
-			System.out.println("1. Prognose: " + fbz + ", " + fbt + ", " + tpt
-					+ ", " + lft + ", " + fbt + ", " + tpt);
+			System.out.println("1. Prognose: " + fbz + ", " + fbt + ", " + tpt + ", " + lft + ", " + fbt + ", " + tpt);
 		}
 
-		glaetteDs.getItem(attGlaettePrognose[0]).asUnscaledValue()
-				.set(prognose);
+		glaetteDs.getItem(attGlaettePrognose[0]).asUnscaledValue().set(prognose);
 
 		for (int i = 0; i < 5; i++) {
 			if (GlaetteWarnungUndPrognose.DEBUG) {
-				System.out.println((i + 2) + ". Prognose: " + fbz + ", " + fbt
-						+ ", " + tpt + ", " + lft + ", " + fbtExtrapoliert[i]
-						+ ", " + tptExtrapoliert[i] + ", fbt - tpt = "
+				System.out.println((i + 2) + ". Prognose: " + fbz + ", " + fbt + ", " + tpt + ", " + lft + ", "
+						+ fbtExtrapoliert[i] + ", " + tptExtrapoliert[i] + ", fbt - tpt = "
 						+ (fbtExtrapoliert[i] - tptExtrapoliert[i]));
 			}
-			prognose = EntscheidungsBaum.getPrognose(fbz, fbt, tpt, lft,
-					fbtExtrapoliert[i], tptExtrapoliert[i]);
+			prognose = EntscheidungsBaum.getPrognose(fbz, fbt, tpt, lft, fbtExtrapoliert[i], tptExtrapoliert[i]);
 			if (prognose == EntscheidungsBaum.EB_DATEN_NICHT_VOLLSTAENDIG_ENTSCHEIDUNG_NICHT_MOEGLICH) {
 				return;
 			}
-			glaetteDs.getItem(attGlaettePrognose[i + 1]).asUnscaledValue()
-					.set(prognose);
+			glaetteDs.getItem(attGlaettePrognose[i + 1]).asUnscaledValue().set(prognose);
 		}
 
 		publiziere(ud, glaetteDs, zeitStempel, false);
@@ -774,16 +711,13 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 *            <code>true</code> wenn eid Datensatz mit "keine Daten"
 	 *            publiziert werden soll
 	 */
-	public void publiziere(final UmfDatenHist ud, final Data daten,
-			final long zeitStempel, final boolean keineDaten) {
+	public void publiziere(final UmfDatenHist ud, final Data daten, final long zeitStempel, final boolean keineDaten) {
 		ResultData resultate;
 
 		if (keineDaten) {
-			resultate = new ResultData(ud.messStelle, ddGlaettePrognose,
-					zeitStempel, null);
+			resultate = new ResultData(ud.messStelle, ddGlaettePrognose, zeitStempel, null);
 		} else {
-			resultate = new ResultData(ud.messStelle, ddGlaettePrognose,
-					zeitStempel, daten);
+			resultate = new ResultData(ud.messStelle, ddGlaettePrognose, zeitStempel, daten);
 		}
 
 		ud.keineDaten = keineDaten;
@@ -791,30 +725,22 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		try {
 			GlaetteWarnungUndPrognose.dav.sendData(resultate);
 		} catch (final DataNotSubscribedException e) {
-			LOGGER.warning("Datenabsendung unmoeglich");
+			GlaetteWarnungUndPrognose.LOGGER.warning("Datenabsendung unmoeglich");
 			e.printStackTrace();
 		} catch (final SendSubscriptionNotConfirmed e) {
-			LOGGER.warning("Datenabsendung unmoeglich");
+			GlaetteWarnungUndPrognose.LOGGER.warning("Datenabsendung unmoeglich");
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void dataRequest(final SystemObject object,
-			final DataDescription dataDescription, final byte state) {
+	public void dataRequest(final SystemObject object, final DataDescription dataDescription, final byte state) {
 		// TODO Auto-generated method stub
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean isRequestSupported(final SystemObject object,
-			final DataDescription dataDescription) {
+	public boolean isRequestSupported(final SystemObject object, final DataDescription dataDescription) {
 		// TODO Auto-generated method stub
 		return false;
 	}

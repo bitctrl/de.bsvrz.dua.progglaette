@@ -52,13 +52,11 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 	/**
 	 * Testsensoren.
 	 */
-	private static SystemObject fbzSensor, fbtSensor, ltSensor, tptSensor,
-	messStelle;
+	private static SystemObject fbzSensor, fbtSensor, ltSensor, tptSensor, messStelle;
 	/**
 	 * datenbeschreibung fuer testdaten.
 	 */
-	private static DataDescription ddLftDaten, ddTptDaten, ddFbtDaten,
-	ddFbzDaten;
+	private static DataDescription ddLftDaten, ddTptDaten, ddFbtDaten, ddFbzDaten;
 
 	/**
 	 * Zeitstempel als Referenzwerte.
@@ -76,33 +74,28 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 	 * aktuellen gerade gekommen sind, dann publiziern wir einen nicht
 	 * ermittelbaren DS fuer den vorherigen Intervall
 	 */
-	private final int[] lft = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0 };
+	private final int[] lft = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	/**
 	 * dito.
 	 */
-	private final int[] fbt = new int[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-			1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
-			0, 1, 0, 0 };
+	private final int[] fbt = new int[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
 	/**
 	 * dito.
 	 */
-	private final int[] tpt = new int[] { 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1 };
+	private final int[] tpt = new int[] { 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	/**
 	 * dito.
 	 */
-	private final int[] fbz = new int[] { 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1 };
+	private final int[] fbz = new int[] { 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	/**
 	 * anzahl der publizierten DS im jeden schritt.
 	 */
-	private final int[] pub = new int[] { 2, 0, 0, 1, 0, 0, 1, 0, 2, 1, 1, 1,
-			1, 0, 1, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 1, 0, 2, 1, 1, 1, 1, 0, 1,
-			1, 2, 0, 1 };
+	private final int[] pub = new int[] { 2, 0, 0, 1, 0, 0, 1, 0, 2, 1, 1, 1, 1, 0, 1, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 1,
+			0, 2, 1, 1, 1, 1, 0, 1, 1, 2, 0, 1 };
 
 	/**
 	 * Index im ZS array.
@@ -122,25 +115,16 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 		StandardApplicationRunner.run(gwp, Verbindung.CON_DATA.clone());
 
 		try {
-			GlaetteWarnungUndPrognose.dav.subscribeSender(this,
-					GlaetteWarnungUndPrognoseTest.tptSensor,
-					GlaetteWarnungUndPrognoseTest.ddTptDaten,
-					SenderRole.source());
-			GlaetteWarnungUndPrognose.dav.subscribeSender(this,
-					GlaetteWarnungUndPrognoseTest.ltSensor,
-					GlaetteWarnungUndPrognoseTest.ddLftDaten,
-					SenderRole.source());
-			GlaetteWarnungUndPrognose.dav.subscribeSender(this,
-					GlaetteWarnungUndPrognoseTest.fbtSensor,
-					GlaetteWarnungUndPrognoseTest.ddFbtDaten,
-					SenderRole.source());
-			GlaetteWarnungUndPrognose.dav.subscribeSender(this,
-					GlaetteWarnungUndPrognoseTest.fbzSensor,
-					GlaetteWarnungUndPrognoseTest.ddFbzDaten,
-					SenderRole.source());
+			GlaetteWarnungUndPrognose.dav.subscribeSender(this, GlaetteWarnungUndPrognoseTest.tptSensor,
+					GlaetteWarnungUndPrognoseTest.ddTptDaten, SenderRole.source());
+			GlaetteWarnungUndPrognose.dav.subscribeSender(this, GlaetteWarnungUndPrognoseTest.ltSensor,
+					GlaetteWarnungUndPrognoseTest.ddLftDaten, SenderRole.source());
+			GlaetteWarnungUndPrognose.dav.subscribeSender(this, GlaetteWarnungUndPrognoseTest.fbtSensor,
+					GlaetteWarnungUndPrognoseTest.ddFbtDaten, SenderRole.source());
+			GlaetteWarnungUndPrognose.dav.subscribeSender(this, GlaetteWarnungUndPrognoseTest.fbzSensor,
+					GlaetteWarnungUndPrognoseTest.ddFbzDaten, SenderRole.source());
 		} catch (final Exception e) {
-			System.out
-			.println("Fehler bei Anmeldung fuer Sendung der Testdaten");
+			System.out.println("Fehler bei Anmeldung fuer Sendung der Testdaten");
 			e.printStackTrace();
 		}
 
@@ -162,25 +146,20 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 			}
 			if (pub[k] == 1) {
 				if (vorherigeOk) {
-					GlaetteWarnungUndPrognoseTest.zeitStempel[i] = basisZS
-							+ (k * minInMs);
+					GlaetteWarnungUndPrognoseTest.zeitStempel[i] = basisZS + (k * minInMs);
 				} else {
-					GlaetteWarnungUndPrognoseTest.zeitStempel[i] = basisZS
-							+ ((k - 1) * minInMs);
+					GlaetteWarnungUndPrognoseTest.zeitStempel[i] = basisZS + ((k - 1) * minInMs);
 				}
 			} else if (pub[k] == 2) {
-				GlaetteWarnungUndPrognoseTest.zeitStempel[i] = basisZS
-						+ ((k - 1) * minInMs);
-				GlaetteWarnungUndPrognoseTest.zeitStempel[++i] = basisZS
-						+ (k * minInMs);
+				GlaetteWarnungUndPrognoseTest.zeitStempel[i] = basisZS + ((k - 1) * minInMs);
+				GlaetteWarnungUndPrognoseTest.zeitStempel[++i] = basisZS + (k * minInMs);
 				vorherigeOk = true;
 			}
 			k++;
 		}
 
 		for (int i = 0; i < pub.length; i++) {
-			sendeDaten(lft[i], fbt[i], tpt[i], fbz[i], basisZS
-					+ ((i) * minInMs));
+			sendeDaten(lft[i], fbt[i], tpt[i], fbz[i], basisZS + ((i) * minInMs));
 		}
 
 		synchronized (GlaetteWarnungUndPrognose.dav) {
@@ -194,58 +173,41 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void initialize(final ClientDavInterface connection)
-			throws Exception {
+	public void initialize(final ClientDavInterface connection) throws Exception {
 		super.initialize(connection);
 
-		GlaetteWarnungUndPrognoseTest.fbzSensor = connection.getDataModel()
-				.getObject("ufdSensor.test.FBOFZS.1");
-		GlaetteWarnungUndPrognoseTest.fbtSensor = connection.getDataModel()
-				.getObject("ufdSensor.test.FBOFT.1");
-		GlaetteWarnungUndPrognoseTest.ltSensor = connection.getDataModel()
-				.getObject("ufdSensor.test.LT.1");
-		GlaetteWarnungUndPrognoseTest.tptSensor = connection.getDataModel()
-				.getObject("ufdSensor.test.TPT.1");
+		GlaetteWarnungUndPrognoseTest.fbzSensor = connection.getDataModel().getObject("ufdSensor.test.FBOFZS.1");
+		GlaetteWarnungUndPrognoseTest.fbtSensor = connection.getDataModel().getObject("ufdSensor.test.FBOFT.1");
+		GlaetteWarnungUndPrognoseTest.ltSensor = connection.getDataModel().getObject("ufdSensor.test.LT.1");
+		GlaetteWarnungUndPrognoseTest.tptSensor = connection.getDataModel().getObject("ufdSensor.test.TPT.1");
 
-		GlaetteWarnungUndPrognoseTest.messStelle = connection.getDataModel()
-				.getObject("ufdMessStelle.test.1");
+		GlaetteWarnungUndPrognoseTest.messStelle = connection.getDataModel().getObject("ufdMessStelle.test.1");
 
 		GlaetteWarnungUndPrognoseTest.ddTptDaten = new DataDescription(
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
-						GlaetteWarnungUndPrognose.ATG_TPT),
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
-						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_TPT),
+						GlaetteWarnungUndPrognose.dav.getDataModel()
+						.getAspect(GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
 		GlaetteWarnungUndPrognoseTest.ddFbtDaten = new DataDescription(
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
-						GlaetteWarnungUndPrognose.ATG_FBT),
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
-						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_FBT),
+						GlaetteWarnungUndPrognose.dav.getDataModel()
+						.getAspect(GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
 		GlaetteWarnungUndPrognoseTest.ddFbzDaten = new DataDescription(
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
-						GlaetteWarnungUndPrognose.ATG_FBZ),
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
-						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_FBZ),
+						GlaetteWarnungUndPrognose.dav.getDataModel()
+						.getAspect(GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
 		GlaetteWarnungUndPrognoseTest.ddLftDaten = new DataDescription(
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(
-						GlaetteWarnungUndPrognose.ATG_LFT),
-				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect(
-						GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
+				GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup(GlaetteWarnungUndPrognose.ATG_LFT),
+						GlaetteWarnungUndPrognose.dav.getDataModel()
+						.getAspect(GlaetteWarnungUndPrognose.ASP_MESSWERT_ERSETZUNG));
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void publiziere(final UmfDatenHist ud, final Data daten,
-			final long zeitStempel1, final boolean keineDaten) {
+	public void publiziere(final UmfDatenHist ud, final Data daten, final long zeitStempel1, final boolean keineDaten) {
 		super.publiziere(ud, daten, zeitStempel1, keineDaten);
 		if (ud.messStelle != GlaetteWarnungUndPrognoseTest.messStelle) {
 			return;
@@ -254,15 +216,12 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 			return;
 		}
 		Assert.assertEquals(
-				String.format(
-						"Soll %s Ist %s",
-						new Date(
-								GlaetteWarnungUndPrognoseTest.zeitStempel[GlaetteWarnungUndPrognoseTest.index]),
-						new Date(zeitStempel1)),
-						GlaetteWarnungUndPrognoseTest.zeitStempel[GlaetteWarnungUndPrognoseTest.index],
-				zeitStempel1);
-		System.out.println(String.format("[ %4d ] ZS OK %s",
-				GlaetteWarnungUndPrognoseTest.index, new Date(zeitStempel1)));
+				String.format("Soll %s Ist %s",
+						new Date(GlaetteWarnungUndPrognoseTest.zeitStempel[GlaetteWarnungUndPrognoseTest.index]),
+								new Date(zeitStempel1)),
+				GlaetteWarnungUndPrognoseTest.zeitStempel[GlaetteWarnungUndPrognoseTest.index], zeitStempel1);
+		System.out.println(
+				String.format("[ %4d ] ZS OK %s", GlaetteWarnungUndPrognoseTest.index, new Date(zeitStempel1)));
 		GlaetteWarnungUndPrognoseTest.index++;
 		synchronized (GlaetteWarnungUndPrognose.dav) {
 			if (GlaetteWarnungUndPrognoseTest.index >= GlaetteWarnungUndPrognoseTest.zeitStempel.length) {
@@ -283,16 +242,11 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 	public void setztAufDefault(final String att, final Data data) {
 		data.getItem("T").asTimeValue().setMillis(minInMs);
 		data.getItem(att).getItem("Wert").asUnscaledValue().set(0);
-		data.getItem(att).getItem("Status").getItem("Erfassung")
-		.getUnscaledValue("NichtErfasst").set(0);
-		data.getItem(att).getItem("Status").getItem("PlFormal")
-		.getUnscaledValue("WertMax").set(0);
-		data.getItem(att).getItem("Status").getItem("PlFormal")
-		.getUnscaledValue("WertMin").set(0);
-		data.getItem(att).getItem("Status").getItem("MessWertErsetzung")
-		.getUnscaledValue("Implausibel").set(0);
-		data.getItem(att).getItem("Status").getItem("MessWertErsetzung")
-		.getUnscaledValue("Interpoliert").set(0);
+		data.getItem(att).getItem("Status").getItem("Erfassung").getUnscaledValue("NichtErfasst").set(0);
+		data.getItem(att).getItem("Status").getItem("PlFormal").getUnscaledValue("WertMax").set(0);
+		data.getItem(att).getItem("Status").getItem("PlFormal").getUnscaledValue("WertMin").set(0);
+		data.getItem(att).getItem("Status").getItem("MessWertErsetzung").getUnscaledValue("Implausibel").set(0);
+		data.getItem(att).getItem("Status").getItem("MessWertErsetzung").getUnscaledValue("Interpoliert").set(0);
 		data.getItem(att).getItem("Güte").getUnscaledValue("Index").set(1000);
 		data.getItem(att).getItem("Güte").getUnscaledValue("Verfahren").set(0);
 	}
@@ -313,50 +267,37 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 	 * @param zs1
 	 *            Zeitestempel mid dem die Daten geschickt werden
 	 */
-	public void sendeDaten(final int lft1, final int fbt1, final int tpt1,
-			final int fbz1, final long zs1) {
+	public void sendeDaten(final int lft1, final int fbt1, final int tpt1, final int fbz1, final long zs1) {
 		try {
 			if (fbt1 > 0) {
-				final Data daten = GlaetteWarnungUndPrognose.dav
-						.createData(GlaetteWarnungUndPrognose.dav
-								.getDataModel().getAttributeGroup(
-										GlaetteWarnungUndPrognose.ATG_FBT));
+				final Data daten = GlaetteWarnungUndPrognose.dav.createData(GlaetteWarnungUndPrognose.dav.getDataModel()
+						.getAttributeGroup(GlaetteWarnungUndPrognose.ATG_FBT));
 				setztAufDefault("FahrBahnOberFlächenTemperatur", daten);
-				final ResultData resData = new ResultData(
-						GlaetteWarnungUndPrognoseTest.fbtSensor,
+				final ResultData resData = new ResultData(GlaetteWarnungUndPrognoseTest.fbtSensor,
 						GlaetteWarnungUndPrognoseTest.ddFbtDaten, zs1, daten);
 				GlaetteWarnungUndPrognose.dav.sendData(resData);
 			}
 			if (lft1 > 0) {
-				final Data daten = GlaetteWarnungUndPrognose.dav
-						.createData(GlaetteWarnungUndPrognose.dav
-								.getDataModel().getAttributeGroup(
-										GlaetteWarnungUndPrognose.ATG_LFT));
+				final Data daten = GlaetteWarnungUndPrognose.dav.createData(GlaetteWarnungUndPrognose.dav.getDataModel()
+						.getAttributeGroup(GlaetteWarnungUndPrognose.ATG_LFT));
 				setztAufDefault("LuftTemperatur", daten);
-				final ResultData resData = new ResultData(
-						GlaetteWarnungUndPrognoseTest.ltSensor,
+				final ResultData resData = new ResultData(GlaetteWarnungUndPrognoseTest.ltSensor,
 						GlaetteWarnungUndPrognoseTest.ddLftDaten, zs1, daten);
 				GlaetteWarnungUndPrognose.dav.sendData(resData);
 			}
 			if (fbz1 > 0) {
-				final Data daten = GlaetteWarnungUndPrognose.dav
-						.createData(GlaetteWarnungUndPrognose.dav
-								.getDataModel().getAttributeGroup(
-										GlaetteWarnungUndPrognose.ATG_FBZ));
+				final Data daten = GlaetteWarnungUndPrognose.dav.createData(GlaetteWarnungUndPrognose.dav.getDataModel()
+						.getAttributeGroup(GlaetteWarnungUndPrognose.ATG_FBZ));
 				setztAufDefault("FahrBahnOberFlächenZustand", daten);
-				final ResultData resData = new ResultData(
-						GlaetteWarnungUndPrognoseTest.fbzSensor,
+				final ResultData resData = new ResultData(GlaetteWarnungUndPrognoseTest.fbzSensor,
 						GlaetteWarnungUndPrognoseTest.ddFbzDaten, zs1, daten);
 				GlaetteWarnungUndPrognose.dav.sendData(resData);
 			}
 			if (tpt1 > 0) {
-				final Data daten = GlaetteWarnungUndPrognose.dav
-						.createData(GlaetteWarnungUndPrognose.dav
-								.getDataModel().getAttributeGroup(
-										GlaetteWarnungUndPrognose.ATG_TPT));
+				final Data daten = GlaetteWarnungUndPrognose.dav.createData(GlaetteWarnungUndPrognose.dav.getDataModel()
+						.getAttributeGroup(GlaetteWarnungUndPrognose.ATG_TPT));
 				setztAufDefault("TaupunktTemperatur", daten);
-				final ResultData resData = new ResultData(
-						GlaetteWarnungUndPrognoseTest.tptSensor,
+				final ResultData resData = new ResultData(GlaetteWarnungUndPrognoseTest.tptSensor,
 						GlaetteWarnungUndPrognoseTest.ddTptDaten, zs1, daten);
 				GlaetteWarnungUndPrognose.dav.sendData(resData);
 			}

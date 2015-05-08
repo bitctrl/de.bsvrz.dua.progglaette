@@ -223,13 +223,10 @@ public class EntscheidungsBaum {
 		boolean anwende(double x, double y);
 	}
 
-/**
+	/**
 	 * Operator "&lt;".
 	 */
 	public static class OperatorKleiner implements Operator {
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean anwende(final double x, final double y) {
 			return (x < y);
@@ -240,9 +237,6 @@ public class EntscheidungsBaum {
 	 * Operator "&lt;=".
 	 */
 	public static class OperatorKleinerGleich implements Operator {
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean anwende(final double x, final double y) {
 			return (x <= y);
@@ -253,9 +247,6 @@ public class EntscheidungsBaum {
 	 * Operator "&gt;".
 	 */
 	public static class OperatorGroesser implements Operator {
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean anwende(final double x, final double y) {
 			return (x > y);
@@ -266,9 +257,6 @@ public class EntscheidungsBaum {
 	 * Operator "&gt;=".
 	 */
 	public static class OperatorGroesserGleich implements Operator {
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean anwende(final double x, final double y) {
 			return (x >= y);
@@ -284,89 +272,65 @@ public class EntscheidungsBaum {
 		EntscheidungsBaumKnoten.EntscheidungsMethode methode;
 
 		try {
-			sGbNm = new EntscheidungsBaumKnoten(
-					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG);
+			sGbNm = new EntscheidungsBaumKnoten(EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG);
 			sGbNsRm = new EntscheidungsBaumKnoten(
 					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE);
-			eM = new EntscheidungsBaumKnoten(
-					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH);
-			eSm = new EntscheidungsBaumKnoten(
-					EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH_SOFORT);
-			gbWm = new EntscheidungsBaumKnoten(
-					EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG);
-			sGbNSm = new EntscheidungsBaumKnoten(
-					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT);
+			eM = new EntscheidungsBaumKnoten(EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH);
+			eSm = new EntscheidungsBaumKnoten(EntscheidungsBaum.EB_EISGLAETTE_MOEGLICH_SOFORT);
+			gbWm = new EntscheidungsBaumKnoten(EntscheidungsBaum.EB_GLAETTEGEFAHR_BEI_WETTERAENDERUNG);
+			sGbNSm = new EntscheidungsBaumKnoten(EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT);
 			sGbNsRSm = new EntscheidungsBaumKnoten(
 					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOWIE_REIFGLAETTE_SOFORT);
-			kG = new EntscheidungsBaumKnoten(
-					EntscheidungsBaum.EB_KEINE_GLAETTEGEHFAHR);
-			gV = new EntscheidungsBaumKnoten(
-					EntscheidungsBaum.EB_GLAETTE_VORHANDEN);
+			kG = new EntscheidungsBaumKnoten(EntscheidungsBaum.EB_KEINE_GLAETTEGEHFAHR);
+			gV = new EntscheidungsBaumKnoten(EntscheidungsBaum.EB_GLAETTE_VORHANDEN);
 			sGbNSsRm = new EntscheidungsBaumKnoten(
 					EntscheidungsBaum.EB_SCHNEEGLAETTE_GLATTEIS_BEI_NIEDERSCHLAG_SOFORT_SOWIE_REIFGLAETTE);
 
-			methode = new EntscheidungsBaumKnoten.DifferenzPrognoseFbofTaupunktTemperatur(
-					0, new OperatorGroesser());
+			methode = new EntscheidungsBaumKnoten.DifferenzPrognoseFbofTaupunktTemperatur(0, new OperatorGroesser());
 			k1 = new EntscheidungsBaumKnoten(methode, sGbNm, sGbNsRm);
 
-			methode = new EntscheidungsBaumKnoten.FahbrBahnZustand(
-					new long[] { EntscheidungsBaum.FBZ_TROCKEN }, new long[] {
-							EntscheidungsBaum.FBZ_FEUCHT,
-							EntscheidungsBaum.FBZ_NASS });
+			methode = new EntscheidungsBaumKnoten.FahbrBahnZustand(new long[] { EntscheidungsBaum.FBZ_TROCKEN },
+					new long[] { EntscheidungsBaum.FBZ_FEUCHT, EntscheidungsBaum.FBZ_NASS });
 			k2 = new EntscheidungsBaumKnoten(methode, k1, eM);
 
-			methode = new EntscheidungsBaumKnoten.FahbrBahnZustand(new long[] {
-					EntscheidungsBaum.FBZ_FEUCHT, EntscheidungsBaum.FBZ_NASS },
+			methode = new EntscheidungsBaumKnoten.FahbrBahnZustand(
+					new long[] { EntscheidungsBaum.FBZ_FEUCHT, EntscheidungsBaum.FBZ_NASS },
 					new long[] { EntscheidungsBaum.FBZ_TROCKEN });
 			k1 = new EntscheidungsBaumKnoten(methode, eM, gbWm);
 
-			methode = new EntscheidungsBaumKnoten.FbofTemperatur(3,
-					new OperatorKleinerGleich());
+			methode = new EntscheidungsBaumKnoten.FbofTemperatur(3, new OperatorKleinerGleich());
 			k3 = new EntscheidungsBaumKnoten(methode, k1, gbWm);
 
-			methode = new EntscheidungsBaumKnoten.FbofPrognoseTemperatur(2,
-					new OperatorKleinerGleich());
+			methode = new EntscheidungsBaumKnoten.FbofPrognoseTemperatur(2, new OperatorKleinerGleich());
 			k1 = new EntscheidungsBaumKnoten(methode, k2, k3);
 
-			methode = new EntscheidungsBaumKnoten.DifferenzPrognoseFbofTaupunktTemperatur(
-					0, new OperatorGroesser());
+			methode = new EntscheidungsBaumKnoten.DifferenzPrognoseFbofTaupunktTemperatur(0, new OperatorGroesser());
 			k2 = new EntscheidungsBaumKnoten(methode, sGbNSm, sGbNSsRm);
 
-			methode = new EntscheidungsBaumKnoten.DifferenzFbofTaupunktTemperatur(
-					2, new OperatorGroesser());
+			methode = new EntscheidungsBaumKnoten.DifferenzFbofTaupunktTemperatur(2, new OperatorGroesser());
 			k3 = new EntscheidungsBaumKnoten(methode, k2, sGbNSsRm);
 
-			methode = new EntscheidungsBaumKnoten.DifferenzFbofTaupunktTemperatur(
-					0, new OperatorGroesser());
+			methode = new EntscheidungsBaumKnoten.DifferenzFbofTaupunktTemperatur(0, new OperatorGroesser());
 			k2 = new EntscheidungsBaumKnoten(methode, k3, sGbNsRSm);
 
 			methode = new EntscheidungsBaumKnoten.FahbrBahnZustandVollDefiniert(
-					new long[] { EntscheidungsBaum.FBZ_TROCKEN }, new long[] {
-							EntscheidungsBaum.FBZ_FEUCHT,
-							EntscheidungsBaum.FBZ_NASS }, new long[] {
-							EntscheidungsBaum.FBZ_GEFR_WASSER,
-							EntscheidungsBaum.FBZ_RAUREIF,
-							EntscheidungsBaum.FBZ_EIS,
-							EntscheidungsBaum.FBZ_SCHNEE });
+					new long[] { EntscheidungsBaum.FBZ_TROCKEN },
+					new long[] { EntscheidungsBaum.FBZ_FEUCHT, EntscheidungsBaum.FBZ_NASS },
+					new long[] { EntscheidungsBaum.FBZ_GEFR_WASSER, EntscheidungsBaum.FBZ_RAUREIF,
+							EntscheidungsBaum.FBZ_EIS, EntscheidungsBaum.FBZ_SCHNEE });
 			k3 = new EntscheidungsBaumKnoten(methode, k2, eSm, gV);
 
-			methode = new EntscheidungsBaumKnoten.FbofTemperatur(2,
-					new OperatorGroesser());
+			methode = new EntscheidungsBaumKnoten.FbofTemperatur(2, new OperatorGroesser());
 			k2 = new EntscheidungsBaumKnoten(methode, k1, k3);
 
-			methode = new EntscheidungsBaumKnoten.LuftTemperatur(2,
-					new OperatorKleinerGleich());
+			methode = new EntscheidungsBaumKnoten.LuftTemperatur(2, new OperatorKleinerGleich());
 			k1 = new EntscheidungsBaumKnoten(methode, sGbNm, kG);
 
-			methode = new EntscheidungsBaumKnoten.FbofTemperatur(5,
-					new OperatorGroesser());
-			EntscheidungsBaum.wurzel = new EntscheidungsBaumKnoten(methode, k1,
-					k2);
+			methode = new EntscheidungsBaumKnoten.FbofTemperatur(5, new OperatorGroesser());
+			EntscheidungsBaum.wurzel = new EntscheidungsBaumKnoten(methode, k1, k2);
 
 		} catch (final DUAInitialisierungsException e) {
-			LOGGER.error(
-					"Fehler bei der Initialisierung des EntscheidunsBaumes: "
-							+ e.getMessage());
+			EntscheidungsBaum.LOGGER.error("Fehler bei der Initialisierung des EntscheidunsBaumes: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -388,14 +352,12 @@ public class EntscheidungsBaum {
 	 *            Taupunkttemperatur extrapoliert im Prognosehorizont
 	 * @return die Glaetteprognose
 	 */
-	public static int getPrognose(final long fbzAktuell,
-			final double fbtAktuell, final double tptAktuell,
-			final double lftAktuell, final double fbtExtrapoliert,
-			final double tptExtrapoliert) {
+	public static int getPrognose(final long fbzAktuell, final double fbtAktuell, final double tptAktuell,
+			final double lftAktuell, final double fbtExtrapoliert, final double tptExtrapoliert) {
 		if (EntscheidungsBaum.wurzel == null) {
 			EntscheidungsBaum.erzeugeEntscheidungsBaum();
 		}
-		return EntscheidungsBaum.wurzel.getPrognose(fbzAktuell, fbtAktuell,
-				tptAktuell, lftAktuell, fbtExtrapoliert, tptExtrapoliert);
+		return EntscheidungsBaum.wurzel.getPrognose(fbzAktuell, fbtAktuell, tptAktuell, lftAktuell, fbtExtrapoliert,
+				tptExtrapoliert);
 	}
 }
