@@ -2,8 +2,7 @@
 *  Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 SWE Glättewarnung und -prognose  *
 ***********************************************************************************************
 
-Version: 1.2.0
-
+Version: ${version}
 
 Übersicht
 =========
