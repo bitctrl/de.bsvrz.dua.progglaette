@@ -17,6 +17,8 @@ mögliche Glätte. Des Weiteren wird für die Prognosehorizonte 5-, 15-, 30-, 60- u
 
 Versionsgeschichte
 ==================
+1.3.0
+- Umstellung auf Funclib-BitCtrl-Dua
 
 1.2.0
 - Umstellung auf Maven-Build
