@@ -1,5 +1,5 @@
 /*
- * Segment 4 Daten¸bernahme und Aufbereitung (DUA), SWE 4.14 Gl‰ttewarnung und -prognose
+ * Segment 4 Daten√ºbernahme und Aufbereitung (DUA), SWE 4.14 Gl√§ttewarnung und -prognose
  *
  * Copyright (C) 2007-2015 BitCtrl Systems GmbH
  *
@@ -19,7 +19,7 @@
  *
  * Contact Information:<br>
  * BitCtrl Systems GmbH<br>
- * Weiﬂenfelser Straﬂe 67<br>
+ * Wei√üenfelser Stra√üe 67<br>
  * 04229 Leipzig<br>
  * Phone: +49 341-490670<br>
  * mailto: info@bitctrl.de
@@ -46,7 +46,7 @@ import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
  *
  * @author BitCtrl Systems GmbH, Bachraty
  */
-@Ignore("Testdatenverteiler pr¸fen")
+@Ignore("Testdatenverteiler pr√ºfen")
 public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 
 	/**
@@ -247,8 +247,8 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 		data.getItem(att).getItem("Status").getItem("PlFormal").getUnscaledValue("WertMin").set(0);
 		data.getItem(att).getItem("Status").getItem("MessWertErsetzung").getUnscaledValue("Implausibel").set(0);
 		data.getItem(att).getItem("Status").getItem("MessWertErsetzung").getUnscaledValue("Interpoliert").set(0);
-		data.getItem(att).getItem("G¸te").getUnscaledValue("Index").set(1000);
-		data.getItem(att).getItem("G¸te").getUnscaledValue("Verfahren").set(0);
+		data.getItem(att).getItem("G√ºte").getUnscaledValue("Index").set(1000);
+		data.getItem(att).getItem("G√ºte").getUnscaledValue("Verfahren").set(0);
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 			if (fbt1 > 0) {
 				final Data daten = GlaetteWarnungUndPrognose.dav.createData(GlaetteWarnungUndPrognose.dav.getDataModel()
 						.getAttributeGroup(GlaetteWarnungUndPrognose.ATG_FBT));
-				setztAufDefault("FahrBahnOberFl‰chenTemperatur", daten);
+				setztAufDefault("FahrBahnOberFl√§chenTemperatur", daten);
 				final ResultData resData = new ResultData(GlaetteWarnungUndPrognoseTest.fbtSensor,
 						GlaetteWarnungUndPrognoseTest.ddFbtDaten, zs1, daten);
 				GlaetteWarnungUndPrognose.dav.sendData(resData);
@@ -288,7 +288,7 @@ public class GlaetteWarnungUndPrognoseTest extends GlaetteWarnungUndPrognose {
 			if (fbz1 > 0) {
 				final Data daten = GlaetteWarnungUndPrognose.dav.createData(GlaetteWarnungUndPrognose.dav.getDataModel()
 						.getAttributeGroup(GlaetteWarnungUndPrognose.ATG_FBZ));
-				setztAufDefault("FahrBahnOberFl‰chenZustand", daten);
+				setztAufDefault("FahrBahnOberFl√§chenZustand", daten);
 				final ResultData resData = new ResultData(GlaetteWarnungUndPrognoseTest.fbzSensor,
 						GlaetteWarnungUndPrognoseTest.ddFbzDaten, zs1, daten);
 				GlaetteWarnungUndPrognose.dav.sendData(resData);

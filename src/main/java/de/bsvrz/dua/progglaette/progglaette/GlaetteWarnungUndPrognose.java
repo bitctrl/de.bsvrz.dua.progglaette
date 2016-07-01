@@ -1,5 +1,5 @@
 /*
- * Segment 4 Daten¸bernahme und Aufbereitung (DUA), SWE 4.14 Gl‰ttewarnung und -prognose
+ * Segment 4 Daten√ºbernahme und Aufbereitung (DUA), SWE 4.14 Gl√§ttewarnung und -prognose
  *
  * Copyright (C) 2007-2015 BitCtrl Systems GmbH
  *
@@ -19,7 +19,7 @@
  *
  * Contact Information:<br>
  * BitCtrl Systems GmbH<br>
- * Weiﬂenfelser Straﬂe 67<br>
+ * Wei√üenfelser Stra√üe 67<br>
  * 04229 Leipzig<br>
  * Phone: +49 341-490670<br>
  * mailto: info@bitctrl.de
@@ -82,7 +82,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface, ClientR
 	/**
 	 * String konstanten.
 	 */
-	public static final String ATG_FBT = "atg.ufdsFahrBahnOberFl‰chenTemperatur";
+	public static final String ATG_FBT = "atg.ufdsFahrBahnOberFl√§chenTemperatur";
 
 	/**
 	 * String konstanten.
@@ -92,12 +92,12 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface, ClientR
 	/**
 	 * String konstanten.
 	 */
-	public static final String ATG_FBZ = "atg.ufdsFahrBahnOberFl‰chenZustand";
+	public static final String ATG_FBZ = "atg.ufdsFahrBahnOberFl√§chenZustand";
 
 	/**
 	 * String konstanten.
 	 */
-	public static final String ATG_GLAETTE = "atg.ufdmsGl‰tte";
+	public static final String ATG_GLAETTE = "atg.ufdmsGl√§tte";
 
 	/**
 	 * String konstanten.
@@ -127,7 +127,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface, ClientR
 	/**
 	 * String konstanten.
 	 */
-	public static final String TYP_FBT = "typ.ufdsFahrBahnOberFl‰chenTemperatur";
+	public static final String TYP_FBT = "typ.ufdsFahrBahnOberFl√§chenTemperatur";
 
 	/**
 	 * String konstanten.
@@ -137,7 +137,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface, ClientR
 	/**
 	 * String konstanten.
 	 */
-	public static final String TYP_FBZ = "typ.ufdsFahrBahnOberFl‰chenZustand";
+	public static final String TYP_FBZ = "typ.ufdsFahrBahnOberFl√§chenZustand";
 
 	/**
 	 * Aufrufsparameter.
@@ -313,9 +313,9 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface, ClientR
 			final String atgPid = resDatei.getDataDescription().getAttributeGroup().getPid();
 
 			if (GlaetteWarnungUndPrognose.ATG_FBT.equals(atgPid)) {
-				double d = daten.getItem("FahrBahnOberFl‰chenTemperatur").getUnscaledValue("Wert").longValue();
+				double d = daten.getItem("FahrBahnOberFl√§chenTemperatur").getUnscaledValue("Wert").longValue();
 				if (d > 0) {
-					d = daten.getItem("FahrBahnOberFl‰chenTemperatur").getScaledValue("Wert").doubleValue();
+					d = daten.getItem("FahrBahnOberFl√§chenTemperatur").getScaledValue("Wert").doubleValue();
 				}
 				umfDaten.letzteFbt = d;
 				umfDaten.zsLetzterFbt = zs;
@@ -337,7 +337,7 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface, ClientR
 				umfDaten.zsLetzterTpt = zs;
 				bearbeiteDaten(umfDaten, zs);
 			} else if (GlaetteWarnungUndPrognose.ATG_FBZ.equals(atgPid)) {
-				final long d = daten.getItem("FahrBahnOberFl‰chenZustand").getUnscaledValue("Wert").longValue();
+				final long d = daten.getItem("FahrBahnOberFl√§chenZustand").getUnscaledValue("Wert").longValue();
 				umfDaten.letzteFbz = d;
 				umfDaten.zsLetztenFbz = zs;
 				bearbeiteDaten(umfDaten, zs);
@@ -412,9 +412,9 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface, ClientR
 			ConfigurationArea ca = GlaetteWarnungUndPrognose.dav.getDataModel().getConfigurationArea(s);
 			if (ca == null) {
 				msgSender.sendMessage(MessageType.APPLICATION_DOMAIN, MessageGrade.WARNING,
-						"Der ¸bergebene Konfigurationsbereich " + s + " existiert nicht.");
+						"Der √ºbergebene Konfigurationsbereich " + s + " existiert nicht.");
 				GlaetteWarnungUndPrognose.LOGGER
-				.warning("Der ¸bergebene Konfigurationsbereich " + s + " existiert nicht.");
+				.warning("Der √ºbergebene Konfigurationsbereich " + s + " existiert nicht.");
 				ca = GlaetteWarnungUndPrognose.dav.getDataModel().getConfigurationAuthority().getConfigurationArea();
 			}
 			konfBerieche.add(ca);

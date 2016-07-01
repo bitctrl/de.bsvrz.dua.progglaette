@@ -1,29 +1,34 @@
 ***********************************************************************************************
-*  Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 SWE Glättewarnung und -prognose  *
+*  Segment 4 DatenÃ¼bernahme und Aufbereitung (DUA), SWE 4.14 SWE GlÃ¤ttewarnung und -prognose  *
 ***********************************************************************************************
 
 Version: ${version}
 
-Übersicht
+Ãœbersicht
 =========
 
-Die SWE Glättewarnung und -prognose ermittelt aus den aktuell gültigen und den 
-in letzten 10 Minuten eingelaufenen messwertersetzten Daten der Fahrbahnoberflächen-
-und Taupunkttemperatur sowie dem momentan gemessenen gültigen Fahrbahnzustand und der
-aktuell gültigen Lufttemperatur einer Umfelddatenmessstelle eine Aussage über eine
-mögliche Glätte. Des Weiteren wird für die Prognosehorizonte 5-, 15-, 30-, 60- und
+Die SWE GlÃ¤ttewarnung und -prognose ermittelt aus den aktuell gÃ¼ltigen und den 
+in letzten 10 Minuten eingelaufenen messwertersetzten Daten der FahrbahnoberflÃ¤chen-
+und Taupunkttemperatur sowie dem momentan gemessenen gÃ¼ltigen Fahrbahnzustand und der
+aktuell gÃ¼ltigen Lufttemperatur einer Umfelddatenmessstelle eine Aussage Ã¼ber eine
+mÃ¶gliche GlÃ¤tte. Des Weiteren wird fÃ¼r die Prognosehorizonte 5-, 15-, 30-, 60- und
 90-Minuten eine entsprechende Prognose berechnet und publiziert.
 
 
 Versionsgeschichte
 ==================
+
+1.4.0
+=====
+- Umstellung auf Java 8 und UTF-8
+
 1.3.0
 - Umstellung auf Funclib-BitCtrl-Dua
 
 1.2.0
 - Umstellung auf Maven-Build
-- Behandlung nicht unterstützter Sensorarten über die 'UmfeldDatenSensorUnbekannteDatenartException'
-- benötigt SWE_de.bsvrz.sys.funclib.bitctrl_FREI_V1.2.3.zip oder höher 
+- Behandlung nicht unterstÃ¼tzter Sensorarten Ã¼ber die 'UmfeldDatenSensorUnbekannteDatenartException'
+- benÃ¶tigt SWE_de.bsvrz.sys.funclib.bitctrl_FREI_V1.2.3.zip oder hÃ¶her 
 
 1.0.0
 
@@ -33,33 +38,33 @@ Versionsgeschichte
 
   - Bash-Startskript hinzu
 
-Diese SWE ist eine eigenständige Datenverteiler-Applikation, welche über die Klasse
+Diese SWE ist eine eigenstÃ¤ndige Datenverteiler-Applikation, welche Ã¼ber die Klasse
 de.bsvrz.dua.progglaette.progglaette.GlaeteWarnungUndPrognose mit folgenden Parametern
-gestartet werden kann (zusätzlich zu den normalen Parametern jeder Datenverteiler-Applikation):
+gestartet werden kann (zusÃ¤tzlich zu den normalen Parametern jeder Datenverteiler-Applikation):
 	-KonfigurationsBereichsPid=pid(,pid)
 	
 	
 - Tests:
 
-Alle Tests befinden sich unterhalb des Verzeichnisses junit und sind als JUnit-Tests ausführbar.
+Alle Tests befinden sich unterhalb des Verzeichnisses junit und sind als JUnit-Tests ausfÃ¼hrbar.
 Die Tests untergliedern sich wie folgt:
-	- DAV-Tests: Tests mit Datenaustausch über eine Datenverteiler-Schnittstelle (bei der
-	  Durchführung dieser Tests wird jeweils implizit eine Instanz der Glättewarnung und -prognose
+	- DAV-Tests: Tests mit Datenaustausch Ã¼ber eine Datenverteiler-Schnittstelle (bei der
+	  DurchfÃ¼hrung dieser Tests wird jeweils implizit eine Instanz der GlÃ¤ttewarnung und -prognose
 	  gestartet)
-	  	- GlaetteWarnungUndPrognoseTest.java: Innerhalb dieses Tests werden über den Datenverteiler
+	  	- GlaetteWarnungUndPrognoseTest.java: Innerhalb dieses Tests werden Ã¼ber den Datenverteiler
 	  	  verschiedene Vektoren (LFT, FBT, TPT, FBZ) eingegeben, deren Elemente jeweils teilweise nicht
 	  	  gesendet werden (also z.B. (0, 0, x, 0) -> es wird kein TPT-Datum mit diesem Zeitstempel
-	  	  verschickt). Es soll überprüft werden, ob auch bei unvollständigen Eingaben eine Ausgabe
+	  	  verschickt). Es soll Ã¼berprÃ¼ft werden, ob auch bei unvollstÃ¤ndigen Eingaben eine Ausgabe
 	  	  durch die SWE vorgenommen wird.
 	  	   
-	- Einzel-Tests: Tests von Teilfunktionalitäten einzelner SW-Elemente (die Daten werden dabei
-	  nur über Java-Funktionsschnittstellen ausgetauscht):
+	- Einzel-Tests: Tests von TeilfunktionalitÃ¤ten einzelner SW-Elemente (die Daten werden dabei
+	  nur Ã¼ber Java-Funktionsschnittstellen ausgetauscht):
 		- EntscheidungsBaumTest.java: Innerhalb dieser Klasse werden unterschiedliche Vektoren in die
 		  Implementierung des Entscheidungsbaums eingegeben und die entsprechende Ausgabe (Ist, Soll)
 		  verglichen.
 		- PrognoseZustandTest.java: Diese Klasse testet die Implementierung der Trendextrapolation 
 
-Voraussetzungen für die DAV-Tests:
+Voraussetzungen fÃ¼r die DAV-Tests:
 - Start der Test-Konfiguration (extra/test_konfig_progglaette.zip)
 - Anpassung der DAV-Start-Parameter (Variable CON_DATA) innerhalb von 
 	junit/de.bsvrz.dua.progglaette.progglaette.GlaetteWarnungUndPrognoseTest.java	
@@ -76,13 +81,13 @@ Voraussetzungen für die DAV-Tests:
 			"-KonfigurationsBeriechsPid=kb.glaetteProgTest"};
 
 
-Alle Tests wurden so bereits erfolgreich ausgeführt.
+Alle Tests wurden so bereits erfolgreich ausgefÃ¼hrt.
 
 
 Disclaimer
 ==========
 
-Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 SWE Glättewarnung und –prognose
+Segment 4 DatenÃ¼bernahme und Aufbereitung (DUA), SWE 4.14 SWE GlÃ¤ttewarnung und Â–prognose
 Copyright (C) 2007 BitCtrl Systems GmbH 
 
 This program is free software; you can redistribute it and/or modify it under
@@ -104,7 +109,7 @@ Kontakt
 =======
 
 BitCtrl Systems GmbH
-Weißenfelser Straße 67
+WeiÃŸenfelser StraÃŸe 67
 04229 Leipzig
 Phone: +49 341-490670
 mailto: info@bitctrl.de

@@ -1,5 +1,5 @@
 /*
- * Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 Glättewarnung und -prognose
+ * Segment 4 DatenÃ¼bernahme und Aufbereitung (DUA), SWE 4.14 GlÃ¤ttewarnung und -prognose
  *
  * Copyright (C) 2007-2015 BitCtrl Systems GmbH
  *
@@ -19,7 +19,7 @@
  *
  * Contact Information:<br>
  * BitCtrl Systems GmbH<br>
- * Weißenfelser Straße 67<br>
+ * WeiÃŸenfelser StraÃŸe 67<br>
  * 04229 Leipzig<br>
  * Phone: +49 341-490670<br>
  * mailto: info@bitctrl.de
@@ -96,12 +96,12 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 	 * @throws DUAInitialisierungsException
 	 *             Ausnahme, die geworfen wird, wenn ein Modul innerhalb einer
 	 *             SWE nicht initialisiert werden konnte. Also, wenn z.B. keine
-	 *             Anmeldung zum Empfangen oder Versenden von Daten durchgeführt
+	 *             Anmeldung zum Empfangen oder Versenden von Daten durchgefÃ¼hrt
 	 *             werden konnte.
 	 * @throws SendSubscriptionNotConfirmed
 	 *             Ausnahme, die beim Senden von Daten als einfacher Sender
 	 *             generiert wird, wenn noch keine positive Sendesteuerung vom
-	 *             Datenverteiler für die zu versendenden Daten vorliegt
+	 *             Datenverteiler fÃ¼r die zu versendenden Daten vorliegt
 	 */
 	@Test
 	public void test1() throws DUAInitialisierungsException, SendSubscriptionNotConfirmed {
@@ -161,7 +161,7 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 			}
 
 		}, GlaetteWarnungUndPrognose.dav.getDataModel().getObject("ufdMessStelle.test.1"),
-		new DataDescription(GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup("atg.ufdmsGlätte"),
+		new DataDescription(GlaetteWarnungUndPrognose.dav.getDataModel().getAttributeGroup("atg.ufdmsGlÃ¤tte"),
 				GlaetteWarnungUndPrognose.dav.getDataModel().getAspect("asp.prognose")),
 				ReceiveOptions.normal(), ReceiverRole.receiver());
 
@@ -247,7 +247,7 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 		cal.add(Calendar.MINUTE, 1);
 
 		/**
-		 * Andere Hälfte des Baumes
+		 * Andere HÃ¤lfte des Baumes
 		 */
 		/**
 		 * 8
@@ -449,7 +449,7 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 	 * @throws SendSubscriptionNotConfirmed
 	 *             Ausnahme, die beim Senden von Daten als einfacher Sender
 	 *             generiert wird, wenn noch keine positive Sendesteuerung vom
-	 *             Datenverteiler für die zu versendenden Daten vorliegt.
+	 *             Datenverteiler fÃ¼r die zu versendenden Daten vorliegt.
 	 *
 	 */
 	public void publiziere(final MessStellenEreignis ereignis) throws SendSubscriptionNotConfirmed {
@@ -613,7 +613,7 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 		 *            ein Zeitstempel
 		 * @return ein Datum mit Zeitstempel.
 		 * @throws UmfeldDatenSensorUnbekannteDatenartException
-		 *             der übergebene Sensor hat eine unbekannte Datenart
+		 *             der Ã¼bergebene Sensor hat eine unbekannte Datenart
 		 */
 		ResultData getResultData(final long zeitStempel1) throws UmfeldDatenSensorUnbekannteDatenartException {
 			DataDescription datenBeschreibung = null;
@@ -640,8 +640,8 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 			data.getItem(att).getItem("Status").getItem("PlFormal").getUnscaledValue("WertMin").set(0);
 			data.getItem(att).getItem("Status").getItem("MessWertErsetzung").getUnscaledValue("Implausibel").set(0);
 			data.getItem(att).getItem("Status").getItem("MessWertErsetzung").getUnscaledValue("Interpoliert").set(0);
-			data.getItem(att).getItem("Güte").getUnscaledValue("Index").set(1000);
-			data.getItem(att).getItem("Güte").getUnscaledValue("Verfahren").set(0);
+			data.getItem(att).getItem("GÃ¼te").getUnscaledValue("Index").set(1000);
+			data.getItem(att).getItem("GÃ¼te").getUnscaledValue("Verfahren").set(0);
 
 			return new ResultData(this.ufds, datenBeschreibung, zeitStempel1, data);
 		}
@@ -685,7 +685,7 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 	}
 
 	/**
-	 * Zustandsspeicher für Glaetteprognosen.
+	 * Zustandsspeicher fÃ¼r Glaetteprognosen.
 	 */
 	static class Zustand extends AbstractDavZustand {
 
@@ -702,47 +702,47 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 		/**
 		 * dito.
 		 */
-		private static final Zustand Z1 = new Zustand("Keine Glättegefahr", 1);
+		private static final Zustand Z1 = new Zustand("Keine GlÃ¤ttegefahr", 1);
 
 		/**
 		 * dito.
 		 */
-		private static final Zustand Z2 = new Zustand("Gättegefahr bei Wetteränderung möglich", 2);
+		private static final Zustand Z2 = new Zustand("GÃ¤ttegefahr bei WetterÃ¤nderung mÃ¶glich", 2);
 		/**
 		 * dito.
 		 */
-		private static final Zustand Z3 = new Zustand("Eisglätte möglich", 3);
+		private static final Zustand Z3 = new Zustand("EisglÃ¤tte mÃ¶glich", 3);
 		// /**
 		// * dito.
 		// */
 		// private static final Zustand Z4 = new Zustand(
-		// "Tendenzberechnung nicht möglich", 4);
+		// "Tendenzberechnung nicht mÃ¶glich", 4);
 		/**
 		 * dito.
 		 */
-		private static final Zustand Z5 = new Zustand("Schneeglätte oder Glatteis bei Niederschlag möglich", 5);
+		private static final Zustand Z5 = new Zustand("SchneeglÃ¤tte oder Glatteis bei Niederschlag mÃ¶glich", 5);
 		/**
 		 * dito.
 		 */
 		private static final Zustand Z6 = new Zustand(
-				"Schneeglätte oder Glatteis bei Niederschlag sowie Reifglätte möglich", 6);
+				"SchneeglÃ¤tte oder Glatteis bei Niederschlag sowie ReifglÃ¤tte mÃ¶glich", 6);
 		/**
 		 * dito.
 		 */
-		private static final Zustand Z7 = new Zustand("Schneeglätte oder Glatteis bei Niederschlag sofort möglich", 7);
+		private static final Zustand Z7 = new Zustand("SchneeglÃ¤tte oder Glatteis bei Niederschlag sofort mÃ¶glich", 7);
 		/**
 		 * dito.
 		 */
 		private static final Zustand Z8 = new Zustand(
-				"Schneeglätte oder Glatteis bei Niederschlag sowie Reifglätte sofort möglich", 8);
+				"SchneeglÃ¤tte oder Glatteis bei Niederschlag sowie ReifglÃ¤tte sofort mÃ¶glich", 8);
 		/**
 		 * dito.
 		 */
-		private static final Zustand Z9 = new Zustand("Eisglätte sofort möglich", 9);
+		private static final Zustand Z9 = new Zustand("EisglÃ¤tte sofort mÃ¶glich", 9);
 		/**
 		 * dito.
 		 */
-		private static final Zustand Z10 = new Zustand("Glätte vorhanden", 10);
+		private static final Zustand Z10 = new Zustand("GlÃ¤tte vorhanden", 10);
 		// /**
 		// * dito.
 		// */
@@ -752,7 +752,7 @@ public class EntscheidungsBaumTestMitPublikation extends GlaetteWarnungUndProgno
 		 * dito.
 		 */
 		private static final Zustand Z12 = new Zustand(
-				"Schneeglätte oder Glatteis bei Niederschlag sofort sowie Reifglätte möglich", 12);
+				"SchneeglÃ¤tte oder Glatteis bei Niederschlag sofort sowie ReifglÃ¤tte mÃ¶glich", 12);
 
 		/**
 		 * Standardkonstruktor.
