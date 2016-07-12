@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (C) 2007-2015 BitCtrl Systems GmbH
+ * Segment Datenübernahme und Aufbereitung (DUA), SWE Glättewarnung und -prognose
  * Copyright 2016 by Kappich Systemberatung Aachen
  * 
  * This file is part of de.bsvrz.dua.progglaette.
@@ -27,8 +26,8 @@
  */
 
 /**
- * Klassen für die SWE 4.14 Glättewarnung und -prognose
+ * Segment Datenübernahme und Aufbereitung (DUA), SWE Glättewarnung und -prognose
+ *
+ * @author Kappich Systemberatung
  */
-
-package de.bsvrz.dua.progglaette.progglaette;
-
+package de.bsvrz.dua.progglaette;
