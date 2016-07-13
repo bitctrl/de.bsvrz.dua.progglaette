@@ -49,19 +49,39 @@
 			<version>3.8.0</version>
 		</dependency>
 		<dependency>
+			<groupId>de.bsvrz.dav</groupId>
+			<artifactId>de.bsvrz.dav.dav</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.bsvrz.sys</groupId>
+			<artifactId>de.bsvrz.sys.funclib.commandLineArgs</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.bsvrz.sys</groupId>
+			<artifactId>de.bsvrz.sys.funclib.debug</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.bsvrz.sys</groupId>
+			<artifactId>de.bsvrz.sys.funclib.application</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.bsvrz.sys</groupId>
+			<artifactId>de.bsvrz.sys.funclib.operatingMessage</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.bsvrz.sys</groupId>
+			<artifactId>de.bsvrz.sys.funclib.bitctrl</artifactId>
+			<version>[1.4.0,2)</version>
+		</dependency>
+		<dependency>
 			<groupId>de.bsvrz.sys</groupId>
 			<artifactId>de.bsvrz.sys.funclib.bitctrl.dua</artifactId>
-			<version>[1.0,)</version>
-		</dependency>
-		<dependency>
-			<groupId>de.bsvrz.dua</groupId>
-			<artifactId>de.bsvrz.dua.guete</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>de.bsvrz.dua</groupId>
-			<artifactId>de.bsvrz.dua.plloglve</artifactId>
-			<version>2.0.1</version>
+			<version>[1.4.0,)</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -171,6 +191,7 @@
 						<configuration>
 							<show>protected</show>
 							<finalName>${project.artifactId}-${project.version}-doc-api</finalName>
+		   				    <additionalparam>-Xdoclint:none</additionalparam>
 						</configuration>
 					</execution>
 					<execution>
@@ -183,6 +204,7 @@
 							<show>private</show>
 							<finalName>${project.artifactId}-${project.version}-doc-design</finalName>
 							<classifier>design</classifier>
+		   				    <additionalparam>-Xdoclint:none</additionalparam>
 						</configuration>
 					</execution>
 				</executions>
