@@ -38,7 +38,7 @@ import java.util.TreeSet;
  *
  * @author BitCtrl Systems GmbH, Bachraty
  *
- * @version $Id$
+ * @version $Id: PrognoseZustand.java 53837 2015-03-18 11:45:45Z peuker $
  */
 public class PrognoseZustand {
 
