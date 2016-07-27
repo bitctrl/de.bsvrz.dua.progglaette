@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/bitctrl/de.bsvrz.dua.progglaette.svg?branch=develop)](https://travis-ci.org/bitctrl/de.bsvrz.dua.progglaette)
+[![Build Status](https://travis-ci.org/bitctrl/de.bsvrz.dua.progglaette.svg?branch=master)](https://travis-ci.org/bitctrl/de.bsvrz.dua.progglaette)
 [![Build Status](https://api.bintray.com/packages/bitctrl/maven/de.bsvrz.dua.progglaette/images/download.svg)](https://bintray.com/bitctrl/maven/de.bsvrz.dua.progglaette)
 
 # Segment 4 Datenübernahme und Aufbereitung (DUA), SWE 4.14 SWE Glättewarnung und -prognose
