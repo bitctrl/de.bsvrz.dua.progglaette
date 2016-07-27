@@ -16,6 +16,12 @@ mögliche Glätte. Des Weiteren wird für die Prognosehorizonte 5-, 15-, 30-, 60
 
 ## Versionsgeschichte
 
+### 2.0.1
+
+Release-Datum: 22.07.2016
+
+- Umpacketierung gemäß NERZ-Konvention
+
 ### 2.0.0
 
 Release-Datum: 31.05.2016

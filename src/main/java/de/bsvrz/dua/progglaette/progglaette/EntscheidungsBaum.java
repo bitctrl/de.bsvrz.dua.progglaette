@@ -36,7 +36,7 @@ import de.bsvrz.sys.funclib.debug.Debug;
  *
  * @author BitCtrl Systems GmbH, Bachraty..
  *
- * @version $Id$
+ * @version $Id: EntscheidungsBaum.java 53837 2015-03-18 11:45:45Z peuker $
  */
 public class EntscheidungsBaum {
 
