@@ -52,9 +52,6 @@ import java.util.LinkedList;
  * Ausgaben.
  *
  * @author BitCtrl Systems GmbH, Bachraty
- *
- * @version $Id: GlaetteWarnungUndPrognose.java 53825 2015-03-18 09:36:42Z
- *          peuker $
  */
 public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		ClientReceiverInterface, StandardApplication {
@@ -289,9 +286,6 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	 */
 	private final HashMap<SystemObject, UmfDatenHist> mapUmfDaten = new HashMap<>();
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void update(final ResultData[] results) {
 		for (final ResultData resDatei : results) {
@@ -445,9 +439,6 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void initialize(final ClientDavInterface connection)
 			throws Exception {
@@ -600,9 +591,6 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void parseArguments(final ArgumentList argumente) throws Exception {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -830,9 +818,6 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void dataRequest(final SystemObject object,
 			final DataDescription dataDescription, final byte state) {
@@ -840,9 +825,6 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isRequestSupported(final SystemObject object,
 			final DataDescription dataDescription) {

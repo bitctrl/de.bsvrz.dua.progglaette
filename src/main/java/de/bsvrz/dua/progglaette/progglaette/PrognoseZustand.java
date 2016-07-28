@@ -37,8 +37,6 @@ import java.util.TreeSet;
  * Horizont 5, 15, 30, 60, 90 Minuten.
  *
  * @author BitCtrl Systems GmbH, Bachraty
- *
- * @version $Id: PrognoseZustand.java 53837 2015-03-18 11:45:45Z peuker $
  */
 public class PrognoseZustand {
 

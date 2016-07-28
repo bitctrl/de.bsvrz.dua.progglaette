@@ -36,9 +36,6 @@ import de.bsvrz.sys.funclib.bitctrl.dua.DUAInitialisierungsException;
  * EndKnoten ist, dann enthaelt den Ergebnisswert.
  *
  * @author BitCtrl Systems GmbH, Bachraty
- *
- * @version $Id: EntscheidungsBaumKnoten.java 53825 2015-03-18 09:36:42Z peuker
- *          $
  */
 public class EntscheidungsBaumKnoten {
 
@@ -229,9 +226,6 @@ public class EntscheidungsBaumKnoten {
 			super(grenzWert, operator);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public Richtung getRichtung(final long fbzAktuell,
 				final double fbtAktuell, final double tptAktuell,
@@ -268,9 +262,6 @@ public class EntscheidungsBaumKnoten {
 			super(grenzWert, operator);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public Richtung getRichtung(final long fbzAktuell,
 				final double fbtAktuell, final double tptAktuell,
@@ -309,9 +300,6 @@ public class EntscheidungsBaumKnoten {
 			super(grenzWert, operator);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public Richtung getRichtung(final long fbzAktuell,
 				final double fbtAktuell, final double tptAktuell,
@@ -354,9 +342,6 @@ public class EntscheidungsBaumKnoten {
 			super(grenzWert, operator);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public Richtung getRichtung(final long fbzAktuell,
 				final double fbtAktuell, final double tptAktuell,
@@ -397,9 +382,6 @@ public class EntscheidungsBaumKnoten {
 			super(grenzWert, operator);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public Richtung getRichtung(final long fbzAktuell,
 				final double fbtAktuell, final double tptAktuell,
@@ -445,9 +427,6 @@ public class EntscheidungsBaumKnoten {
 			this.werteRechts = werteRechts;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public Richtung getRichtung(final long fbzAktuell,
 				final double fbtAktuell, final double tptAktuell,
@@ -503,9 +482,6 @@ public class EntscheidungsBaumKnoten {
 			this.werteMitte = werteMitte;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public Richtung getRichtung(final long fbzAktuell,
 				final double fbtAktuell, final double tptAktuell,
