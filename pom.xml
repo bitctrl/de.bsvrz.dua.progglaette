@@ -25,7 +25,7 @@
 		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
 		<kernsoftware.version>3.8.0</kernsoftware.version>
 		<distributionspaket.status>FREI</distributionspaket.status>
-		<distributionspaket.standDatum>2016-07-22</distributionspaket.standDatum>
+		<distributionspaket.standDatum>${maven.build.timestamp}</distributionspaket.standDatum>
 		<distributionspaket.lizenz>GPLv3.0</distributionspaket.lizenz>
 	</properties>
 
@@ -406,7 +406,6 @@
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<version>3.0.3</version>
 				<configuration>
-					<excludeFilterFile>src/main/config/findbugs-exclude.xml</excludeFilterFile>
 					<threshold>High</threshold>
 					<includeTests>true</includeTests>
 				</configuration>

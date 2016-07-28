@@ -40,7 +40,7 @@ import org.junit.Before;
  * @author Kappich Systemberatung
  */
 public class DuAProgGlaetteTestBase extends DuATestBase {
-	protected static GlaetteWarnungUndPrognose _glaetteWarnungUndPrognose;
+	protected  GlaetteWarnungUndPrognose _glaetteWarnungUndPrognose;
 
 	protected String[] getUfdArgs() {
 		return new String[]{"-KonfigurationsBereichsPid=kb.duaTestUfd"};
