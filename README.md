@@ -16,6 +16,17 @@ mögliche Glätte. Des Weiteren wird für die Prognosehorizonte 5-, 15-, 30-, 60
 
 ## Versionsgeschichte
 
+### 2.0.2
+
+Release-Datum: 28.07.2016
+
+de.bsvrz.dua.progglaette.tests.DuAProgGlaetteTestBase
+- der Member "_glaetteWarnungUndPrognose" sollte nicht statisch sein, der er bei jedem Test neu initialisiert wird
+
+- Javadoc für Java8-Kompatibilität korrigiert
+- Obsolete SVN-Tags aus Kommentaren entfernt
+- Obsolete inheritDoc-Kommentare entfernt
+
 ### 2.0.1
 
 Release-Datum: 22.07.2016

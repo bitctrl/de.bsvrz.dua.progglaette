@@ -35,8 +35,6 @@ import de.bsvrz.sys.funclib.debug.Debug;
  * Eigenschaften der Fahrbahn und Luft und seinen Prognosewerten.
  *
  * @author BitCtrl Systems GmbH, Bachraty..
- *
- * @version $Id: EntscheidungsBaum.java 53837 2015-03-18 11:45:45Z peuker $
  */
 public class EntscheidungsBaum {
 
@@ -227,12 +225,9 @@ public class EntscheidungsBaum {
 	}
 
 /**
-	 * Operator "<".
+	 * Operator "&lt;".
 	 */
 	public static class OperatorKleiner implements Operator {
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean anwende(final double x, final double y) {
 			return (x < y);
@@ -240,12 +235,9 @@ public class EntscheidungsBaum {
 	}
 
 	/**
-	 * Operator "<=".
+	 * Operator "&lt;=".
 	 */
 	public static class OperatorKleinerGleich implements Operator {
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean anwende(final double x, final double y) {
 			return (x <= y);
@@ -253,12 +245,9 @@ public class EntscheidungsBaum {
 	}
 
 	/**
-	 * Operator ">".
+	 * Operator "&gt;".
 	 */
 	public static class OperatorGroesser implements Operator {
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean anwende(final double x, final double y) {
 			return (x > y);
@@ -266,12 +255,9 @@ public class EntscheidungsBaum {
 	}
 
 	/**
-	 * Operator ">=".
+	 * Operator "&gt;=".
 	 */
 	public static class OperatorGroesserGleich implements Operator {
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean anwende(final double x, final double y) {
 			return (x >= y);
