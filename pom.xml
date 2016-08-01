@@ -236,6 +236,7 @@
 							</excludes>
 							<archive>
 								<manifest>
+									<mainClass>de.bsvrz.dua.progglaette.progglaette.GlaetteWarnungUndPrognose</mainClass>
 									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 									<addClasspath>true</addClasspath>
 									<classpathLayoutType>custom</classpathLayoutType>
