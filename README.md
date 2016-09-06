@@ -16,7 +16,11 @@ mögliche Glätte. Des Weiteren wird für die Prognosehorizonte 5-, 15-, 30-, 60
 
 ## Versionsgeschichte
 
-### 2.0.2
+### Version 2.0.3
+
+- Applikationsname für MessageSender entsprechend NERZ-Vorgabe gesetzt
+
+### Version 2.0.2
 
 Release-Datum: 28.07.2016
 
@@ -27,13 +31,13 @@ de.bsvrz.dua.progglaette.tests.DuAProgGlaetteTestBase
 - Obsolete SVN-Tags aus Kommentaren entfernt
 - Obsolete inheritDoc-Kommentare entfernt
 
-### 2.0.1
+### Version 2.0.1
 
 Release-Datum: 22.07.2016
 
 - Umpacketierung gemäß NERZ-Konvention
 
-### 2.0.0
+### Version 2.0.0
 
 Release-Datum: 31.05.2016
 
@@ -57,25 +61,25 @@ Folgende Fehler gegenüber vorhergehenden Versionen wurden korrigiert:
 
 - Tippfehler in Warnmeldung: Fehler bei der Initialisierung des EntscheidunsBaumes.
 
-### 1.4.0
+### Version 1.4.0
 
 - Umstellung auf Java 8 und UTF-8
 
-### 1.3.0
+### Version 1.3.0
 
 - Umstellung auf Funclib-BitCtrl-Dua
 
-### 1.2.0
+### Version 1.2.0
 
 - Umstellung auf Maven-Build
 - Behandlung nicht unterstützter Sensorarten über die 'UmfeldDatenSensorUnbekannteDatenartException'
 - benötigt SWE_de.bsvrz.sys.funclib.bitctrl_FREI_V1.2.3.zip oder höher 
 
-### 1.0.1
+### Version 1.0.1
 
 - Bash-Startskript hinzu
 
-### 1.0.0
+### Version 1.0.0
 
 - Erste Auslieferung
   

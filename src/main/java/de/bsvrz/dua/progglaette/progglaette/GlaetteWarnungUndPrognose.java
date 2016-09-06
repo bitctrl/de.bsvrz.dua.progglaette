@@ -41,6 +41,7 @@ import de.bsvrz.sys.funclib.bitctrl.dua.DUAUtensilien;
 import de.bsvrz.sys.funclib.bitctrl.dua.dfs.typen.SWETyp;
 import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
 import de.bsvrz.sys.funclib.debug.Debug;
+import de.bsvrz.sys.funclib.operatingMessage.MessageSender;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -443,6 +444,8 @@ public class GlaetteWarnungUndPrognose implements ClientSenderInterface,
 	public void initialize(final ClientDavInterface connection)
 			throws Exception {
 
+		MessageSender.getInstance().setApplicationLabel("Glaettewarnung und prognose");
+		
 		dav = connection;
 		Collection<SystemObject> messStellen;
 		final Collection<ConfigurationArea> kBereiche;
